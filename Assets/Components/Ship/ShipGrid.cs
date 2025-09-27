@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 public class ShipGrid : MonoBehaviour
 {
-    private Dictionary<Vector2Int, ShipModule> occupied = new();
-
+    public Dictionary<Vector2Int, ShipModule> grid = new();
+    public float cellSize = 1f; 
+    
     public bool CanAttach(ShipModule module, Vector2Int atPosition, int rotation)
     {
         var cells = module.data.shape;
@@ -14,16 +15,13 @@ public class ShipGrid : MonoBehaviour
             var rotated = Rotate(cell.localPosition, rotation);
             var worldPos = atPosition + rotated;
 
-            // проверка на наложение
-            if (occupied.ContainsKey(worldPos))
+            if (grid.ContainsKey(worldPos))
                 return false;
 
-            // проверка на контакт (сосед по 4 направлениям)
             if (IsAdjacent(worldPos))
                 contacts++;
         }
 
-        // минимум 2 касания
         if (contacts < 2) return false;
 
         // TODO: проверка дырок (алгоритм flood fill)
@@ -36,7 +34,7 @@ public class ShipGrid : MonoBehaviour
         {
             var rotated = Rotate(cell.localPosition, rotation);
             var worldPos = atPosition + rotated;
-            occupied[worldPos] = module;
+            grid[worldPos] = module;
         }
         module.gridPosition = atPosition;
         module.rotation = rotation;
@@ -44,10 +42,10 @@ public class ShipGrid : MonoBehaviour
 
     private bool IsAdjacent(Vector2Int pos)
     {
-        return occupied.ContainsKey(pos + Vector2Int.up)
-               || occupied.ContainsKey(pos + Vector2Int.down)
-               || occupied.ContainsKey(pos + Vector2Int.left)
-               || occupied.ContainsKey(pos + Vector2Int.right);
+        return grid.ContainsKey(pos + Vector2Int.up)
+               || grid.ContainsKey(pos + Vector2Int.down)
+               || grid.ContainsKey(pos + Vector2Int.left)
+               || grid.ContainsKey(pos + Vector2Int.right);
     }
 
     private Vector2Int Rotate(Vector2Int cell, int rotation)
@@ -60,4 +58,61 @@ public class ShipGrid : MonoBehaviour
             default:  return cell;
         }
     }
+    public Vector2 GridToWorld(Vector2Int cell)
+    {
+        return (Vector2)transform.position + new Vector2(cell.x * cellSize, cell.y * cellSize);
+    }
+
+    public Vector2Int WorldToGrid(Vector2 worldPos)
+    {
+        Vector2 local = worldPos - (Vector2)transform.position;
+        return new Vector2Int(
+            Mathf.RoundToInt(local.x / cellSize),
+            Mathf.RoundToInt(local.y / cellSize)
+        );
+    }
+    public HashSet<Vector2Int> GetBorderEmptyCells()
+    {
+        HashSet<Vector2Int> result = new HashSet<Vector2Int>();
+
+        foreach (var kvp in grid)
+        {
+            Vector2Int pos = kvp.Key;
+            
+            Vector2Int[] neighbors = new Vector2Int[]
+            {
+                pos + Vector2Int.up,
+                pos + Vector2Int.down,
+                pos + Vector2Int.left,
+                pos + Vector2Int.right
+            };
+
+            foreach (var n in neighbors)
+            {
+                if (!grid.ContainsKey(n))
+                {
+                    result.Add(n);
+                }
+            }
+        }
+        foreach (var cell in result)
+        {
+            Debug.Log("Empty border cell: " + cell);
+        }
+        return result;
+    }
+    public List<Vector2Int> GetAllowedCells()
+    {
+        var result = new List<Vector2Int>();
+        
+        Vector2Int center = new Vector2Int(0, 0);
+
+        result.Add(center + Vector2Int.up);
+        result.Add(center + Vector2Int.down);
+        result.Add(center + Vector2Int.left);
+        result.Add(center + Vector2Int.right);
+
+        return result;
+    }
+
 }

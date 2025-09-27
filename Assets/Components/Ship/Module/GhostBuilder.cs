@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-public class ModuleBuilder : MonoBehaviour
+public class GhostBuilder : MonoBehaviour
 {
     public ShipModuleStats data;
     public GameObject cellPrefab;
@@ -24,7 +24,7 @@ public class ModuleBuilder : MonoBehaviour
             {backSprite = data.backSprite; outfitSprite = data.outfitSprite;}
             
             GameObject cell = Instantiate(cellPrefab, transform);
-            cell.GetComponent<ModuleCellScript>().Initialize(backSprite,outfitSprite);
+            cell.GetComponent<ModuleCellScript>().Initialize(backSprite,outfitSprite,0.5f);
             cell.transform.localPosition = new Vector3(pos.x, pos.y, 0);
             cells.Add(cell);
         }
