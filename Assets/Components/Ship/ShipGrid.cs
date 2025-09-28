@@ -95,10 +95,7 @@ public class ShipGrid : MonoBehaviour
                 }
             }
         }
-        foreach (var cell in result)
-        {
-            Debug.Log("Empty border cell: " + cell);
-        }
+
         return result;
     }
     public List<Vector2Int> GetAllowedCells()

@@ -5,7 +5,7 @@ public class ModuleSpawner : MonoBehaviour
 {
     public ModuleFactory MFactory;
     public float spawnInterval = 0f;
-    private Dictionary<GameObject, float> modules = new Dictionary<GameObject, float>();
+    public Dictionary<GameObject, float> modules = new Dictionary<GameObject, float>();
     private float timer;
 
     void Update()

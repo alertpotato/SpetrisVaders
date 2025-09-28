@@ -637,9 +637,11 @@ MonoBehaviour:
   shipGrid: {fileID: 1438864067}
   anchorPrefab: {fileID: 3050240224589488700, guid: 196e7f312fee45f43bb18d7011ae8e5a, type: 3}
   ghostPrefab: {fileID: 8192516476030154036, guid: 85d7e1c6ef78ac74da9031993b9dbe8e, type: 3}
+  freeModules: {fileID: 1308053694}
   anchorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   closestAnchorColor: {r: 0, g: 1, b: 0, a: 1}
   ghostColor: {r: 1, g: 1, b: 1, a: 0.3}
+  maxVisualizeDistance: 3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

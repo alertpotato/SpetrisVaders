@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class DockingVisualizer : MonoBehaviour
 {
@@ -7,15 +9,17 @@ public class DockingVisualizer : MonoBehaviour
     public ShipGrid shipGrid;
     public GameObject anchorPrefab;
     public GameObject ghostPrefab;
-
+    public ModuleSpawner freeModules;
     [Header("Settings")]
     public Color anchorColor = Color.gray;
     public Color closestAnchorColor = Color.green;
     public Color ghostColor = new Color(1f, 1f, 1f, 0.3f);
-
+    public float maxVisualizeDistance = 5f;
+    [Header("Components")]
     private List<GameObject> activeAnchors = new();
     private GameObject ghostInstance;
     private LineRenderer line;
+    public DockingCandidatesManager candidates = new DockingCandidatesManager();
 
     void Awake()
     {
@@ -24,6 +28,35 @@ public class DockingVisualizer : MonoBehaviour
         line.endWidth = 0.05f;
         line.material = new Material(Shader.Find("Sprites/Default"));
         line.positionCount = 0;
+    }
+
+    private void Update()
+    {
+        var allowedCells = shipGrid.GetBorderEmptyCells().ToList();
+        if (allowedCells == null || allowedCells.Count == 0) 
+        {
+            candidates.PurgeMissing(new HashSet<GameObject>(freeModules.modules.Keys));
+            return;
+        }
+
+        foreach (var kv in freeModules.modules)
+        {
+            GameObject module = kv.Key;
+            if (module == null) continue;
+
+            if (TryGetNearestAnchor(module, allowedCells, maxVisualizeDistance, out var anchor))
+            {
+                candidates.AddOrUpdate(module, anchor);
+            }
+            else candidates.Remove(module);
+        }
+        candidates.PurgeMissing(new HashSet<GameObject>(freeModules.modules.Keys));
+
+        if (candidates.Count > 0)
+        {
+            UpdateDocking(candidates.GetCandidatesInOrder().First().module.GetComponent<ShipModule>());
+        }
+        else ClearVisuals();
     }
 
     public void UpdateDocking(ShipModule floatingModule)
@@ -58,7 +91,34 @@ public class DockingVisualizer : MonoBehaviour
         foreach (var sr in ghostInstance.GetComponentsInChildren<SpriteRenderer>())
             sr.color = ghostColor;
     }
+    public bool TryGetNearestAnchor(GameObject module, IReadOnlyList<Vector2Int> allowedCells, float visualizeDistance, out Vector2Int anchor)
+    {
+        anchor = default;
+        if (module == null || allowedCells == null || allowedCells.Count == 0)
+            return false;
 
+        float limitSqr = visualizeDistance * visualizeDistance;
+        Vector2 modulePos = module.transform.position;
+
+        float bestSqr = float.MaxValue;
+        bool found = false;
+
+        for (int i = 0; i < allowedCells.Count; i++)
+        {
+            Vector2 worldPos = shipGrid.GridToWorld(allowedCells[i]);
+            float sqr = ((Vector2)modulePos - worldPos).sqrMagnitude;
+
+            if (sqr <= limitSqr && sqr < bestSqr)
+            {
+                bestSqr = sqr;
+                anchor = allowedCells[i];
+                found = true;
+            }
+        }
+
+        return found;
+    }
+    
     public void ClearVisuals()
     {
         foreach (var a in activeAnchors)
