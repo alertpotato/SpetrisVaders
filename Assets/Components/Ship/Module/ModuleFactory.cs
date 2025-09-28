@@ -13,7 +13,7 @@ public class ModuleFactory : MonoBehaviour
         Instance = this;
     }
 
-    public GameObject CreateModule(string moduleName, Vector3 position, Transform parent = null)
+    public GameObject GetModule(string moduleName = null, Transform parent = null)
     {
         ShipModuleData data = GetModuleData(moduleName);
         if (data == null)
@@ -25,15 +25,20 @@ public class ModuleFactory : MonoBehaviour
 
         //actualData.shape[i] = new CellData(actualData.shape[i].localPosition,OutfitType.Canon);
 
-        GameObject obj = Instantiate(modulePrefab, position, Quaternion.identity, parent);
+        GameObject obj = Instantiate(modulePrefab, Vector3.zero, Quaternion.identity, parent);
         ShipModule moduleS = obj.GetComponent<ShipModule>();
         moduleS.Initialize(actualData);
         
         return obj;
     }
 
-    private ShipModuleData GetModuleData(string name)
+    private ShipModuleData GetModuleData(string name = null)
     {
+        if (name == null)
+        {
+            name = allModules[Random.Range(0, allModules.Length)].moduleName;
+        }
+
         foreach (var d in allModules)
         {
             if (d.moduleName == name) return d;
@@ -54,7 +59,7 @@ public class ModuleFactory : MonoBehaviour
             new Vector3(Random.value, Random.value, 10f) 
         );
 
-        var obj = CreateModule(randomData.moduleName, pos);
+        var obj = GetModule(randomData.moduleName);
         obj.transform.SetParent(transform);
         return obj;
     }
