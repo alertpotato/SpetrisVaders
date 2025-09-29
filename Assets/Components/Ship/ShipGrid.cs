@@ -3,22 +3,33 @@ using System.Collections.Generic;
 public class ShipGrid : MonoBehaviour
 {
     public Dictionary<Vector2Int, ShipModule> grid = new();
-    public float cellSize = 1f; 
-    
-    public bool CanAttach(ShipModule module, Vector2Int atPosition, int rotation)
+    public float cellSize = 1f;
+
+    public bool TryGetAttachPosition(ShipModule module, Vector2Int anchorPoint, out Vector2Int attachAdjustment)
+    {
+        var cells = module.data.shape;
+        attachAdjustment = Vector2Int.zero;
+        foreach (var cell in cells)
+        {
+            attachAdjustment = -cell.localPosition;
+            if (CanAttach(module, anchorPoint, -cell.localPosition)) return true;
+        }
+        return false;
+    }
+
+    public bool CanAttach(ShipModule module, Vector2Int anchorPoint,Vector2Int cellAdjustment)
     {
         var cells = module.data.shape;
         int contacts = 0;
 
         foreach (var cell in cells)
         {
-            var rotated = Rotate(cell.localPosition, rotation);
-            var worldPos = atPosition + rotated;
+            var onGridPos = cell.localPosition + cellAdjustment + anchorPoint;
 
-            if (grid.ContainsKey(worldPos))
+            if (grid.ContainsKey(onGridPos))
                 return false;
 
-            if (IsAdjacent(worldPos))
+            if (IsAdjacent(onGridPos))
                 contacts++;
         }
 
@@ -28,15 +39,15 @@ public class ShipGrid : MonoBehaviour
         return true;
     }
 
-    public void Attach(ShipModule module, Vector2Int atPosition, int rotation)
+    public void Attach(ShipModule module, Vector2Int anchorPosition,Vector2Int anchorAdjustment, int rotation)
     {
         foreach (var cell in module.data.shape)
         {
             var rotated = Rotate(cell.localPosition, rotation);
-            var worldPos = atPosition + rotated;
+            var worldPos = anchorPosition + rotated + anchorAdjustment;
             grid[worldPos] = module;
         }
-        module.gridPosition = atPosition;
+        module.gridPosition = anchorPosition;
         module.rotation = rotation;
     }
 

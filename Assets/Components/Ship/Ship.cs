@@ -7,8 +7,8 @@ public class Ship : MonoBehaviour
     public ShipGrid grid;
     public float Speed = 1;
     [SerializeField]private GameObject cellPrefab;
-    [SerializeField] private Sprite sprite1;
-
+    [SerializeField]private Sprite sprite1;
+    
     private void UpdateStats()
     {
         Speed = 5f;
@@ -19,14 +19,13 @@ public class Ship : MonoBehaviour
         }
     }
 
-    public void AttachModule(ShipModule newModule, Vector2Int gridPos)
+    public void AttachModule(Candidate candidateModule)
     {
-        grid.Attach(newModule, gridPos,0);
-        newModule.transform.SetParent(transform);
-        newModule.transform.localPosition = new Vector3(gridPos.x, gridPos.y, 0);
-        modules.Add(newModule);
+        grid.Attach(candidateModule.module.GetComponent<ShipModule>(), candidateModule.anchor,candidateModule.adjustment,0);
+        candidateModule.module.transform.SetParent(transform);
+        candidateModule.module.transform.localPosition = new Vector3(candidateModule.anchor.x+candidateModule.adjustment.x, candidateModule.anchor.y+candidateModule.adjustment.y, 0);
+        modules.Add(candidateModule.module.GetComponent<ShipModule>());
         UpdateStats();
-        
     }
 
     public void VizualizeBorders()

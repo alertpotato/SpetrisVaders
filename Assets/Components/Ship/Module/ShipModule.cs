@@ -42,27 +42,6 @@ public class ShipModule : MonoBehaviour
             polyCollider.SetPath(i, square);
         }
     }
-    
-    public Vector2Int[] GetRotatedCells()
-    {
-        Vector2Int[] result = new Vector2Int[data.shape.Length];
-        for (int i = 0; i < data.shape.Length; i++)
-        {
-            result[i] = RotateCell(data.shape[i].localPosition, rotation);
-        }
-        return result;
-    }
-    
-    private Vector2Int RotateCell(Vector2Int cell, int rotation)
-    {
-        switch (rotation % 360)
-        {
-            case 90:  return new Vector2Int(-cell.y,  cell.x);
-            case 180: return new Vector2Int(-cell.x, -cell.y);
-            case 270: return new Vector2Int( cell.y, -cell.x);
-            default:  return cell;
-        }
-    }
 
     public void FireCanon(Vector3 direction)
     {

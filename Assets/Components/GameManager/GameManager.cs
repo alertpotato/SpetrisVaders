@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     public void TestShip()
     {
         var newObj = MFactory.GetModule("Canon",playerShip.transform);
-        playerShip.AttachModule(newObj.GetComponent<ShipModule>(),Vector2Int.zero);
+        var can = new Candidate(newObj, new Vector2Int(0, 0), new Vector2Int(0, 0));
+        playerShip.AttachModule(can);
     }
 }

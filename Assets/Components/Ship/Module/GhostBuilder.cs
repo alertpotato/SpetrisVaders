@@ -6,9 +6,10 @@ public class GhostBuilder : MonoBehaviour
     public GameObject cellPrefab;
     public List<GameObject> cells;
     
-    public void Initialize(ShipModuleStats newData)
+    public void Initialize(ShipModuleStats newData,Vector2Int adjustment)
     {
         data = newData;
+        transform.localPosition += new Vector3(adjustment.x,adjustment.y,0);
         BuildModule();
     }
     void BuildModule()
@@ -29,5 +30,9 @@ public class GhostBuilder : MonoBehaviour
             cells.Add(cell);
         }
     }
-    
+    public void AdjustToCell(int cellIndex)
+    {
+        transform.localPosition += new Vector3(-data.shape[cellIndex].localPosition.x,-data.shape[cellIndex].localPosition.y,0);
+    }
+
 }

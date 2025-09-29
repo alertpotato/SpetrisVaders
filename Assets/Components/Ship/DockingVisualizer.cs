@@ -46,7 +46,8 @@ public class DockingVisualizer : MonoBehaviour
 
             if (TryGetNearestAnchor(module, allowedCells, maxVisualizeDistance, out var anchor))
             {
-                candidates.AddOrUpdate(module, anchor);
+                if (shipGrid.TryGetAttachPosition(module.GetComponent<ShipModule>(),anchor, out Vector2Int attachAdjustment))
+                candidates.AddOrUpdate(module, anchor, attachAdjustment);
             }
             else candidates.Remove(module);
         }
@@ -54,17 +55,18 @@ public class DockingVisualizer : MonoBehaviour
 
         if (candidates.Count > 0)
         {
-            UpdateDocking(candidates.GetCandidatesInOrder().First().module.GetComponent<ShipModule>());
+            var candidate = candidates.GetCandidatesInOrder().First();
+            UpdateDocking(candidate.module.GetComponent<ShipModule>(),candidate.anchor,candidate.adjustment);
         }
         else ClearVisuals();
     }
 
-    public void UpdateDocking(ShipModule floatingModule)
+    public void UpdateDocking(ShipModule floatingModule,Vector2Int anchorPos,Vector2Int anchorAdjustment)
     {
         ClearVisuals();
 
         if (floatingModule == null) return;
-        var allowed = shipGrid.GetAllowedCells();
+        var allowed = shipGrid.GetBorderEmptyCells().ToList();
         if (allowed.Count == 0) return;
 
         foreach (var pos in allowed)
@@ -76,8 +78,7 @@ public class DockingVisualizer : MonoBehaviour
         }
 
         Vector2 modulePos = floatingModule.transform.position;
-        Vector2Int closest = FindClosestCell(modulePos, allowed);
-        var closestAnchor = activeAnchors[allowed.IndexOf(closest)];
+        var closestAnchor = activeAnchors[allowed.IndexOf(anchorPos)];
         closestAnchor.GetComponent<SpriteRenderer>().color = closestAnchorColor;
 
         // line
@@ -86,10 +87,8 @@ public class DockingVisualizer : MonoBehaviour
         line.SetPosition(1, closestAnchor.transform.position);
 
         // ghost
-        ghostInstance = Instantiate(ghostPrefab, shipGrid.GridToWorld(closest), Quaternion.identity);
-        
-        foreach (var sr in ghostInstance.GetComponentsInChildren<SpriteRenderer>())
-            sr.color = ghostColor;
+        ghostInstance = Instantiate(ghostPrefab, shipGrid.GridToWorld(anchorPos), Quaternion.identity);
+        ghostInstance.GetComponent<GhostBuilder>().Initialize(floatingModule.data,anchorAdjustment);
     }
     public bool TryGetNearestAnchor(GameObject module, IReadOnlyList<Vector2Int> allowedCells, float visualizeDistance, out Vector2Int anchor)
     {
@@ -118,7 +117,6 @@ public class DockingVisualizer : MonoBehaviour
 
         return found;
     }
-    
     public void ClearVisuals()
     {
         foreach (var a in activeAnchors)
@@ -127,22 +125,5 @@ public class DockingVisualizer : MonoBehaviour
 
         if (ghostInstance) Destroy(ghostInstance);
         line.positionCount = 0;
-    }
-
-    private Vector2Int FindClosestCell(Vector2 modulePos, List<Vector2Int> cells)
-    {
-        float bestDist = float.MaxValue;
-        Vector2Int best = cells[0];
-        foreach (var c in cells)
-        {
-            var world = shipGrid.GridToWorld(c);
-            float d = Vector2.Distance(modulePos, world);
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = c;
-            }
-        }
-        return best;
     }
 }

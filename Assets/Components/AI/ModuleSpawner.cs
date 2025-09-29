@@ -65,5 +65,9 @@ public class ModuleSpawner : MonoBehaviour
         module.transform.SetParent(transform);
         modules.Add(module,Random.Range(1f,3f));
     }
-    
+
+    public void ForgetModule(GameObject module)
+    {
+         modules.Remove(module);
+    }
 }

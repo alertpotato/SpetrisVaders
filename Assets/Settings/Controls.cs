@@ -109,6 +109,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AttachModule"",
+                    ""type"": ""Button"",
+                    ""id"": ""d6fd8ad1-20d4-4afe-8c98-01f952d4c9c7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -232,6 +241,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""CanonShot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ccda0af1-6921-4d7a-a721-108c03179a1f"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AttachModule"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -242,6 +262,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_ShipControls = asset.FindActionMap("ShipControls", throwIfNotFound: true);
         m_ShipControls_Move = m_ShipControls.FindAction("Move", throwIfNotFound: true);
         m_ShipControls_CanonShot = m_ShipControls.FindAction("CanonShot", throwIfNotFound: true);
+        m_ShipControls_AttachModule = m_ShipControls.FindAction("AttachModule", throwIfNotFound: true);
     }
 
     ~@Controls()
@@ -324,6 +345,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private List<IShipControlsActions> m_ShipControlsActionsCallbackInterfaces = new List<IShipControlsActions>();
     private readonly InputAction m_ShipControls_Move;
     private readonly InputAction m_ShipControls_CanonShot;
+    private readonly InputAction m_ShipControls_AttachModule;
     /// <summary>
     /// Provides access to input actions defined in input action map "ShipControls".
     /// </summary>
@@ -343,6 +365,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "ShipControls/CanonShot".
         /// </summary>
         public InputAction @CanonShot => m_Wrapper.m_ShipControls_CanonShot;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/AttachModule".
+        /// </summary>
+        public InputAction @AttachModule => m_Wrapper.m_ShipControls_AttachModule;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -375,6 +401,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @CanonShot.started += instance.OnCanonShot;
             @CanonShot.performed += instance.OnCanonShot;
             @CanonShot.canceled += instance.OnCanonShot;
+            @AttachModule.started += instance.OnAttachModule;
+            @AttachModule.performed += instance.OnAttachModule;
+            @AttachModule.canceled += instance.OnAttachModule;
         }
 
         /// <summary>
@@ -392,6 +421,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @CanonShot.started -= instance.OnCanonShot;
             @CanonShot.performed -= instance.OnCanonShot;
             @CanonShot.canceled -= instance.OnCanonShot;
+            @AttachModule.started -= instance.OnAttachModule;
+            @AttachModule.performed -= instance.OnAttachModule;
+            @AttachModule.canceled -= instance.OnAttachModule;
         }
 
         /// <summary>
@@ -446,5 +478,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCanonShot(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "AttachModule" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAttachModule(InputAction.CallbackContext context);
     }
 }
