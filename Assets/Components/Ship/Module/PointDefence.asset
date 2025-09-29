@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moduleName: PointDefence
   type: 2
+  outfitType: 2
   shape:
   - localPosition: {x: 0, y: 0}
-    type: 2
+    type: 3
   - localPosition: {x: 1, y: 0}
     type: 3
   - localPosition: {x: 1, y: 1}

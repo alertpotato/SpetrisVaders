@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moduleName: Missle
   type: 1
+  outfitType: 1
   shape:
   - localPosition: {x: 0, y: 0}
-    type: 1
+    type: 3
   - localPosition: {x: 0, y: -1}
     type: 3
   - localPosition: {x: -1, y: -1}
