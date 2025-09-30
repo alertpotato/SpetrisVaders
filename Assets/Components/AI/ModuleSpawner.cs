@@ -3,34 +3,61 @@ using UnityEngine;
 
 public class ModuleSpawner : MonoBehaviour
 {
+    [Header("Components")]
     public ModuleFactory MFactory;
+    public Dictionary<GameObject, InertialBody> modules = new();
+    [Header("Variables")]
     public float spawnInterval = 0f;
-    public Dictionary<GameObject, float> modules = new Dictionary<GameObject, float>();
-    private float timer;
+    private float spawnTimer;
 
     void Update()
     {
-        timer += Time.deltaTime;
-        if (timer >= spawnInterval)
+        //Spawn logic
+        spawnTimer += Time.deltaTime;
+        if (spawnTimer >= spawnInterval)
         {
-            timer = 0f;
+            spawnTimer = 0f;
             spawnInterval = Random.Range(1f, 5f);
             SpawnModule();
         }
+        CleanupModules();
+    }
 
-        foreach (KeyValuePair<GameObject, float> module in modules)
+    void FixedUpdate()
+    {
+        foreach (var kvp in modules)
         {
-            module.Key.transform.position += Vector3.down * module.Value * Time.deltaTime;
+            kvp.Value.Tick(Time.deltaTime);
         }
+    }
 
-        foreach (KeyValuePair<GameObject, float> module in modules)
-        {
-            
-        }
-
+    void SpawnModule()
+    {
         Vector2 screenMin = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
         Vector2 screenMax = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0));
-        List<GameObject> toRemove = new List<GameObject>();
+        
+        float randomX = Random.Range(screenMin.x + screenMax.x * 0.15f, screenMax.x - screenMax.x * 0.15f);
+        float y = screenMax.y * 1.3f;
+
+        GameObject module = MFactory.GetModule();
+        module.transform.position = new Vector3(randomX, y, 0);
+        module.transform.SetParent(transform);
+
+        var body = module.GetComponent<InertialBody>();
+        body.mass = 1f;
+        body.drag = 1f;
+        body.maxSpeed = 10f;
+
+        body.velocity = Vector2.down * Random.Range(0.3f, 4f);
+
+        modules.Add(module, body);
+    }
+
+    void CleanupModules()
+    {
+        Vector2 screenMin = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
+        Vector2 screenMax = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0));
+        List<GameObject> toRemove = new();
 
         foreach (var kvp in modules)
         {
@@ -40,11 +67,12 @@ public class ModuleSpawner : MonoBehaviour
                 toRemove.Add(module);
                 continue;
             }
-            if (module.transform.position.y < screenMin.y - screenMax.y*0.3f)
+            if (module.transform.position.y < screenMin.y - screenMax.y * 0.3f)
             {
                 toRemove.Add(module);
             }
         }
+
         foreach (var m in toRemove)
         {
             if (m != null) Destroy(m);
@@ -52,22 +80,8 @@ public class ModuleSpawner : MonoBehaviour
         }
     }
 
-    void SpawnModule()
-    {
-        Vector2 screenMin = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
-        Vector2 screenMax = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0));
-        
-        float randomX = Random.Range(screenMin.x + screenMax.x*0.15f, screenMax.x - screenMax.x*0.15f);
-        float y = screenMax.y*1.3f; // чуть выше экрана, чтобы красиво влетали
-
-        GameObject module = MFactory.GetModule();
-        module.transform.position = new Vector3(randomX, y, module.transform.position.z);
-        module.transform.SetParent(transform);
-        modules.Add(module,Random.Range(1f,3f));
-    }
-
     public void ForgetModule(GameObject module)
     {
-         modules.Remove(module);
+        modules.Remove(module);
     }
 }

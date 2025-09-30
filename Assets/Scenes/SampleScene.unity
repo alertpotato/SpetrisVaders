@@ -508,6 +508,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1308053695}
   - component: {fileID: 1308053694}
+  - component: {fileID: 1308053696}
   m_Layer: 0
   m_Name: AI
   m_TagString: Untagged
@@ -544,6 +545,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1308053696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308053693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f017fd9b17a6410fb20d8fc717ced445, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1438864063
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,6 +570,7 @@ GameObject:
   - component: {fileID: 1438864064}
   - component: {fileID: 1438864067}
   - component: {fileID: 1438864068}
+  - component: {fileID: 1438864069}
   m_Layer: 0
   m_Name: TestShip
   m_TagString: Untagged
@@ -590,11 +604,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7500b4387ac1134bb0a266349430a1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modules: []
+  inertialBody: {fileID: 1438864069}
   grid: {fileID: 1438864067}
-  Speed: 1
+  modules: []
   cellPrefab: {fileID: 2278060621088543575, guid: 0ebb6036e1abeab459e8f606df1983a1, type: 3}
   sprite1: {fileID: -373302162, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
+  thrust: 10
+  maxSpeed: 8
 --- !u!4 &1438864066
 Transform:
   m_ObjectHideFlags: 0
@@ -643,6 +659,22 @@ MonoBehaviour:
   closestAnchorColor: {r: 0, g: 1, b: 0, a: 1}
   ghostColor: {r: 1, g: 1, b: 1, a: 0.3}
   maxVisualizeDistance: 5
+--- !u!114 &1438864069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438864063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccb0a70b2bf04febb202858be56433e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 1
+  drag: 0.95
+  maxSpeed: 8
+  velocity: {x: 0, y: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

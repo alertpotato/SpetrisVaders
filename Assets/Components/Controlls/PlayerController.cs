@@ -1,22 +1,24 @@
 ﻿using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Ship))]
+[RequireComponent(typeof(InertialBody))]
 public class PlayerController : MonoBehaviour
 {
-    [FormerlySerializedAs("ship")]
     [Header("Components")]
-    [SerializeField]private Ship Ship;
-    [SerializeField]private Controls controls;
-    [SerializeField]private DockingVisualizer Docker;
+    [SerializeField] private Ship Ship;
+    [SerializeField] private Controls controls;
+    [SerializeField] private DockingVisualizer Docker;
+    private InertialBody body;
+
     private Vector2 moveInput;
     private bool shooting;
-    private bool attaching;
 
     private void Awake()
     {
         Ship = GetComponent<Ship>();
+        body = GetComponent<InertialBody>();
+
         controls = new Controls();
         
         controls.ShipControls.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
@@ -28,26 +30,28 @@ public class PlayerController : MonoBehaviour
         controls.ShipControls.AttachModule.performed += ctx => AttachModule();
     }
 
-    private void OnEnable()
-    {
-        controls.Enable();
-    }
+    private void OnEnable()  => controls.Enable();
+    private void OnDisable() => controls.Disable();
 
-    private void OnDisable()
-    {
-        controls.Disable();
-    }
-
-    private void Update()
+    private void FixedUpdate()
     {
         HandleMovement();
+    }
+    private void Update()
+    {
         HandleShooting();
     }
-
+    
     private void HandleMovement()
     {
-        Vector3 dir = new Vector3(moveInput.x, moveInput.y, 0).normalized;
-        transform.position += dir * Ship.Speed * Time.deltaTime;
+        bool forceApplied = false;
+        if (moveInput.sqrMagnitude > 0.01f)
+        {
+            Vector2 force = moveInput.normalized * Ship.thrust;
+            body.ApplyForce(force, Time.deltaTime);
+            forceApplied = true;
+        }
+        body.Tick(Time.deltaTime,forceApplied);
     }
 
     private void HandleShooting()
@@ -68,7 +72,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Docker.candidates.Count == 0) return;
         var candidate = Docker.candidates.GetCandidatesInOrder().First();
-        Ship.AttachModule(candidate);
         Docker.freeModules.ForgetModule(candidate.module);
+        Ship.AttachModule(candidate);
     }
 }

@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.PlayerLoop;
 
 public enum ModuleType { Canon, Missile, PointDefense, Speed, Shield, Empty }
 public enum OutfitType { Canon, Missile, PointDefense, Empty }
 
+[RequireComponent(typeof(PolygonCollider2D))]
 public class ShipModule : MonoBehaviour
 {
     public ShipModuleStats data;
@@ -13,9 +15,14 @@ public class ShipModule : MonoBehaviour
     public float speedBonus = 0f;
     public float cooldown = 1f;
     private float lastShot;
-    [SerializeField]private PolygonCollider2D polyCollider;
+    public PolygonCollider2D polyCollider;
+    [SerializeField]private InertialBody inertialBody;
     [SerializeField]private ModuleBuilder builder;
-
+    private void Awake()
+    {
+        inertialBody = GetComponent<InertialBody>();
+        polyCollider = GetComponent<PolygonCollider2D>();
+    }
     public void Initialize(ShipModuleStats newData)
     {
         data = newData;
@@ -54,9 +61,34 @@ public class ShipModule : MonoBehaviour
         }
         // TODO: Missile, PD, etc.
     }
-
-    public void ModuleInitialization(ModuleType type)
+    public void OnAttachToShip(InertialBody newInertialBody)
     {
-
+        if (inertialBody != null)
+        {
+            inertialBody.enabled = false;
+            inertialBody.velocity = Vector2.zero;
+            inertialBody = newInertialBody;
+        }
     }
+
+    public void OnDetachFromShip()
+    {
+        transform.SetParent(null);
+        if (inertialBody != null)
+        {
+            inertialBody = GetComponent<InertialBody>();
+            inertialBody.enabled = true;
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        //Debug.Log("Началось пересечение с " + other.name);
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        //Debug.Log("Закончилось пересечение с " + other.name);
+    }
+
 }

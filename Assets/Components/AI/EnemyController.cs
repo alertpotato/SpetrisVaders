@@ -12,7 +12,6 @@ public class EnemyController : MonoBehaviour
 
     private void Update()
     {
-        // Простейшее поведение: летим вниз
-        transform.position += Vector3.down * ship.Speed * Time.deltaTime;
+        
     }
 }
