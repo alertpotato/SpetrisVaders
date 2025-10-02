@@ -16,7 +16,6 @@ public class InertialBody : MonoBehaviour
 
     private void OnDisable()
     {
-        Debug.Log("Disabling InertialBody" + this.transform.name);
         InertialCollisionManager.Instance?.Unregister(this);
     }
 

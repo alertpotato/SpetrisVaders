@@ -31,9 +31,11 @@ public class Ship : MonoBehaviour
 
     public void AttachModule(Candidate candidateModule)
     {
-        grid.Attach(candidateModule.module.GetComponent<ShipModule>(), candidateModule.anchor,candidateModule.adjustment,0);
+        var anchor = candidateModule.Primary.anchor;
+        var adjustment = candidateModule.Primary.adjustment;
+        grid.Attach(candidateModule.module.GetComponent<ShipModule>(), anchor,adjustment);
         candidateModule.module.transform.SetParent(transform);
-        candidateModule.module.transform.localPosition = new Vector3(candidateModule.anchor.x+candidateModule.adjustment.x, candidateModule.anchor.y+candidateModule.adjustment.y, 0);
+        candidateModule.module.transform.localPosition = new Vector3(anchor.x+adjustment.x, anchor.y+adjustment.y, 0);
         candidateModule.module.GetComponent<ShipModule>().OnAttachToShip(inertialBody);
         modules.Add(candidateModule.module.GetComponent<ShipModule>());
         UpdateStats();

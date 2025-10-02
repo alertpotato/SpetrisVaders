@@ -10,7 +10,7 @@ public class ShipModule : MonoBehaviour
 {
     public ShipModuleStats data;
     public Vector2Int gridPosition;
-    public int rotation;            // 0, 90, 180, 270
+    public int currentRotation;            // 0, 90, 180, 270
     public int currentHP = 0;
     public float speedBonus = 0f;
     public float cooldown = 1f;
@@ -23,11 +23,12 @@ public class ShipModule : MonoBehaviour
         inertialBody = GetComponent<InertialBody>();
         polyCollider = GetComponent<PolygonCollider2D>();
     }
-    public void Initialize(ShipModuleStats newData)
+    public void Initialize(ShipModuleStats newData,int rotation=0)
     {
         data = newData;
+        currentRotation = rotation;
         currentHP = data.baseHealth;
-        builder.Initialize(data);
+        builder.Initialize(data,currentRotation);
         GenerateCollider();
     }
 
@@ -37,7 +38,7 @@ public class ShipModule : MonoBehaviour
 
         for (int i = 0; i < data.shape.Length; i++)
         {
-            Vector2 cell = data.shape[i].localPosition;
+            Vector2 cell = builder.RotateCell(data.shape[i].localPosition,currentRotation);
             Vector2[] square = new Vector2[4];
 
             // квадрат размером 1x1
@@ -69,8 +70,8 @@ public class ShipModule : MonoBehaviour
             inertialBody.velocity = Vector2.zero;
             inertialBody = newInertialBody;
         }
+        GenerateCollider();
     }
-
     public void OnDetachFromShip()
     {
         transform.SetParent(null);
@@ -79,6 +80,12 @@ public class ShipModule : MonoBehaviour
             inertialBody = GetComponent<InertialBody>();
             inertialBody.enabled = true;
         }
+    }
+
+    public void UpdateRotation(int newRotation)
+    {
+        currentRotation = newRotation;
+        builder.UpdateModule(newRotation);
     }
 
     void OnTriggerEnter2D(Collider2D other)

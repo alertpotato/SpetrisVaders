@@ -32,6 +32,33 @@
                     "processors": "",
                     "interactions": "Press",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "RotateModule",
+                    "type": "Button",
+                    "id": "8eeffa8f-44b8-457a-945d-8da0ba1ef7b2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CycleModuleAnchor",
+                    "type": "Button",
+                    "id": "6f4ed0bc-9267-48e3-9ea9-68aca9eab54e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CycleModule",
+                    "type": "Button",
+                    "id": "85c50af4-b29f-4dda-bafb-fae5786d397d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -164,6 +191,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "AttachModule",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fc5d9619-852a-40e6-b756-21a843b64138",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateModule",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "893b4efb-4b17-482b-baa2-05e90346a8e3",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CycleModuleAnchor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7394dda8-9e8e-4f2e-8d1d-b9e058e9f9c4",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CycleModule",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

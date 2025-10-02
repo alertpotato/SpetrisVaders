@@ -5,26 +5,31 @@ public class ShipGrid : MonoBehaviour
     public Dictionary<Vector2Int, ShipModule> grid = new();
     public float cellSize = 1f;
 
-    public bool TryGetAttachPosition(ShipModule module, Vector2Int anchorPoint, out Vector2Int attachAdjustment)
+    public bool TryGetAttachPosition(ShipModule module, Vector2Int anchorPoint, out Vector2Int attachAdjustment,int rotation=-1)
     {
         var cells = module.data.shape;
         attachAdjustment = Vector2Int.zero;
+        var actualRotation = (rotation==-1) ? module.currentRotation : rotation;
+        //Iterating through every cell on module, to find first that will get us possible attach position
         foreach (var cell in cells)
         {
-            attachAdjustment = -cell.localPosition;
-            if (CanAttach(module, anchorPoint, -cell.localPosition)) return true;
+            attachAdjustment = -Rotate(cell.localPosition,rotation);
+            if ( CanAttach(module, anchorPoint, attachAdjustment, actualRotation) ) return true;
         }
         return false;
     }
 
-    public bool CanAttach(ShipModule module, Vector2Int anchorPoint,Vector2Int cellAdjustment)
+    public bool CanAttach(ShipModule module, Vector2Int anchorPoint,Vector2Int cellAdjustment, int rotation)
     {
+        // anchorPoint resets our coordinates at empry cell we want to attach to
+        // cellAdjustment makes certain cell on new module 0:0 relative
+        // rotation takes into consideration current rotation
         var cells = module.data.shape;
         int contacts = 0;
 
         foreach (var cell in cells)
         {
-            var onGridPos = cell.localPosition + cellAdjustment + anchorPoint;
+            var onGridPos = Rotate(cell.localPosition,rotation) + cellAdjustment + anchorPoint;
 
             if (grid.ContainsKey(onGridPos))
                 return false;
@@ -39,16 +44,15 @@ public class ShipGrid : MonoBehaviour
         return true;
     }
 
-    public void Attach(ShipModule module, Vector2Int anchorPosition,Vector2Int anchorAdjustment, int rotation)
+    public void Attach(ShipModule module, Vector2Int anchorPosition,Vector2Int anchorAdjustment)
     {
         foreach (var cell in module.data.shape)
         {
-            var rotated = Rotate(cell.localPosition, rotation);
+            var rotated = Rotate(cell.localPosition, module.currentRotation);
             var worldPos = anchorPosition + rotated + anchorAdjustment;
             grid[worldPos] = module;
         }
         module.gridPosition = anchorPosition;
-        module.rotation = rotation;
     }
 
     private bool IsAdjacent(Vector2Int pos)

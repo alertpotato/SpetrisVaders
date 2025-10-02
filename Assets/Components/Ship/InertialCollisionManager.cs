@@ -49,7 +49,7 @@ public class InertialCollisionManager : MonoBehaviour
                         if (collA.IsTouching(collB))
                         {
                             HandleCollision(a, b);
-                            Debug.Log($"{a.transform.name} : {b.transform.name} : {collA} : {collB}");
+                            //Debug.Log($"{a.transform.name} : {b.transform.name} : {collA} : {collB}");
                         }
                     }
                 }

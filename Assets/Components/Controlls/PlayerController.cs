@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour
         controls.ShipControls.CanonShot.canceled  += ctx => shooting = false;
         
         controls.ShipControls.AttachModule.performed += ctx => AttachModule();
+        controls.ShipControls.RotateModule.performed += ctx => RotateModule();
+        controls.ShipControls.CycleModuleAnchor.performed += ctx => CycleAnchors();
     }
 
     private void OnEnable()  => controls.Enable();
@@ -73,6 +75,19 @@ public class PlayerController : MonoBehaviour
         if (Docker.candidates.Count == 0) return;
         var candidate = Docker.candidates.GetCandidatesInOrder().First();
         Docker.freeModules.ForgetModule(candidate.module);
+        candidate.module.GetComponent<ShipModule>().UpdateRotation(Docker.currentRotation); // get rotation from ghost - apply to ShipModule and ModuleBuilder
         Ship.AttachModule(candidate);
+    }
+    private void RotateModule()
+    {
+        if (Docker.candidates.Count == 0) return;
+        Docker.RotateModule();
+    }
+
+    private void CycleAnchors()
+    {
+        if (Docker.candidates.Count == 0) return;
+        var candidate = Docker.candidates.GetCandidatesInOrder().First();
+        candidate.CycleAnchor();
     }
 }

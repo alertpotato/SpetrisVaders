@@ -118,6 +118,33 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateModule"",
+                    ""type"": ""Button"",
+                    ""id"": ""8eeffa8f-44b8-457a-945d-8da0ba1ef7b2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CycleModuleAnchor"",
+                    ""type"": ""Button"",
+                    ""id"": ""6f4ed0bc-9267-48e3-9ea9-68aca9eab54e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CycleModule"",
+                    ""type"": ""Button"",
+                    ""id"": ""85c50af4-b29f-4dda-bafb-fae5786d397d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -252,6 +279,39 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""AttachModule"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fc5d9619-852a-40e6-b756-21a843b64138"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateModule"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""893b4efb-4b17-482b-baa2-05e90346a8e3"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CycleModuleAnchor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7394dda8-9e8e-4f2e-8d1d-b9e058e9f9c4"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CycleModule"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -263,6 +323,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_ShipControls_Move = m_ShipControls.FindAction("Move", throwIfNotFound: true);
         m_ShipControls_CanonShot = m_ShipControls.FindAction("CanonShot", throwIfNotFound: true);
         m_ShipControls_AttachModule = m_ShipControls.FindAction("AttachModule", throwIfNotFound: true);
+        m_ShipControls_RotateModule = m_ShipControls.FindAction("RotateModule", throwIfNotFound: true);
+        m_ShipControls_CycleModuleAnchor = m_ShipControls.FindAction("CycleModuleAnchor", throwIfNotFound: true);
+        m_ShipControls_CycleModule = m_ShipControls.FindAction("CycleModule", throwIfNotFound: true);
     }
 
     ~@Controls()
@@ -346,6 +409,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_ShipControls_Move;
     private readonly InputAction m_ShipControls_CanonShot;
     private readonly InputAction m_ShipControls_AttachModule;
+    private readonly InputAction m_ShipControls_RotateModule;
+    private readonly InputAction m_ShipControls_CycleModuleAnchor;
+    private readonly InputAction m_ShipControls_CycleModule;
     /// <summary>
     /// Provides access to input actions defined in input action map "ShipControls".
     /// </summary>
@@ -369,6 +435,18 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "ShipControls/AttachModule".
         /// </summary>
         public InputAction @AttachModule => m_Wrapper.m_ShipControls_AttachModule;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/RotateModule".
+        /// </summary>
+        public InputAction @RotateModule => m_Wrapper.m_ShipControls_RotateModule;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/CycleModuleAnchor".
+        /// </summary>
+        public InputAction @CycleModuleAnchor => m_Wrapper.m_ShipControls_CycleModuleAnchor;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/CycleModule".
+        /// </summary>
+        public InputAction @CycleModule => m_Wrapper.m_ShipControls_CycleModule;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -404,6 +482,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @AttachModule.started += instance.OnAttachModule;
             @AttachModule.performed += instance.OnAttachModule;
             @AttachModule.canceled += instance.OnAttachModule;
+            @RotateModule.started += instance.OnRotateModule;
+            @RotateModule.performed += instance.OnRotateModule;
+            @RotateModule.canceled += instance.OnRotateModule;
+            @CycleModuleAnchor.started += instance.OnCycleModuleAnchor;
+            @CycleModuleAnchor.performed += instance.OnCycleModuleAnchor;
+            @CycleModuleAnchor.canceled += instance.OnCycleModuleAnchor;
+            @CycleModule.started += instance.OnCycleModule;
+            @CycleModule.performed += instance.OnCycleModule;
+            @CycleModule.canceled += instance.OnCycleModule;
         }
 
         /// <summary>
@@ -424,6 +511,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @AttachModule.started -= instance.OnAttachModule;
             @AttachModule.performed -= instance.OnAttachModule;
             @AttachModule.canceled -= instance.OnAttachModule;
+            @RotateModule.started -= instance.OnRotateModule;
+            @RotateModule.performed -= instance.OnRotateModule;
+            @RotateModule.canceled -= instance.OnRotateModule;
+            @CycleModuleAnchor.started -= instance.OnCycleModuleAnchor;
+            @CycleModuleAnchor.performed -= instance.OnCycleModuleAnchor;
+            @CycleModuleAnchor.canceled -= instance.OnCycleModuleAnchor;
+            @CycleModule.started -= instance.OnCycleModule;
+            @CycleModule.performed -= instance.OnCycleModule;
+            @CycleModule.canceled -= instance.OnCycleModule;
         }
 
         /// <summary>
@@ -485,5 +581,26 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAttachModule(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "RotateModule" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRotateModule(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "CycleModuleAnchor" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCycleModuleAnchor(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "CycleModule" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCycleModule(InputAction.CallbackContext context);
     }
 }

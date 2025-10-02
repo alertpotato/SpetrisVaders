@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,7 +26,10 @@ public class GameManager : MonoBehaviour
     public void TestShip()
     {
         var newObj = MFactory.GetModule("Canon",playerShip.transform);
-        var can = new Candidate(newObj, new Vector2Int(0, 0), new Vector2Int(0, 0));
+        var anchorlist = new List<AnchorOption>();
+        var anchor = new AnchorOption(new Vector2Int(0, 0), new Vector2Int(0, 0));
+        anchorlist.Add(anchor);
+        var can = new Candidate(newObj, anchorlist);
         playerShip.AttachModule(can);
     }
 }

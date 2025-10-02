@@ -15,11 +15,16 @@ public class DockingVisualizer : MonoBehaviour
     public Color closestAnchorColor = Color.green;
     public Color ghostColor = new Color(1f, 1f, 1f, 0.3f);
     public float maxVisualizeDistance = 5f;
+    private GameObject currentShipModule;
+    public int currentRotation = 0;
     [Header("Components")]
+    public GameObject AnchorParent;
     private List<GameObject> activeAnchors = new();
-    private GameObject ghostInstance;
+    public GameObject ghostInstance;
     private LineRenderer line;
     public DockingCandidatesManager candidates = new DockingCandidatesManager();
+    
+    
 
     void Awake()
     {
@@ -43,79 +48,102 @@ public class DockingVisualizer : MonoBehaviour
         {
             GameObject module = kv.Key;
             if (module == null) continue;
-
-            if (TryGetNearestAnchor(module, allowedCells, maxVisualizeDistance, out var anchor))
+            
+            var anchors = TryGetNearestAnchors(module, allowedCells, maxVisualizeDistance, 5);
+            var options = new List<AnchorOption>();
+            foreach (var anchor in anchors)
             {
-                if (shipGrid.TryGetAttachPosition(module.GetComponent<ShipModule>(),anchor, out Vector2Int attachAdjustment))
-                candidates.AddOrUpdate(module, anchor, attachAdjustment);
+                if (shipGrid.TryGetAttachPosition(module.GetComponent<ShipModule>(), anchor, out var attachAdjustment, currentRotation))
+                {
+                    options.Add(new AnchorOption(anchor, attachAdjustment));
+                }
             }
-            else candidates.Remove(module);
+
+            if (options.Count > 0)
+                candidates.AddOrUpdate(module, options);
+            else
+                candidates.Remove(module);
+            
         }
         candidates.PurgeMissing(new HashSet<GameObject>(freeModules.modules.Keys));
 
         if (candidates.Count > 0)
         {
             var candidate = candidates.GetCandidatesInOrder().First();
-            UpdateDocking(candidate.module.GetComponent<ShipModule>(),candidate.anchor,candidate.adjustment);
+            //is same module dont touch rotation
+            if (currentShipModule != candidate.module) {
+                currentShipModule = candidate.module;
+                currentRotation = candidate.module.GetComponent<ShipModule>().currentRotation;
+            }
+            var primary = candidate.Primary;
+            UpdateDocking(candidate.module.GetComponent<ShipModule>(), primary.anchor, primary.adjustment, currentRotation);
         }
         else ClearVisuals();
     }
 
-    public void UpdateDocking(ShipModule floatingModule,Vector2Int anchorPos,Vector2Int anchorAdjustment)
+    public void UpdateDocking(ShipModule floatingModule,Vector2Int anchorPos,Vector2Int anchorAdjustment,int newRotation)
     {
         ClearVisuals();
-
+        
         if (floatingModule == null) return;
-        var allowed = shipGrid.GetBorderEmptyCells().ToList();
-        if (allowed.Count == 0) return;
-
-        foreach (var pos in allowed)
+        var candidate = candidates.GetCandidatesInOrder().First();
+        if (candidate.options.Count == 0) return;
+        GameObject closestAnchor = null;
+        foreach (var candidateAnchor in candidate.options)
         {
-            var world = shipGrid.GridToWorld(pos);
-            var anchor = Instantiate(anchorPrefab, world, Quaternion.identity);
+            var anchor = Instantiate(anchorPrefab, AnchorParent.transform);
             anchor.GetComponent<SpriteRenderer>().color = anchorColor;
+            anchor.transform.localPosition = new Vector3(candidateAnchor.anchor.x, candidateAnchor.anchor.y, 0);
             activeAnchors.Add(anchor);
+            if (candidate.Primary.anchor == candidateAnchor.anchor) closestAnchor = anchor;
         }
-
+    
         Vector2 modulePos = floatingModule.transform.position;
-        var closestAnchor = activeAnchors[allowed.IndexOf(anchorPos)];
+        //TODO nullreferenceexeption possible
         closestAnchor.GetComponent<SpriteRenderer>().color = closestAnchorColor;
-
+        
+        // ghost
+        ghostInstance = Instantiate(ghostPrefab, transform);
+        ghostInstance.transform.localPosition = new Vector3(anchorPos.x + anchorAdjustment.x, anchorPos.y + anchorAdjustment.y, 0);
+        ghostInstance.GetComponent<GhostBuilder>().Initialize(floatingModule.data,newRotation);
+        
         // line
         line.positionCount = 2;
         line.SetPosition(0, floatingModule.transform.position);
         line.SetPosition(1, closestAnchor.transform.position);
-
-        // ghost
-        ghostInstance = Instantiate(ghostPrefab, shipGrid.GridToWorld(anchorPos), Quaternion.identity);
-        ghostInstance.GetComponent<GhostBuilder>().Initialize(floatingModule.data,anchorAdjustment);
     }
-    public bool TryGetNearestAnchor(GameObject module, IReadOnlyList<Vector2Int> allowedCells, float visualizeDistance, out Vector2Int anchor)
+    public List<Vector2Int> TryGetNearestAnchors(
+        GameObject module,
+        IReadOnlyList<Vector2Int> allowedCells,
+        float visualizeDistance,
+        int maxCount = 5)
     {
-        anchor = default;
+        var result = new List<Vector2Int>();
         if (module == null || allowedCells == null || allowedCells.Count == 0)
-            return false;
+            return result;
 
         float limitSqr = visualizeDistance * visualizeDistance;
         Vector2 modulePos = module.transform.position;
 
-        float bestSqr = float.MaxValue;
-        bool found = false;
+        var candidates = new List<(float sqr, Vector2Int cell)>();
 
         for (int i = 0; i < allowedCells.Count; i++)
         {
             Vector2 worldPos = shipGrid.GridToWorld(allowedCells[i]);
             float sqr = ((Vector2)modulePos - worldPos).sqrMagnitude;
 
-            if (sqr <= limitSqr && sqr < bestSqr)
+            if (sqr <= limitSqr)
             {
-                bestSqr = sqr;
-                anchor = allowedCells[i];
-                found = true;
+                candidates.Add((sqr, allowedCells[i]));
             }
         }
+        
+        candidates.Sort((a, b) => a.sqr.CompareTo(b.sqr));
 
-        return found;
+        for (int i = 0; i < Mathf.Min(maxCount, candidates.Count); i++)
+            result.Add(candidates[i].cell);
+
+        return result;
     }
     public void ClearVisuals()
     {
@@ -125,5 +153,9 @@ public class DockingVisualizer : MonoBehaviour
 
         if (ghostInstance) Destroy(ghostInstance);
         line.positionCount = 0;
+    }
+    public void RotateModule()
+    {
+        currentRotation = (currentRotation + 90) % 360;
     }
 }

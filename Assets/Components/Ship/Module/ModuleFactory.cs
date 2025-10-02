@@ -39,10 +39,10 @@ public class ModuleFactory : MonoBehaviour
         var outfitPositions = OutfitRandomizer(outfitsNumber);
         // Data class
         var actualData = new ShipModuleStats(data, outfitPositions);
-        
+        int rotation = Random.Range(0, 4) * 90;
         GameObject obj = Instantiate(modulePrefab, Vector3.zero, Quaternion.identity, parent);
         ShipModule moduleS = obj.GetComponent<ShipModule>();
-        moduleS.Initialize(actualData);
+        moduleS.Initialize(actualData,rotation);
         
         return obj;
     }
