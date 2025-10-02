@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class ModuleFactory : MonoBehaviour
 {
-    public static ModuleFactory Instance;
     public Dictionary<int, int> outfitNumberWeignts;
     public ShipModuleData[] allModules;
 
     public GameObject modulePrefab;
+    public int moduleCount;
 
     void Awake()
     {
-        Instance = this;
         outfitNumberWeignts = new Dictionary<int, int>
         {
             { 1, 1000 },
@@ -20,10 +19,13 @@ public class ModuleFactory : MonoBehaviour
             { 3, 15 },
             { 4, 1 }
         };
+        moduleCount = 0;
     }
 
     public GameObject GetModule(string moduleName = null, Transform parent = null)
     {
+        moduleCount++;
+        var offCameraPoint = new Vector3(-999, -999, 0);
         ShipModuleData data = GetModuleData(moduleName);
         if (data == null)
         {
@@ -40,10 +42,10 @@ public class ModuleFactory : MonoBehaviour
         // Data class
         var actualData = new ShipModuleStats(data, outfitPositions);
         int rotation = Random.Range(0, 4) * 90;
-        GameObject obj = Instantiate(modulePrefab, Vector3.zero, Quaternion.identity, parent);
+        GameObject obj = Instantiate(modulePrefab, offCameraPoint, Quaternion.identity, parent);
         ShipModule moduleS = obj.GetComponent<ShipModule>();
         moduleS.Initialize(actualData,rotation);
-        
+        obj.name = $"M_{data.moduleName}_{outfitsNumber}_{moduleCount}";
         return obj;
     }
 

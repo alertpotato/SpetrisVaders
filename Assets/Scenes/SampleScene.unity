@@ -213,6 +213,7 @@ MonoBehaviour:
   GameLoopState: {fileID: 275148197}
   playerShip: {fileID: 1438864065}
   MFactory: {fileID: 932211679}
+  SFactory: {fileID: 0}
 --- !u!4 &275148199
 Transform:
   m_ObjectHideFlags: 0
@@ -457,8 +458,9 @@ GameObject:
   m_Component:
   - component: {fileID: 932211680}
   - component: {fileID: 932211679}
+  - component: {fileID: 932211681}
   m_Layer: 0
-  m_Name: ModuleFactory
+  m_Name: Factory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -483,6 +485,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8bfc67baa9980d74cb1c6551869d314d, type: 2}
   - {fileID: 11400000, guid: 6847ab3ad8c68c042b2f29f3d3f76cb2, type: 2}
   modulePrefab: {fileID: 8192516476030154036, guid: fbfaba48a8a046844828883ffa403678, type: 3}
+  moduleCount: 0
 --- !u!4 &932211680
 Transform:
   m_ObjectHideFlags: 0
@@ -498,6 +501,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &932211681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932211678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 724fddd595ad4b269d96d874cd699ee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shipPrefab: {fileID: 3707651201075440641, guid: 9ef7a7f2c3199314c9eba93dad9191bf, type: 3}
+  modules: {fileID: 932211679}
+  shipCount: 0
+--- !u!1 &1026779387
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1026779388}
+  m_Layer: 0
+  m_Name: Modules
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1026779388
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026779387}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1438864066}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1308053693
 GameObject:
   m_ObjectHideFlags: 0
@@ -509,6 +558,7 @@ GameObject:
   - component: {fileID: 1308053695}
   - component: {fileID: 1308053694}
   - component: {fileID: 1308053696}
+  - component: {fileID: 1308053697}
   m_Layer: 0
   m_Name: AI
   m_TagString: Untagged
@@ -557,6 +607,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f017fd9b17a6410fb20d8fc717ced445, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1308053697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308053693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd588813568846d49836cfb24af5727a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFactory: {fileID: 932211681}
+  Ships: []
 --- !u!1 &1438864063
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,7 +636,7 @@ GameObject:
   - component: {fileID: 1438864068}
   - component: {fileID: 1438864069}
   m_Layer: 0
-  m_Name: TestShip
+  m_Name: PlayerShip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -607,8 +671,7 @@ MonoBehaviour:
   inertialBody: {fileID: 1438864069}
   grid: {fileID: 1438864067}
   modules: []
-  cellPrefab: {fileID: 2278060621088543575, guid: 0ebb6036e1abeab459e8f606df1983a1, type: 3}
-  sprite1: {fileID: -373302162, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
+  ModuleParent: {fileID: 1026779387}
   thrust: 10
   maxSpeed: 8
 --- !u!4 &1438864066
@@ -625,6 +688,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1523675514}
+  - {fileID: 1026779388}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1438864067

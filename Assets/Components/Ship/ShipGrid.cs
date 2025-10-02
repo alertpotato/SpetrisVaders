@@ -19,7 +19,7 @@ public class ShipGrid : MonoBehaviour
         return false;
     }
 
-    public bool CanAttach(ShipModule module, Vector2Int anchorPoint,Vector2Int cellAdjustment, int rotation)
+    public bool CanAttach(ShipModule module, Vector2Int anchorPoint, Vector2Int cellAdjustment, int rotation)
     {
         // anchorPoint resets our coordinates at empry cell we want to attach to
         // cellAdjustment makes certain cell on new module 0:0 relative
@@ -29,7 +29,7 @@ public class ShipGrid : MonoBehaviour
 
         foreach (var cell in cells)
         {
-            var onGridPos = Rotate(cell.localPosition,rotation) + cellAdjustment + anchorPoint;
+            var onGridPos = Rotate(cell.localPosition, rotation) + cellAdjustment + anchorPoint;
 
             if (grid.ContainsKey(onGridPos))
                 return false;
@@ -38,10 +38,10 @@ public class ShipGrid : MonoBehaviour
                 contacts++;
         }
 
-        if (contacts < 2) return false;
+        if (contacts >= 2 || grid.Count==0) return true;
 
-        // TODO: проверка дырок (алгоритм flood fill)
-        return true;
+    // TODO: проверка дырок (алгоритм flood fill)
+        return false;
     }
 
     public void Attach(ShipModule module, Vector2Int anchorPosition,Vector2Int anchorAdjustment)
@@ -110,7 +110,7 @@ public class ShipGrid : MonoBehaviour
                 }
             }
         }
-
+        if (result.Count == 0) result.Add(Vector2Int.zero);
         return result;
     }
     public List<Vector2Int> GetAllowedCells()

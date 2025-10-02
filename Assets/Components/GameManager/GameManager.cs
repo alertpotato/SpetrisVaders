@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public StateMachine GameLoopState;
     public Ship playerShip;
     public ModuleFactory MFactory;
+    public ShipFactory SFactory;
 
     private void Awake()
     {
@@ -22,7 +23,6 @@ public class GameManager : MonoBehaviour
         GameLoopState.ChangeState<GameLoopRoundState>();
         // TODO: spawn enemies, handle waves
     }
-
     public void TestShip()
     {
         var newObj = MFactory.GetModule("Canon",playerShip.transform);
