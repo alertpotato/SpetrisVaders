@@ -8,16 +8,15 @@ public class ShipFactory : MonoBehaviour
     public GameObject shipPrefab;
     public ModuleFactory modules;
     public int shipCount;
-
+    
     void Awake()
     {
         shipCount = 0;
     }
 
-    public GameObject GetShip()
+    public GameObject GetShip(Dictionary<ModuleType, int> moduleWeights = null,int numberOfModules = 3)
     {
         shipCount++;
-        int numberOfModules = 3;
         var offCameraPoint = new Vector3(-999, -999, 0);
         int failStatePreventor =  numberOfModules*50;
         int counter = 0;
@@ -32,7 +31,7 @@ public class ShipFactory : MonoBehaviour
                 Debug.LogWarning($"Failed to create ship with {failStatePreventor} itrerations");
                 break;
             }
-            var newModule = modules.GetModule();
+            var newModule = modules.GetModule(moduleWeights: moduleWeights);
             var ModuleScript = newModule.GetComponent<ShipModule>();
             var borderEmptyCells = ShipScript.grid.GetBorderEmptyCells().ToList();
             var anchorList = new List<AnchorOption>();

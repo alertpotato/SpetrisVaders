@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ModuleFactory : MonoBehaviour
 {
-    public Dictionary<int, int> outfitNumberWeignts;
+    private Dictionary<int, int> outfitNumberWeignts;
+    private Dictionary<ModuleType, int> defaulModuleWeignts;
     public ShipModuleData[] allModules;
 
     public GameObject modulePrefab;
@@ -20,13 +23,19 @@ public class ModuleFactory : MonoBehaviour
             { 4, 1 }
         };
         moduleCount = 0;
+        defaulModuleWeignts = new Dictionary<ModuleType, int>();
+        foreach (ModuleType type in Enum.GetValues(typeof(ModuleType)))
+        {
+            if(type==ModuleType.Empty) continue;
+            defaulModuleWeignts[type] = 1;
+        }
     }
 
-    public GameObject GetModule(string moduleName = null, Transform parent = null)
+    public GameObject GetModule(string moduleName = null, Transform parent = null,Dictionary<ModuleType, int> moduleWeights = null)
     {
         moduleCount++;
         var offCameraPoint = new Vector3(-999, -999, 0);
-        ShipModuleData data = GetModuleData(moduleName);
+        ShipModuleData data = GetModuleData(moduleWeights:moduleWeights);
         if (data == null)
         {
             Debug.LogError("No module found: " + moduleName);
@@ -49,16 +58,20 @@ public class ModuleFactory : MonoBehaviour
         return obj;
     }
 
-    private ShipModuleData GetModuleData(string name = null)
+    private ShipModuleData GetModuleData(string name = null,Dictionary<ModuleType, int> moduleWeights = null)
     {
-        if (name == null)
+        if (name != null)
         {
-            name = allModules[Random.Range(0, allModules.Length)].moduleName;
+            foreach (var d in allModules)
+            {
+                if (d.moduleName == name) return d;
+            }
         }
-
+        if (moduleWeights == null) moduleWeights = defaulModuleWeignts;
+        ModuleType chosen = WeightFunctions.GetRandomWeightedModule(moduleWeights);
         foreach (var d in allModules)
         {
-            if (d.moduleName == name) return d;
+            if (d.type == chosen) return d;
         }
         return null;
     }

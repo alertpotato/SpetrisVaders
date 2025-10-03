@@ -51,16 +51,21 @@ public class ShipModule : MonoBehaviour
         }
     }
 
-    public void FireCanon(Vector3 direction)
+    public bool FireCanon(Vector3 direction)
     {
-        if (Time.time - lastShot < cooldown) return;
+        if (Time.time - lastShot < cooldown) return false;
         lastShot = Time.time;
 
         if (data.type == ModuleType.Canon)
         {
             Projectile bullet = Projectile.Spawn(transform.position, direction, 10f, 1);
+            return true;
         }
-        // TODO: Missile, PD, etc.
+        return false;
+    }
+    public bool FireMissle(Vector3 direction)
+    {
+        return false;
     }
     public void OnAttachToShip(InertialBody newInertialBody)
     {

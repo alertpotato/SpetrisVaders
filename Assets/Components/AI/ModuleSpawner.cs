@@ -27,7 +27,7 @@ public class ModuleSpawner : MonoBehaviour
     {
         foreach (var kvp in modules)
         {
-            kvp.Value.Tick(Time.deltaTime);
+            kvp.Value.Tick(Time.fixedDeltaTime);
         }
     }
 

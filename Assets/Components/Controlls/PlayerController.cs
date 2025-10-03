@@ -50,10 +50,10 @@ public class PlayerController : MonoBehaviour
         if (moveInput.sqrMagnitude > 0.01f)
         {
             Vector2 force = moveInput.normalized * Ship.thrust;
-            body.ApplyForce(force, Time.deltaTime);
+            body.ApplyForce(force, Time.fixedDeltaTime);
             forceApplied = true;
         }
-        body.Tick(Time.deltaTime,forceApplied);
+        body.Tick(Time.fixedDeltaTime,forceApplied);
     }
 
     private void HandleShooting()

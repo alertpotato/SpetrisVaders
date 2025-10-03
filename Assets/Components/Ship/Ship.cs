@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 [RequireComponent(typeof(ShipGrid))]
 [RequireComponent(typeof(InertialBody))]
@@ -39,5 +40,22 @@ public class Ship : MonoBehaviour
         candidateModule.module.GetComponent<ShipModule>().OnAttachToShip(inertialBody);
         modules.Add(candidateModule.module.GetComponent<ShipModule>());
         UpdateStats();
+    }
+    public bool FireCanons()
+    {
+        bool fired=false;
+        foreach (var module in modules.Where(x=>x.data.type==ModuleType.Canon))
+        {
+            if (module.FireCanon(Vector3.up)) fired = true;
+        }
+        return fired;
+    }
+    public bool FireMissle()
+    {
+        foreach (var module in modules.Where(x=>x.data.type==ModuleType.Missile))
+        {
+            if (module.FireMissle(Vector3.up)) return true;
+        }
+        return false;
     }
 }
