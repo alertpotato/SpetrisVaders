@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     }
     public void TestShip()
     {
+        playerShip.shipAlignment = 0;
         var newObj = MFactory.GetModule("Canon",playerShip.transform);
         var anchorlist = new List<AnchorOption>();
         var anchor = new AnchorOption(new Vector2Int(0, 0), new Vector2Int(0, 0));

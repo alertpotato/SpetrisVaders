@@ -26,6 +26,7 @@ public class ModuleBuilder : MonoBehaviour
             GameObject cell = Instantiate(cellPrefab, transform);
             cell.GetComponent<ModuleCellScript>().Initialize(backSprite,outfitSprite);
             cell.transform.localPosition = new Vector3(pos.x, pos.y, 0);
+            cell.name = $"C_{data}_{data.shape[i].type}";
             cells.Add(cell);
         }
     }

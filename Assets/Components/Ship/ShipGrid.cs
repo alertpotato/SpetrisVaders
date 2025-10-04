@@ -113,6 +113,21 @@ public class ShipGrid : MonoBehaviour
         if (result.Count == 0) result.Add(Vector2Int.zero);
         return result;
     }
+    public void RemoveModule(ShipModule module)
+    {
+        if (module == null) return;
+
+        var keysToRemove = new List<Vector2Int>();
+        foreach (var kvp in grid)
+        {
+            if (kvp.Value == module)
+                keysToRemove.Add(kvp.Key);
+        }
+        foreach (var key in keysToRemove)
+        {
+            grid.Remove(key);
+        }
+    }
     public List<Vector2Int> GetAllowedCells()
     {
         var result = new List<Vector2Int>();

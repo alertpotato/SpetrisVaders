@@ -60,13 +60,7 @@ public class PlayerController : MonoBehaviour
     {
         if (shooting)
         {
-            foreach (var module in Ship.modules)
-            {
-                if (module.data.type == ModuleType.Canon)
-                {
-                    module.FireCanon(Vector3.up);
-                }
-            }
+            Ship.FireCanons();
         }
     }
 

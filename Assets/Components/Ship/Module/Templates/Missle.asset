@@ -24,7 +24,7 @@ MonoBehaviour:
     type: 3
   - localPosition: {x: -1, y: -2}
     type: 3
-  baseHealth: 4
+  baseHealth: 40
   mainSprite: {fileID: -1593717761, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
   backSprite: {fileID: -805841376, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
   outfitSprite: {fileID: 1093160358, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}

@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -9,15 +10,17 @@ public enum OutfitType { Canon, Missile, PointDefense, Empty }
 public class ShipModule : MonoBehaviour
 {
     public ShipModuleStats data;
-    public Vector2Int gridPosition;
     public int currentRotation;            // 0, 90, 180, 270
-    public int currentHP = 0;
+    public int currentHP = 40;
     public float speedBonus = 0f;
     public float cooldown = 1f;
     private float lastShot;
     public PolygonCollider2D polyCollider;
     [SerializeField]private InertialBody inertialBody;
     [SerializeField]private ModuleBuilder builder;
+    [SerializeField]private GameObject owner;
+    private Vector3 projectileAdjustment= Vector3.zero;
+    public Vector2Int gridPosition;
     private void Awake()
     {
         inertialBody = GetComponent<InertialBody>();
@@ -25,11 +28,19 @@ public class ShipModule : MonoBehaviour
     }
     public void Initialize(ShipModuleStats newData,int rotation=0)
     {
+        owner = gameObject;
         data = newData;
         currentRotation = rotation;
         currentHP = data.baseHealth;
         builder.Initialize(data,currentRotation);
         GenerateCollider();
+        
+        var adapter = GetComponent<DamageAdapter>();
+        if (adapter != null)
+        {
+            adapter.owner = owner;
+            adapter.TakeDamage.AddListener(OnTakeDamage);
+        }
     }
 
     private void GenerateCollider()
@@ -51,29 +62,55 @@ public class ShipModule : MonoBehaviour
         }
     }
 
-    public bool FireCanon(Vector3 direction)
+    public bool FireCanon(Vector3 direction,GameObject parent)
     {
         if (Time.time - lastShot < cooldown) return false;
+        if (data.type != ModuleType.Canon) return false;
         lastShot = Time.time;
-
-        if (data.type == ModuleType.Canon)
+        
+        for (int i = 0; i < data.shape.Length; i++)
         {
-            Projectile bullet = Projectile.Spawn(transform.position, direction, 10f, 1);
-            return true;
+            if (data.shape[i].type == OutfitType.Canon)
+            {
+                ProjectileManager.Instance.SpawnShell(builder.cells[i].transform.position+projectileAdjustment, direction,parent);
+            }
         }
-        return false;
+        return true;
     }
-    public bool FireMissle(Vector3 direction)
+    public bool FireMissile(Vector2 targetPosition,GameObject parent)
     {
-        return false;
+        Vector3 gridCenter = parent.GetComponent<Ship>().GetGridCenterLocal();
+        Vector3 offset = Vector3.zero;
+
+        if (transform.localPosition.x > gridCenter.x)
+            offset = Vector3.right * 0.5f;
+        else
+            offset = Vector3.left * 0.5f;
+
+        Vector3 spawnPos = transform.position + offset;
+
+        ProjectileManager.Instance.SpawnMissile(spawnPos, targetPosition, parent);
+        return true;
     }
-    public void OnAttachToShip(InertialBody newInertialBody)
+    public void OnAttachToShip(GameObject ship,InertialBody newInertialBody,int alignment)
     {
+        owner = ship;
+        var adapter = GetComponent<DamageAdapter>();
+        if (adapter != null)
+        {
+            adapter.owner = ship;
+        }
+        
         if (inertialBody != null)
         {
             inertialBody.enabled = false;
             inertialBody.velocity = Vector2.zero;
             inertialBody = newInertialBody;
+        }
+        foreach (var cell in builder.cells)
+        {
+            cell.transform.Rotate(0,0,alignment);
+            projectileAdjustment=new Vector3(0f,alignment==0?0.5f:-0.5f,0f);
         }
         GenerateCollider();
     }
@@ -84,6 +121,16 @@ public class ShipModule : MonoBehaviour
         {
             inertialBody = GetComponent<InertialBody>();
             inertialBody.enabled = true;
+        }
+    }
+    public void OnTakeDamage(int damage)
+    {
+        currentHP -= damage;
+        Debug.Log($"Damage {damage} HP {currentHP}");
+        if (currentHP <= 0)
+        {
+            owner.GetComponent<Ship>()?.OnModuleDestroyed(this);
+            Destroy(this.GameObject());
         }
     }
 
