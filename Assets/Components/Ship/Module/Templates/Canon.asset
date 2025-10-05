@@ -25,6 +25,9 @@ MonoBehaviour:
   - localPosition: {x: 0, y: 1}
     type: 3
   baseHealth: 40
+  cooldown: 2
+  speedModifier: 0
+  damage: 20
   mainSprite: {fileID: 1811996267, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
   backSprite: {fileID: -1454008750, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
   outfitSprite: {fileID: -1090907295, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}

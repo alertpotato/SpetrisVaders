@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a9bf6ea4c6b943c299a87ea223e1e4be, type: 3}
-  m_Name: Missle
+  m_Name: Missile
   m_EditorClassIdentifier: 
-  moduleName: Missle
+  moduleName: Missile
   type: 1
   outfitType: 1
   shape:
@@ -25,6 +25,9 @@ MonoBehaviour:
   - localPosition: {x: -1, y: -2}
     type: 3
   baseHealth: 40
+  cooldown: 4
+  speedModifier: 0
+  damage: 10
   mainSprite: {fileID: -1593717761, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
   backSprite: {fileID: -805841376, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
   outfitSprite: {fileID: 1093160358, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}

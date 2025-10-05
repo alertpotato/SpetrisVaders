@@ -111,6 +111,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""MissileShot"",
+                    ""type"": ""Button"",
+                    ""id"": ""24313271-b043-41a9-9c34-5fedc918716d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""AttachModule"",
                     ""type"": ""Button"",
                     ""id"": ""d6fd8ad1-20d4-4afe-8c98-01f952d4c9c7"",
@@ -312,6 +321,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""CycleModule"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c65b3b3d-16e0-4def-8808-e3223c18f2b9"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MissileShot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -322,6 +342,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_ShipControls = asset.FindActionMap("ShipControls", throwIfNotFound: true);
         m_ShipControls_Move = m_ShipControls.FindAction("Move", throwIfNotFound: true);
         m_ShipControls_CanonShot = m_ShipControls.FindAction("CanonShot", throwIfNotFound: true);
+        m_ShipControls_MissileShot = m_ShipControls.FindAction("MissileShot", throwIfNotFound: true);
         m_ShipControls_AttachModule = m_ShipControls.FindAction("AttachModule", throwIfNotFound: true);
         m_ShipControls_RotateModule = m_ShipControls.FindAction("RotateModule", throwIfNotFound: true);
         m_ShipControls_CycleModuleAnchor = m_ShipControls.FindAction("CycleModuleAnchor", throwIfNotFound: true);
@@ -408,6 +429,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private List<IShipControlsActions> m_ShipControlsActionsCallbackInterfaces = new List<IShipControlsActions>();
     private readonly InputAction m_ShipControls_Move;
     private readonly InputAction m_ShipControls_CanonShot;
+    private readonly InputAction m_ShipControls_MissileShot;
     private readonly InputAction m_ShipControls_AttachModule;
     private readonly InputAction m_ShipControls_RotateModule;
     private readonly InputAction m_ShipControls_CycleModuleAnchor;
@@ -431,6 +453,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "ShipControls/CanonShot".
         /// </summary>
         public InputAction @CanonShot => m_Wrapper.m_ShipControls_CanonShot;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/MissileShot".
+        /// </summary>
+        public InputAction @MissileShot => m_Wrapper.m_ShipControls_MissileShot;
         /// <summary>
         /// Provides access to the underlying input action "ShipControls/AttachModule".
         /// </summary>
@@ -479,6 +505,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @CanonShot.started += instance.OnCanonShot;
             @CanonShot.performed += instance.OnCanonShot;
             @CanonShot.canceled += instance.OnCanonShot;
+            @MissileShot.started += instance.OnMissileShot;
+            @MissileShot.performed += instance.OnMissileShot;
+            @MissileShot.canceled += instance.OnMissileShot;
             @AttachModule.started += instance.OnAttachModule;
             @AttachModule.performed += instance.OnAttachModule;
             @AttachModule.canceled += instance.OnAttachModule;
@@ -508,6 +537,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @CanonShot.started -= instance.OnCanonShot;
             @CanonShot.performed -= instance.OnCanonShot;
             @CanonShot.canceled -= instance.OnCanonShot;
+            @MissileShot.started -= instance.OnMissileShot;
+            @MissileShot.performed -= instance.OnMissileShot;
+            @MissileShot.canceled -= instance.OnMissileShot;
             @AttachModule.started -= instance.OnAttachModule;
             @AttachModule.performed -= instance.OnAttachModule;
             @AttachModule.canceled -= instance.OnAttachModule;
@@ -574,6 +606,13 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCanonShot(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MissileShot" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMissileShot(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "AttachModule" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

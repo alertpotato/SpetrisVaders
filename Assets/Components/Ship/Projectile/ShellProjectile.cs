@@ -6,9 +6,9 @@ public class ShellProjectile : Projectile
     public float speed = 10f;
     private Vector2 velocity;
 
-    public override void Launch(Vector2 direction, Vector2 targetPos, GameObject ownerShip = null)
+    public override void Launch(Vector2 direction, Vector2 targetPos,int projDamage, GameObject ownerShip = null)
     {
-        damage = 20;
+        damage = projDamage;
         owner = ownerShip;
         velocity = direction.normalized * speed;
     }

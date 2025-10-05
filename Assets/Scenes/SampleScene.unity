@@ -805,6 +805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b65458957e7e4c808b6835c0f6343e79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemies: {fileID: 1308053697}
   Ship: {fileID: 1438864065}
   Docker: {fileID: 1438864068}
 --- !u!114 &1438864065
@@ -826,6 +827,9 @@ MonoBehaviour:
   shipAlignment: 180
   thrust: 10
   maxSpeed: 8
+  canonFireCooldown: 0.1
+  missileFireCooldown: 0.2
+  lastShot: 0
 --- !u!4 &1438864066
 Transform:
   m_ObjectHideFlags: 0

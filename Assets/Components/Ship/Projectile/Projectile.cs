@@ -2,8 +2,8 @@
 
 public abstract class Projectile : MonoBehaviour
 {
-    public int damage = 10;
+    public int damage = 0;
     public GameObject owner;
 
-    public abstract void Launch(Vector2 directionOrDummy, Vector2 targetPos, GameObject ownerShip = null);
+    public abstract void Launch(Vector2 directionOrDummy, Vector2 targetPos,int projDamage, GameObject ownerShip = null);
 }

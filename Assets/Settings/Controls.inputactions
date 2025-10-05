@@ -25,6 +25,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "MissileShot",
+                    "type": "Button",
+                    "id": "24313271-b043-41a9-9c34-5fedc918716d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "AttachModule",
                     "type": "Button",
                     "id": "d6fd8ad1-20d4-4afe-8c98-01f952d4c9c7",
@@ -224,6 +233,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CycleModule",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c65b3b3d-16e0-4def-8808-e3223c18f2b9",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MissileShot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

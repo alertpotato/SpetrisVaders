@@ -5,14 +5,16 @@ using UnityEngine;
 [RequireComponent(typeof(InertialBody))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("Components")]
+    [Header("Components")] 
+    [SerializeField] private EnemyManager enemies;
     [SerializeField] private Ship Ship;
     [SerializeField] private Controls controls;
     [SerializeField] private DockingVisualizer Docker;
     private InertialBody body;
 
     private Vector2 moveInput;
-    private bool shooting;
+    private bool canonFire=false;
+    private bool missileFire=false;
 
     private void Awake()
     {
@@ -24,8 +26,10 @@ public class PlayerController : MonoBehaviour
         controls.ShipControls.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         controls.ShipControls.Move.canceled  += ctx => moveInput = Vector2.zero;
 
-        controls.ShipControls.CanonShot.performed += ctx => shooting = true;
-        controls.ShipControls.CanonShot.canceled  += ctx => shooting = false;
+        controls.ShipControls.CanonShot.performed += ctx => canonFire = true;
+        controls.ShipControls.CanonShot.canceled  += ctx => canonFire = false;
+        controls.ShipControls.MissileShot.performed += ctx => missileFire = true;
+        controls.ShipControls.MissileShot.canceled  += ctx => missileFire = false;
         
         controls.ShipControls.AttachModule.performed += ctx => AttachModule();
         controls.ShipControls.RotateModule.performed += ctx => RotateModule();
@@ -58,10 +62,13 @@ public class PlayerController : MonoBehaviour
 
     private void HandleShooting()
     {
-        if (shooting)
-        {
-            Ship.FireCanons();
-        }
+        if (canonFire) Ship.FireCanons();
+        if (missileFire) FireMissiles();
+    }
+
+    private void FireMissiles()
+    {
+        Ship.FireMissle(enemies.enemies.Select(x=>x.ship).ToList());
     }
 
     private void AttachModule()

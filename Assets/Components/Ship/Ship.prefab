@@ -51,8 +51,12 @@ MonoBehaviour:
   grid: {fileID: 3715153128908314818}
   modules: []
   ModuleParent: {fileID: 4601760027544706690}
+  shipAlignment: 180
   thrust: 10
   maxSpeed: 8
+  canonFireCooldown: 0.1
+  missileFireCooldown: 0.2
+  lastShot: 0
 --- !u!114 &3715153128908314818
 MonoBehaviour:
   m_ObjectHideFlags: 0

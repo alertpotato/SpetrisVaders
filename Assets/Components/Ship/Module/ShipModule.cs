@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -14,6 +16,7 @@ public class ShipModule : MonoBehaviour
     public int currentHP = 40;
     public float speedBonus = 0f;
     public float cooldown = 1f;
+    public int damage=0;
     private float lastShot;
     public PolygonCollider2D polyCollider;
     [SerializeField]private InertialBody inertialBody;
@@ -32,6 +35,9 @@ public class ShipModule : MonoBehaviour
         data = newData;
         currentRotation = rotation;
         currentHP = data.baseHealth;
+        cooldown = data.cooldown;
+        speedBonus = data.speedModifier;
+        damage = data.damage;
         builder.Initialize(data,currentRotation);
         GenerateCollider();
         
@@ -71,25 +77,29 @@ public class ShipModule : MonoBehaviour
         for (int i = 0; i < data.shape.Length; i++)
         {
             if (data.shape[i].type == OutfitType.Canon)
-            {
-                ProjectileManager.Instance.SpawnShell(builder.cells[i].transform.position+projectileAdjustment, direction,parent);
-            }
+                ProjectileManager.Instance.SpawnShell(builder.cells[i].transform.position+projectileAdjustment, direction,damage,parent);
         }
         return true;
     }
-    public bool FireMissile(Vector2 targetPosition,GameObject parent)
+    public bool FireMissile(List<Ship> targets,GameObject parent)
     {
+        if (Time.time - lastShot < cooldown) return false;
+        if (data.type != ModuleType.Missile) return false;
+        if (targets.Count == 0) return false;
+        lastShot = Time.time;
+        
         Vector3 gridCenter = parent.GetComponent<Ship>().GetGridCenterLocal();
-        Vector3 offset = Vector3.zero;
-
+        Vector3 startDirection = Vector3.zero;
         if (transform.localPosition.x > gridCenter.x)
-            offset = Vector3.right * 0.5f;
+            startDirection = Vector3.right;
         else
-            offset = Vector3.left * 0.5f;
-
-        Vector3 spawnPos = transform.position + offset;
-
-        ProjectileManager.Instance.SpawnMissile(spawnPos, targetPosition, parent);
+            startDirection = Vector3.left;
+        
+        for (int i = 0; i < data.shape.Length; i++)
+        {
+            if (data.shape[i].type == OutfitType.Missile)
+                ProjectileManager.Instance.SpawnMissile(builder.cells[i].transform.position, targets.First().transform.position,startDirection,damage, parent);
+        }
         return true;
     }
     public void OnAttachToShip(GameObject ship,InertialBody newInertialBody,int alignment)

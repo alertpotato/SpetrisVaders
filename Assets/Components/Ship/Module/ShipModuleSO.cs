@@ -9,6 +9,9 @@ public class ShipModuleData : ScriptableObject
     public OutfitType outfitType;
     public CellData[] shape;
     public int baseHealth = 4;
+    public float cooldown;
+    public float speedModifier;
+    public int damage;
     public Sprite mainSprite;
     public Sprite backSprite;
     public Sprite outfitSprite;
@@ -50,6 +53,9 @@ public class ShipModuleStats
     public OutfitType outfitType;
     public CellData[] shape;
     public int baseHealth;
+    public float cooldown;
+    public float speedModifier;
+    public int damage;
     public Sprite mainSprite;
     public Sprite backSprite;
     public Sprite outfitSprite;
@@ -61,6 +67,9 @@ public class ShipModuleStats
         outfitType = data.outfitType;
         shape = (CellData[])data.shape.Clone();
         baseHealth = data.baseHealth;
+        cooldown = data.cooldown;
+        speedModifier = data.speedModifier;
+        damage = data.damage;
         mainSprite = data.mainSprite;
         backSprite = data.backSprite;
         outfitSprite = data.outfitSprite;

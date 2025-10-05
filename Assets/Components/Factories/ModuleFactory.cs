@@ -35,7 +35,7 @@ public class ModuleFactory : MonoBehaviour
     {
         moduleCount++;
         var offCameraPoint = new Vector3(-999, -999, 0);
-        ShipModuleData data = GetModuleData(moduleWeights:moduleWeights);
+        ShipModuleData data = GetModuleData(name:moduleName,moduleWeights:moduleWeights);
         if (data == null)
         {
             Debug.LogError("No module found: " + moduleName);

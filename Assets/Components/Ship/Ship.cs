@@ -16,6 +16,10 @@ public class Ship : MonoBehaviour
     public int shipAlignment = 180;
     public float thrust = 10;
     public float maxSpeed = 10;
+    [Header("Weapon settings")]
+    public float canonFireCooldown = 0.1f;
+    public float missileFireCooldown = 0.2f;
+    public float lastShot;
     
     private void UpdateStats()
     {
@@ -57,20 +61,26 @@ public class Ship : MonoBehaviour
 
     public bool FireCanons()
     {
+        Debug.Log($"{Time.time} {lastShot} {canonFireCooldown}");
+        if (Time.time - lastShot < canonFireCooldown) return false;
+        lastShot = Time.time;
+        
         var direction = Vector3.up;
         if (shipAlignment != 0) direction = Vector3.down;
-        bool fired=false;
         foreach (var module in modules.Where(x=>x.data.type==ModuleType.Canon))
         {
-            if (module.FireCanon(direction,this.GameObject())) fired = true;
+            if (module.FireCanon(direction,this.GameObject())) return true;
         }
-        return fired;
+        return false;
     }
-    public bool FireMissle()
+    public bool FireMissle(List<Ship> possibleTargets)
     {
+        if (Time.time - lastShot < missileFireCooldown) return false;
+        lastShot = Time.time;
+        
         foreach (var module in modules.Where(x=>x.data.type==ModuleType.Missile))
         {
-            if (module.FireMissile(Vector2.one, this.GameObject())) return true;
+            if (module.FireMissile( possibleTargets,this.GameObject())) return true;
         }
         return false;
     }

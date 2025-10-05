@@ -175,11 +175,11 @@ public class FlagshipArchetype : ShipArchetype
         {
             case EnemyState.Idle:
                 ship.FireCanons();
-                ship.FireMissle();
+                ship.FireMissle(new List<Ship>() { player });
                 break;
             
             case EnemyState.Traveling:
-                ship.FireMissle();
+                ship.FireMissle(new List<Ship>() { player });
                 if (IsAlignedWithPlayer(ship, player, verticalAlignTolerance / 2)) ship.FireCanons();;
                 break;
 
