@@ -1,14 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
+using Unity.VisualScripting;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class MissileProjectile : Projectile
 {
     [Header("Missile Settings")]
-    public float initialSpeed = 5f;
-    public float acceleration = 20f;
+    public float initialSpeed = 10f;
+    public float acceleration = 10f;
     public float accuracyRadius = 3f;
     public float arcHeight = 0.35f;
     public float forwardFactor = 0.6f;
-    public float lifetime = 10f;
 
     // state
     private Vector2 start;
@@ -23,13 +25,27 @@ public class MissileProjectile : Projectile
     private bool passedTarget = false;
     private Vector2 velocity;
 
+    private void Awake()
+    {
+        var adapter = GetComponent<DamageAdapter>();
+        if (adapter != null)
+        {
+            adapter.owner = owner;
+            adapter.TakeDamage.AddListener(OnTakeDamage);
+        }
+    }
+
     public override void Launch(Vector2 initialDirection, Vector2 targetPos, int projDamage, GameObject ownerShip = null)
     {
+        health = 1;
+        lifetime = 10f;
         damage = projDamage;
         owner = ownerShip;
+        ownerShipFaction = owner !=null? owner.GetComponent<Ship>().faction : Faction.Neutral;
         initialDir = (initialDirection.sqrMagnitude > 0.0001f) ? initialDirection.normalized : Vector2.right;
         start = transform.position;
-
+        GetComponent<DamageAdapter>().owner = owner;
+        
         // Accuracy
         Vector2 randomOffset = Random.insideUnitCircle * accuracyRadius;
         target = targetPos + randomOffset;
@@ -105,5 +121,15 @@ public class MissileProjectile : Projectile
 
         ProjectileManager.Instance.SpawnImpactEffect(transform.position, velocity);
         Destroy(gameObject);
+    }
+
+    private void OnTakeDamage(int damage)
+    {
+        Debug.Log(damage);
+        health -= damage;
+        if (health <= 0)
+        {
+            Destroy(this.GameObject());
+        }
     }
 }

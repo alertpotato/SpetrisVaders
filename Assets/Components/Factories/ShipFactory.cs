@@ -22,6 +22,7 @@ public class ShipFactory : MonoBehaviour
         int counter = 0;
         GameObject ship = Instantiate(shipPrefab, offCameraPoint, Quaternion.identity, this.transform);
         var ShipScript = ship.GetComponent<Ship>();
+        ShipScript.InitializeShip(Faction.EvilFleet);
         
         while (ShipScript.modules.Count < numberOfModules)
         {

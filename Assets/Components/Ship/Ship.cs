@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 
+public enum Faction { Player, EvilFleet, Neutral }
+
 [RequireComponent(typeof(ShipGrid))]
 [RequireComponent(typeof(InertialBody))]
 public class Ship : MonoBehaviour
@@ -16,11 +18,17 @@ public class Ship : MonoBehaviour
     public int shipAlignment = 180;
     public float thrust = 10;
     public float maxSpeed = 10;
+    public Faction faction;
     [Header("Weapon settings")]
     public float canonFireCooldown = 0.1f;
     public float missileFireCooldown = 0.2f;
     public float lastShot;
-    
+
+    public void InitializeShip(Faction shipFaction)
+    { 
+        faction = shipFaction;
+    }
+
     private void UpdateStats()
     {
         maxSpeed = 10f;
@@ -48,20 +56,14 @@ public class Ship : MonoBehaviour
         modules.Add(candidateModule.module.GetComponent<ShipModule>());
         UpdateStats();
     }
-    public void OnModuleDamaged(float damage)
-    {
-        Debug.Log($"Ship {name} получил {damage}");
-    }
     public void OnModuleDestroyed(ShipModule module)
     {
         grid.RemoveModule(module);
         modules.Remove(module);
-        Debug.Log($"Module {module.name} destroyed");
     }
 
     public bool FireCanons()
     {
-        Debug.Log($"{Time.time} {lastShot} {canonFireCooldown}");
         if (Time.time - lastShot < canonFireCooldown) return false;
         lastShot = Time.time;
         

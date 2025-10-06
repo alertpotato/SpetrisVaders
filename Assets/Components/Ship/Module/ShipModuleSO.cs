@@ -12,6 +12,7 @@ public class ShipModuleData : ScriptableObject
     public float cooldown;
     public float speedModifier;
     public int damage;
+    public float maxRange;
     public Sprite mainSprite;
     public Sprite backSprite;
     public Sprite outfitSprite;
@@ -56,6 +57,7 @@ public class ShipModuleStats
     public float cooldown;
     public float speedModifier;
     public int damage;
+    public float maxRange;
     public Sprite mainSprite;
     public Sprite backSprite;
     public Sprite outfitSprite;
@@ -70,6 +72,7 @@ public class ShipModuleStats
         cooldown = data.cooldown;
         speedModifier = data.speedModifier;
         damage = data.damage;
+        maxRange = data.maxRange;
         mainSprite = data.mainSprite;
         backSprite = data.backSprite;
         outfitSprite = data.outfitSprite;

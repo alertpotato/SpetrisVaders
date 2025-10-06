@@ -18,10 +18,11 @@ public class ShipModule : MonoBehaviour
     public float cooldown = 1f;
     public int damage=0;
     private float lastShot;
+    private float maxRange;
     public PolygonCollider2D polyCollider;
     [SerializeField]private InertialBody inertialBody;
-    [SerializeField]private ModuleBuilder builder;
-    [SerializeField]private GameObject owner;
+    public ModuleBuilder builder;
+    public GameObject owner;
     private Vector3 projectileAdjustment= Vector3.zero;
     public Vector2Int gridPosition;
     private void Awake()
@@ -38,6 +39,7 @@ public class ShipModule : MonoBehaviour
         cooldown = data.cooldown;
         speedBonus = data.speedModifier;
         damage = data.damage;
+        maxRange = data.maxRange;
         builder.Initialize(data,currentRotation);
         GenerateCollider();
         
@@ -47,6 +49,8 @@ public class ShipModule : MonoBehaviour
             adapter.owner = owner;
             adapter.TakeDamage.AddListener(OnTakeDamage);
         }
+        if (data.type == ModuleType.PointDefense) transform.AddComponent<PointDefenseSystem>();
+        var pd = transform.GetComponent<PointDefenseSystem>(); if (pd!=null) pd.enabled = false;
     }
 
     private void GenerateCollider()
@@ -102,7 +106,8 @@ public class ShipModule : MonoBehaviour
         }
         return true;
     }
-    public void OnAttachToShip(GameObject ship,InertialBody newInertialBody,int alignment)
+
+    public void OnAttachToShip(GameObject ship, InertialBody newInertialBody, int alignment)
     {
         owner = ship;
         var adapter = GetComponent<DamageAdapter>();
@@ -110,20 +115,24 @@ public class ShipModule : MonoBehaviour
         {
             adapter.owner = ship;
         }
-        
+
         if (inertialBody != null)
         {
             inertialBody.enabled = false;
             inertialBody.velocity = Vector2.zero;
             inertialBody = newInertialBody;
         }
+
         foreach (var cell in builder.cells)
         {
-            cell.transform.Rotate(0,0,alignment);
-            projectileAdjustment=new Vector3(0f,alignment==0?0.5f:-0.5f,0f);
+            cell.transform.Rotate(0, 0, alignment);
+            projectileAdjustment = new Vector3(0f, alignment == 0 ? 0.5f : -0.5f, 0f);
         }
+
         GenerateCollider();
-    }
+        var pd = transform.GetComponent<PointDefenseSystem>();
+        if (pd != null) {pd.enabled = true; pd.Initialize(); }
+}
     public void OnDetachFromShip()
     {
         transform.SetParent(null);
@@ -132,11 +141,12 @@ public class ShipModule : MonoBehaviour
             inertialBody = GetComponent<InertialBody>();
             inertialBody.enabled = true;
         }
+        var pd = transform.GetComponent<PointDefenseSystem>(); if (pd!=null) pd.enabled = false;
     }
     public void OnTakeDamage(int damage)
     {
+        if (data.type== ModuleType.Shield && lastShot < cooldown) {lastShot = Time.time;return;}
         currentHP -= damage;
-        Debug.Log($"Damage {damage} HP {currentHP}");
         if (currentHP <= 0)
         {
             owner.GetComponent<Ship>()?.OnModuleDestroyed(this);
@@ -149,15 +159,4 @@ public class ShipModule : MonoBehaviour
         currentRotation = newRotation;
         builder.UpdateModule(newRotation);
     }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        //Debug.Log("Началось пересечение с " + other.name);
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        //Debug.Log("Закончилось пересечение с " + other.name);
-    }
-
 }

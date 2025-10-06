@@ -7,11 +7,14 @@ public class ProjectileManager : MonoBehaviour
 
     public GameObject missilePrefab;
     public GameObject shellPrefab;
-    [SerializeField]private ParticleSystem impact;
+    
     [SerializeField]private GameObject shellsParent;
     [SerializeField]private GameObject missileParent;
-
-    private List<Projectile> activeProjectiles = new List<Projectile>();
+    
+    [SerializeField]private ParticleSystem impact;
+    [SerializeField]private ParticleSystem bullets;
+    
+    public List<Projectile> activeProjectiles = new List<Projectile>();
 
     void Awake()
     {
@@ -41,10 +44,33 @@ public class ProjectileManager : MonoBehaviour
         activeProjectiles.Add(shell);
     }
 
+    public void SpawnPointDefenseShot(Vector3 from, Vector3 to, int damage, float range, GameObject owner)
+    {
+        Vector2 dir = (to - from).normalized;
+        RaycastHit2D[] hits = Physics2D.RaycastAll(from, dir, range);
+        foreach (var hit in hits)
+        {
+            var adapter = hit.collider.GetComponent<DamageAdapter>();
+            if (adapter != null && adapter.owner != owner)
+            {
+                adapter.TakeDamage?.Invoke(damage);
+                //Debug.DrawLine(from, hit.point, Color.blue, 5f);
+                return;
+            }
+        }
+        //Debug.DrawLine(from, from + (Vector3)dir * range, Color.red, 5f);
+    }
+    public void SpawnBulletEffect(Vector3 from, Vector3 to,Transform origin)
+    {
+        var direction = to - from;
+        float angleZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        ParticleSystem bullet = Instantiate(bullets,from,Quaternion.Euler(0f, 0f, angleZ-8));
+        bullet.transform.SetParent(origin);
+    }
+
     public void SpawnImpactEffect(Vector3 position,Vector2 direction)
     {
         float angleZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         ParticleSystem impactM = Instantiate(impact,position,Quaternion.Euler(0f, 0f, 360 - (angleZ + 10)));
-        impactM.transform.SetParent(gameObject.transform);
     }
 }

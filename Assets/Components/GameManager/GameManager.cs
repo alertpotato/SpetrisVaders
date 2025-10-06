@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
         var anchor = new AnchorOption(new Vector2Int(0, 0), new Vector2Int(0, 0));
         anchorlist.Add(anchor);
         var can = new Candidate(newObj, anchorlist);
+        playerShip.InitializeShip(Faction.Player);
         playerShip.AttachModule(can);
     }
 }
