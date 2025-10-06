@@ -125,7 +125,7 @@ public class ShipModule : MonoBehaviour
 
         foreach (var cell in builder.cells)
         {
-            cell.transform.Rotate(0, 0, alignment);
+            cell.transform.rotation = Quaternion.Euler(0,0,alignment);
             projectileAdjustment = new Vector3(0f, alignment == 0 ? 0.5f : -0.5f, 0f);
         }
 
@@ -133,16 +133,26 @@ public class ShipModule : MonoBehaviour
         var pd = transform.GetComponent<PointDefenseSystem>();
         if (pd != null) {pd.enabled = true; pd.Initialize(); }
 }
-    public void OnDetachFromShip()
+    public void OnDetachFromShip(Vector3 shipCenter)
     {
+        owner = gameObject;
         transform.SetParent(null);
-        if (inertialBody != null)
-        {
-            inertialBody = GetComponent<InertialBody>();
-            inertialBody.enabled = true;
-        }
-        var pd = transform.GetComponent<PointDefenseSystem>(); if (pd!=null) pd.enabled = false;
+        
+        inertialBody = GetComponent<InertialBody>();
+        if(inertialBody!=null) inertialBody.enabled = true;
+
+        var adapter = GetComponent<DamageAdapter>();
+        if (adapter != null)
+            adapter.owner = owner;
+
+        var pd = GetComponent<PointDefenseSystem>();
+        if (pd != null)
+            pd.enabled = false;
+
+        Vector2 direction = ((Vector2)transform.position - (Vector2)shipCenter).normalized;
+        ModuleSpawner.Instance.AddModule(gameObject, direction);
     }
+
     public void OnTakeDamage(int damage)
     {
         if (data.type== ModuleType.Shield && lastShot < cooldown) {lastShot = Time.time;return;}

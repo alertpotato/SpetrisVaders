@@ -3,13 +3,17 @@ using UnityEngine;
 
 public class ModuleSpawner : MonoBehaviour
 {
+    public static ModuleSpawner Instance;
     [Header("Components")]
     public ModuleFactory MFactory;
     public Dictionary<GameObject, InertialBody> modules = new();
     [Header("Variables")]
     public float spawnInterval = 0f;
     private float spawnTimer;
-
+    void Awake()
+    {
+        Instance = this;
+    }
     void Update()
     {
         //Spawn logic
@@ -78,6 +82,19 @@ public class ModuleSpawner : MonoBehaviour
             if (m != null) Destroy(m);
             modules.Remove(m);
         }
+    }
+    public void AddModule(GameObject module,Vector2 direction)
+    {
+        module.transform.SetParent(transform);
+
+        var body = module.GetComponent<InertialBody>();
+        body.mass = 1f;
+        body.drag = 1f;
+        body.maxSpeed = 10f;
+
+        body.velocity = direction * Random.Range(0.3f, 4f);
+
+        modules.Add(module, body);
     }
 
     public void ForgetModule(GameObject module)

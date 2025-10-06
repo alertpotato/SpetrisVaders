@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+
 public class ShipGrid : MonoBehaviour
 {
     public Dictionary<Vector2Int, ShipModule> grid = new();
@@ -54,37 +56,46 @@ public class ShipGrid : MonoBehaviour
         }
         module.gridPosition = anchorPosition;
     }
-
-    private bool IsAdjacent(Vector2Int pos)
+    public List<ShipModule> GetDisconnectedModules(ShipModule cockpit)
     {
-        return grid.ContainsKey(pos + Vector2Int.up)
-               || grid.ContainsKey(pos + Vector2Int.down)
-               || grid.ContainsKey(pos + Vector2Int.left)
-               || grid.ContainsKey(pos + Vector2Int.right);
-    }
+        var result = new List<ShipModule>();
+        if (cockpit == null || grid.Count == 0)
+            return result;
 
-    private Vector2Int Rotate(Vector2Int cell, int rotation)
-    {
-        switch (rotation % 360)
+        var cockpitCells = grid
+            .Where(kvp => kvp.Value == cockpit)
+            .Select(kvp => kvp.Key)
+            .ToList();
+
+        if (cockpitCells.Count == 0)
+            return new List<ShipModule>(grid.Values.Distinct());
+
+        // BFS search
+        HashSet<Vector2Int> visited = new HashSet<Vector2Int>(cockpitCells);
+        Queue<Vector2Int> frontier = new Queue<Vector2Int>(cockpitCells);
+
+        while (frontier.Count > 0)
         {
-            case 90:  return new Vector2Int(-cell.y,  cell.x);
-            case 180: return new Vector2Int(-cell.x, -cell.y);
-            case 270: return new Vector2Int( cell.y, -cell.x);
-            default:  return cell;
-        }
-    }
-    public Vector2 GridToWorld(Vector2Int cell)
-    {
-        return (Vector2)transform.position + new Vector2(cell.x * cellSize, cell.y * cellSize);
-    }
+            Vector2Int current = frontier.Dequeue();
 
-    public Vector2Int WorldToGrid(Vector2 worldPos)
-    {
-        Vector2 local = worldPos - (Vector2)transform.position;
-        return new Vector2Int(
-            Mathf.RoundToInt(local.x / cellSize),
-            Mathf.RoundToInt(local.y / cellSize)
-        );
+            foreach (var dir in new[] { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right })
+            {
+                Vector2Int next = current + dir;
+                if (grid.ContainsKey(next) && !visited.Contains(next))
+                {
+                    visited.Add(next);
+                    frontier.Enqueue(next);
+                }
+            }
+        }
+        
+        var disconnected = grid
+            .Where(kvp => !visited.Contains(kvp.Key))
+            .Select(kvp => kvp.Value)
+            .Distinct()
+            .ToList();
+
+        return disconnected;
     }
     public HashSet<Vector2Int> GetBorderEmptyCells()
     {
@@ -113,6 +124,39 @@ public class ShipGrid : MonoBehaviour
         if (result.Count == 0) result.Add(Vector2Int.zero);
         return result;
     }
+
+    private bool IsAdjacent(Vector2Int pos)
+    {
+        return grid.ContainsKey(pos + Vector2Int.up)
+               || grid.ContainsKey(pos + Vector2Int.down)
+               || grid.ContainsKey(pos + Vector2Int.left)
+               || grid.ContainsKey(pos + Vector2Int.right);
+    }
+
+    private Vector2Int Rotate(Vector2Int cell, int rotation)
+    {
+        switch (rotation % 360)
+        {
+            case 90:  return new Vector2Int(-cell.y,  cell.x);
+            case 180: return new Vector2Int(-cell.x, -cell.y);
+            case 270: return new Vector2Int( cell.y, -cell.x);
+            default:  return cell;
+        }
+    }
+    public Vector2 GridToWorld(Vector2 cell)
+    {
+        return (Vector2)transform.position + new Vector2(cell.x * cellSize, cell.y * cellSize);
+    }
+
+    public Vector2Int WorldToGrid(Vector2 worldPos)
+    {
+        Vector2 local = worldPos - (Vector2)transform.position;
+        return new Vector2Int(
+            Mathf.RoundToInt(local.x / cellSize),
+            Mathf.RoundToInt(local.y / cellSize)
+        );
+    }
+    
     public void RemoveModule(ShipModule module)
     {
         if (module == null) return;
@@ -128,18 +172,4 @@ public class ShipGrid : MonoBehaviour
             grid.Remove(key);
         }
     }
-    public List<Vector2Int> GetAllowedCells()
-    {
-        var result = new List<Vector2Int>();
-        
-        Vector2Int center = new Vector2Int(0, 0);
-
-        result.Add(center + Vector2Int.up);
-        result.Add(center + Vector2Int.down);
-        result.Add(center + Vector2Int.left);
-        result.Add(center + Vector2Int.right);
-
-        return result;
-    }
-
 }
