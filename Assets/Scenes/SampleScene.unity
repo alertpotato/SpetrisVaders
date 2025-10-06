@@ -246,7 +246,7 @@ MonoBehaviour:
   GameLoopState: {fileID: 275148197}
   playerShip: {fileID: 1438864065}
   MFactory: {fileID: 932211679}
-  SFactory: {fileID: 0}
+  SFactory: {fileID: 932211681}
 --- !u!4 &275148199
 Transform:
   m_ObjectHideFlags: 0
@@ -614,8 +614,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a941ebcbe2be5724099f469187780c00, type: 2}
   - {fileID: 11400000, guid: 8bfc67baa9980d74cb1c6551869d314d, type: 2}
   - {fileID: 11400000, guid: 6847ab3ad8c68c042b2f29f3d3f76cb2, type: 2}
+  cockpit: {fileID: 11400000, guid: 28acefcebb0aa514abe4fc37eaf1c47f, type: 2}
   modulePrefab: {fileID: 8192516476030154036, guid: fbfaba48a8a046844828883ffa403678, type: 3}
-  moduleCount: 0
+  moduleCount: 1
 --- !u!4 &932211680
 Transform:
   m_ObjectHideFlags: 0

@@ -10,25 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a9bf6ea4c6b943c299a87ea223e1e4be, type: 3}
-  m_Name: Missile
+  m_Name: Cockpit
   m_EditorClassIdentifier: 
-  moduleName: Missile
-  type: 1
-  outfitType: 1
+  moduleName: Cockpit
+  type: 5
+  outfitType: 4
   shape:
   - localPosition: {x: 0, y: 0}
-    type: 4
+    type: 5
   - localPosition: {x: 0, y: -1}
     type: 4
-  - localPosition: {x: -1, y: -1}
-    type: 4
-  - localPosition: {x: -1, y: -2}
-    type: 4
   baseHealth: 40
-  cooldown: 4
+  cooldown: 0
   speedModifier: 0
-  damage: 10
-  maxRange: 20
-  mainSprite: {fileID: -1593717761, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
-  backSprite: {fileID: -805841376, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
-  outfitSprite: {fileID: 1093160358, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
+  damage: 0
+  maxRange: 0
+  mainSprite: {fileID: -309681839, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
+  backSprite: {fileID: -2144586095, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
+  outfitSprite: {fileID: -2144586095, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}

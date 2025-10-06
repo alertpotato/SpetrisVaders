@@ -71,7 +71,7 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 4
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -378,7 +378,7 @@ TextureImporter:
         width: 12
         height: 12
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -386,6 +386,153 @@ TextureImporter:
       bones: []
       spriteID: b6ba16bf6eb8e9f46afc080e7d04c640
       internalID: -1178426528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CP1
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 588
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fbd3cefdf120e7b43b8fa25c252ae452
+      internalID: -2144586095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CP2
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 576
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 219e86600cd6beb47810ac940bfd741f
+      internalID: -309681839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Missile
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 564
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f63abceae7a41a4f83dbd48d45e1cfb
+      internalID: -40561225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SH3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 564
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7f4949966d559048aecbd2b2be4bdd5
+      internalID: 405819470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SH2
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 576
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03649f68e7e6646478d36c6beddc1b1a
+      internalID: -618648541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CP3
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 588
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 883257a019a01cd4ca668b66646880e7
+      internalID: 14276531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CP4
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 576
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 380430181241e0241871859449328795
+      internalID: -1788906601
       vertices: []
       indices: 
       edges: []
@@ -406,6 +553,11 @@ TextureImporter:
       CN1: 1811996267
       CN2: -1454008750
       CN3: -1090907295
+      CP1: -2144586095
+      CP2: -309681839
+      CP3: 14276531
+      CP4: -1788906601
+      Missile: -40561225
       PD1: 999555717
       PD2: -639535446
       PD3: 2038103862
@@ -413,6 +565,8 @@ TextureImporter:
       RL2: -805841376
       RL3: 1093160358
       SH1: 371998250
+      SH2: -618648541
+      SH3: 405819470
       SP1: 167459217
       Shell: -1178426528
   mipmapLimitGroupName: 

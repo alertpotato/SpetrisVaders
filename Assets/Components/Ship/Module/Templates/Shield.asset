@@ -17,17 +17,18 @@ MonoBehaviour:
   outfitType: 3
   shape:
   - localPosition: {x: 0, y: 0}
-    type: 3
+    type: 4
   - localPosition: {x: 1, y: 0}
-    type: 3
+    type: 4
   - localPosition: {x: 0, y: -1}
-    type: 3
+    type: 4
   - localPosition: {x: 0, y: -2}
-    type: 3
+    type: 4
   baseHealth: 40
   cooldown: 5
   speedModifier: 0
   damage: 0
+  maxRange: 0
   mainSprite: {fileID: 371998250, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
-  backSprite: {fileID: 371998250, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
-  outfitSprite: {fileID: 0}
+  backSprite: {fileID: -618648541, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
+  outfitSprite: {fileID: 405819470, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}

@@ -26,12 +26,11 @@ public class GameManager : MonoBehaviour
     public void TestShip()
     {
         playerShip.shipAlignment = 0;
-        var newObj = MFactory.GetModule("Missile",playerShip.transform);
-        var anchorlist = new List<AnchorOption>();
-        var anchor = new AnchorOption(new Vector2Int(0, 0), new Vector2Int(0, 0));
-        anchorlist.Add(anchor);
-        var can = new Candidate(newObj, anchorlist);
+
+        SFactory.RandomAttach(playerShip, out GameObject module1, MFactory.GetCockpitModule(0));
+        var randomModule = MFactory.GetModule("Missile",playerShip.transform);
+        SFactory.RandomAttach(playerShip, out GameObject module2, randomModule);
+        
         playerShip.InitializeShip(Faction.Player);
-        playerShip.AttachModule(can);
     }
 }

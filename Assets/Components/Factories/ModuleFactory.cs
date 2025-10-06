@@ -9,7 +9,7 @@ public class ModuleFactory : MonoBehaviour
     private Dictionary<int, int> outfitNumberWeignts;
     private Dictionary<ModuleType, int> defaulModuleWeignts;
     public ShipModuleData[] allModules;
-
+    public ShipModuleData cockpit;
     public GameObject modulePrefab;
     public int moduleCount;
 
@@ -26,9 +26,21 @@ public class ModuleFactory : MonoBehaviour
         defaulModuleWeignts = new Dictionary<ModuleType, int>();
         foreach (ModuleType type in Enum.GetValues(typeof(ModuleType)))
         {
-            if(type==ModuleType.Empty) continue;
+            if(type==ModuleType.Empty || type==ModuleType.Cockpit) continue;
             defaulModuleWeignts[type] = 1;
         }
+    }
+
+    public GameObject GetCockpitModule(int rotation=180,Transform parent = null)
+    {
+        moduleCount++;
+        var offCameraPoint = new Vector3(-999, -999, 0);
+        var actualData = new ShipModuleStats(cockpit);
+        GameObject newCockpit = Instantiate(modulePrefab, offCameraPoint, Quaternion.identity, parent!=null?parent.transform:this.transform);
+        ShipModule moduleS = newCockpit.GetComponent<ShipModule>();
+        moduleS.Initialize(actualData,rotation);
+        newCockpit.name = $"M_{actualData.moduleName}_{moduleCount}";
+        return newCockpit;
     }
 
     public GameObject GetModule(string moduleName = null, Transform parent = null,Dictionary<ModuleType, int> moduleWeights = null)
@@ -51,7 +63,7 @@ public class ModuleFactory : MonoBehaviour
         // Data class
         var actualData = new ShipModuleStats(data, outfitPositions);
         int rotation = Random.Range(0, 4) * 90;
-        GameObject obj = Instantiate(modulePrefab, offCameraPoint, Quaternion.identity, parent);
+        GameObject obj = Instantiate(modulePrefab, offCameraPoint, Quaternion.identity, parent!=null?parent.transform:this.transform);
         ShipModule moduleS = obj.GetComponent<ShipModule>();
         moduleS.Initialize(actualData,rotation);
         obj.name = $"M_{data.moduleName}_{outfitsNumber}_{moduleCount}";

@@ -5,8 +5,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
-public enum ModuleType { Canon, Missile, PointDefense, Speed, Shield, Empty }
-public enum OutfitType { Canon, Missile, PointDefense, Empty }
+public enum ModuleType { Canon, Missile, PointDefense, Speed, Shield, Cockpit, Empty }
+public enum OutfitType { Canon, Missile, PointDefense, Shield, Empty, Cockpit }
 
 [RequireComponent(typeof(PolygonCollider2D))]
 public class ShipModule : MonoBehaviour
