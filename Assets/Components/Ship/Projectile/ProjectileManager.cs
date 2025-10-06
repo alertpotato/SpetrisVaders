@@ -11,8 +11,9 @@ public class ProjectileManager : MonoBehaviour
     [SerializeField]private GameObject shellsParent;
     [SerializeField]private GameObject missileParent;
     
-    [SerializeField]private ParticleSystem impact;
+    [SerializeField]private ParticleSystem impactDirected;
     [SerializeField]private ParticleSystem bullets;
+    [SerializeField]private ParticleSystem impactMetal;
     
     public List<Projectile> activeProjectiles = new List<Projectile>();
 
@@ -71,6 +72,6 @@ public class ProjectileManager : MonoBehaviour
     public void SpawnImpactEffect(Vector3 position,Vector2 direction)
     {
         float angleZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        ParticleSystem impactM = Instantiate(impact,position,Quaternion.Euler(0f, 0f, 360 - (angleZ + 10)));
+        ParticleSystem impactM = Instantiate(impactMetal,position,Quaternion.identity);
     }
 }
