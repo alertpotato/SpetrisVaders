@@ -504,7 +504,7 @@ TextureImporter:
         width: 12
         height: 12
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -525,7 +525,7 @@ TextureImporter:
         width: 12
         height: 12
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -533,6 +533,111 @@ TextureImporter:
       bones: []
       spriteID: 380430181241e0241871859449328795
       internalID: -1788906601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DMG1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 552
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e69fe2fb78fec4e419fda84f9adbc51d
+      internalID: 218915061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DMG2
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 552
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e7004966b0910fb449c26a1466fafd0b
+      internalID: -320556769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DMG3
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 552
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 71a7bb3906f96554c967d746dfafedf5
+      internalID: -1113327542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DMG4
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 552
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48ec1e05a5d18764c9f1325fe13ddae8
+      internalID: -1672501732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DMG5
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 552
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31acc4bd0019da94d953cf3b5fe859e5
+      internalID: 732663787
       vertices: []
       indices: 
       edges: []
@@ -557,6 +662,11 @@ TextureImporter:
       CP2: -309681839
       CP3: 14276531
       CP4: -1788906601
+      DMG1: 218915061
+      DMG2: -320556769
+      DMG3: -1113327542
+      DMG4: -1672501732
+      DMG5: 732663787
       Missile: -40561225
       PD1: 999555717
       PD2: -639535446

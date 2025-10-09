@@ -29,6 +29,7 @@ public class ShipModule : MonoBehaviour
     {
         inertialBody = GetComponent<InertialBody>();
         polyCollider = GetComponent<PolygonCollider2D>();
+        transform.AddComponent<DamageVizualizer>();
     }
     public void Initialize(ShipModuleStats newData,int rotation=0)
     {
