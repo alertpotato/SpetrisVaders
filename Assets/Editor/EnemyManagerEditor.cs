@@ -44,10 +44,10 @@ public class EnemyManagerEditor : Editor
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
 
             // Ship name
-            EditorGUILayout.LabelField(ship.name, GUILayout.Width(150));
+            EditorGUILayout.LabelField(ship.name, GUILayout.Width(100));
 
             // Archetype
-            EditorGUILayout.LabelField(archetype.type.ToString(), GUILayout.Width(100));
+            EditorGUILayout.LabelField(archetype.type.ToString(), GUILayout.Width(75));
 
             // EnemyState color indicator
             Color stateColor = Color.gray;
@@ -60,18 +60,11 @@ public class EnemyManagerEditor : Editor
 
             GUIStyle stateStyle = new GUIStyle(EditorStyles.boldLabel);
             stateStyle.normal.textColor = stateColor;
-            EditorGUILayout.LabelField(archetype.state.ToString(), stateStyle, GUILayout.Width(100));
+            EditorGUILayout.LabelField(archetype.state.ToString(), stateStyle, GUILayout.Width(75));
 
-            // Direction arrow
-            Vector2 dir = archetype.currentDirection.normalized;
-            if (dir != Vector2.zero)
-            {
-                GUILayout.Label(GetArrowSymbol(dir), GUILayout.Width(30));
-            }
-            else
-            {
-                GUILayout.Label("-", GUILayout.Width(30));
-            }
+            // Direction
+            EditorGUILayout.LabelField($"Dir: {archetype.currentDirection.x}:{archetype.currentDirection.y}", GUILayout.Width(50));
+            EditorGUILayout.LabelField($"Tar: {archetype.currentTarget.x}:{archetype.currentTarget.y}", GUILayout.Width(50));
 
             EditorGUILayout.EndHorizontal();
         }

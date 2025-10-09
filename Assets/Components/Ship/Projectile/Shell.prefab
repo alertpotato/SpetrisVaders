@@ -100,11 +100,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6223613a43ee4f1f8cdb0e8172cea654, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 1
+  health: 5
   damage: 20
+  lifetime: 30
   owner: {fileID: 0}
   ownerShipFaction: 0
-  speed: 10
+  speed: 20
 --- !u!61 &2238558901233663364
 BoxCollider2D:
   m_ObjectHideFlags: 0

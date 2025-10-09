@@ -19,6 +19,7 @@ public abstract class ShipArchetype
     
     public float verticalAlignTolerance = 5f;
     public Vector2 currentDirection = Vector2.zero;
+    public Vector2 currentTarget = new Vector2(-999, -999);
     
     protected void InitDefaults()
     {
@@ -28,6 +29,8 @@ public abstract class ShipArchetype
             foreach (ModuleType m in System.Enum.GetValues(typeof(ModuleType)))
                 moduleWeights[m] = 1;
         }
+        currentDirection = Vector2.zero;
+        currentTarget = new Vector2(-999, -999);
     }
 
     protected void ResetStateTimer()
@@ -51,7 +54,9 @@ public abstract class ShipArchetype
 
     public abstract void OnStateTimeout(Ship ship, Ship player);
     public abstract void TryToFire(Ship ship, Ship player);
-    public abstract bool GetDestination(Vector3 shipViewportPos,Vector3 playerViewportPos, out Vector2 direction);
+    public abstract bool UpdateDestination(Vector3 shipViewportPos,Vector3 playerViewportPos);
+    public abstract Vector2 GetVelocity(InertialBody shipPhysics, Vector3 shipViewportPos, Vector3 playerViewportPos);
+    public abstract void ChangeState(EnemyState newState);
 
     protected bool IsAlignedWithPlayer(Ship ship, Ship player, float tolerance)
     {

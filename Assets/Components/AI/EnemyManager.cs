@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // Запускается в сцене; задавай playerShip через инспектор
@@ -16,17 +17,18 @@ public class EnemyManager : MonoBehaviour
     {
         ScreenCamera = Camera.main;
     }
+
     void FixedUpdate()
     {
         var deltaTime = Time.fixedDeltaTime;
         var playerPos = ScreenCamera.WorldToViewportPoint(playerShip.transform.position);
+        
         foreach (var enemy in enemies)
         {
-            if (enemy.archetype.GetDestination(ScreenCamera.WorldToViewportPoint(enemy.ship.transform.position),playerPos, out Vector2 direction))
-            {
-                enemy.ship.inertialBody.ApplyForce(direction * enemy.ship.thrust, deltaTime);
-            }
-            enemy.ship.inertialBody.Tick(deltaTime);
+            var enemyPos = ScreenCamera.WorldToViewportPoint(enemy.ship.transform.position);
+            var shipVelocity = enemy.archetype.GetVelocity(enemy.ship.inertialBody,enemyPos,playerPos);
+            enemy.ship.inertialBody.ApplyForce(shipVelocity * enemy.ship.thrust, deltaTime);
+            enemy.ship.inertialBody.Tick(deltaTime,isForceApplied:enemy.archetype.currentDirection==Vector2.zero?false:true);
         }
     }
     void Update()
@@ -36,6 +38,8 @@ public class EnemyManager : MonoBehaviour
         {
             //GameObjects removal
             var entry = enemies[i];
+            Debug.DrawLine(enemies[i].ship.transform.position, ScreenCamera.ViewportToWorldPoint(enemies[i].archetype.currentTarget), Color.green);
+            Debug.DrawLine(enemies[i].ship.transform.position, enemies[i].ship.transform.position + ScreenCamera.ViewportToWorldPoint(enemies[i].archetype.currentDirection), Color.blue);
             if (entry.ship == null)
             {
                 enemies.RemoveAt(i);
@@ -77,7 +81,26 @@ public class EnemyManager : MonoBehaviour
     public void RegisterEnemy(Ship ship, ShipArchetype archetype)
     {
         if (ship == null || archetype == null) return;
+        ship.OnDestroyed += HandleShipDestroyed;
         enemies.Add(new EnemyEntry(ship, archetype));
+    }
+    private void HandleShipDestroyed(Ship destroyedShip)
+    {
+        RemoveEnemy(destroyedShip);
+    }
+
+    public void RemoveEnemy(Ship ship)
+    {
+        if (ship == null) return;
+
+        for (int i = enemies.Count - 1; i >= 0; i--)
+        {
+            if (enemies[i].ship == ship)
+            {
+                enemies.RemoveAt(i);
+                break;
+            }
+        }
     }
     private bool IsOutsideBounds(Vector3 worldPos)
     {

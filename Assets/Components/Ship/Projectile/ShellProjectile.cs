@@ -4,7 +4,7 @@ using UnityEngine.TestTools;
 
 public class ShellProjectile : Projectile
 {
-    public float speed = 10f;
+    public float speed = 20f;
     private Vector2 velocity;
     
     private void Awake()
@@ -18,8 +18,6 @@ public class ShellProjectile : Projectile
     }
     public override void Launch(Vector2 direction, Vector2 targetPos,int projDamage, GameObject ownerShip = null)
     {
-        health = 5;
-        lifetime = 30f;
         damage = projDamage;
         owner = ownerShip;
         ownerShipFaction = owner !=null? owner.GetComponent<Ship>().faction : Faction.Neutral;

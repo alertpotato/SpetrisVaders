@@ -15,17 +15,17 @@ public class DockingVisualizer : MonoBehaviour
     public Color closestAnchorColor = Color.green;
     public Color ghostColor = new Color(1f, 1f, 1f, 0.3f);
     public float maxVisualizeDistance = 5f;
-    private GameObject currentShipModule;
-    public int currentRotation = 0;
+    public int maxVisualizeAnchors = 10;
     [Header("Components")]
     public GameObject AnchorParent;
     private List<GameObject> activeAnchors = new();
     public GameObject ghostInstance;
     private LineRenderer line;
     public DockingCandidatesManager candidates = new DockingCandidatesManager();
+    [Header("Variables")]
+    private GameObject currentShipModule;
+    public int currentRotation = 0;
     
-    
-
     void Awake()
     {
         line = gameObject.AddComponent<LineRenderer>();
@@ -49,7 +49,7 @@ public class DockingVisualizer : MonoBehaviour
             GameObject module = kv.Key;
             if (module == null) continue;
             
-            var anchors = TryGetNearestAnchors(module, allowedCells, maxVisualizeDistance, 5);
+            var anchors = TryGetNearestAnchors(module, allowedCells, maxVisualizeDistance, maxVisualizeAnchors);
             var options = new List<AnchorOption>();
             foreach (var anchor in anchors)
             {

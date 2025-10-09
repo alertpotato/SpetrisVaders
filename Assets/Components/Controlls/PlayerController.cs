@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
             body.ApplyForce(force, Time.fixedDeltaTime);
             forceApplied = true;
         }
-        body.Tick(Time.fixedDeltaTime,forceApplied);
+        body.Tick(Time.fixedDeltaTime,isForceApplied:forceApplied);
     }
 
     private void HandleShooting()

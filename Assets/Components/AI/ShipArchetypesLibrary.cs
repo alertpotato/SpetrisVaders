@@ -103,12 +103,56 @@ public class WaspArchetype : ShipArchetype
     public WaspArchetype()
     {
         type = ShipArchetypeType.Wasp;
-        minModules = 1; maxModules = 3;
-        fireCooldownMin = 1.0f; fireCooldownMax = 2.2f;
-        stateDurationMin = 2f; stateDurationMax = 5f;
+        minModules = 2; maxModules = 4;
+        stateDurationMin = 3f; stateDurationMax = 6f;
+        moduleWeights[ModuleType.Canon] = 2;
+        moduleWeights[ModuleType.Speed] = 5;
+        moduleWeights[ModuleType.Missile] = 5;
+        moduleWeights[ModuleType.PointDefense] = 5;
+        moduleWeights[ModuleType.Shield] = 2;
         InitDefaults();
     }
+    public override void OnStateTimeout(Ship ship, Ship player)
+    {
+        switch (state)
+        {
+            case EnemyState.Idle:
+                state = EnemyState.Traveling;
+                break;
+            
+            case EnemyState.Traveling:
+                state = EnemyState.Idle;
+                break;
 
+            case EnemyState.Retreating:
+                state = EnemyState.Traveling;
+                break;
+        }
+    }
+    public override bool GetDestination(Vector3 shipViewportPos, Vector3 playerViewportPos, out Vector2 direction)
+    {
+        direction = Vector2.zero;
+        currentDirection = direction;
+        float dist = Vector2.Distance(shipViewportPos, playerViewportPos);
+        if (state == EnemyState.Traveling && dist < keepDistanceMin && dist > keepDistanceMax)
+        {
+            (Vector3)Random.insideUnitCircle
+            Vector3 target = new Vector3(playerViewportPos.x,
+                Random.Range(Mathf.Clamp(0.7f, playerViewportPos.y, 0.85f), 0.9f), 0f);
+            direction = ((Vector2)target - (Vector2)shipViewportPos);
+            currentDirection = direction;
+            return true;
+        }
+        if (state == EnemyState.Retreating)
+        {
+            Vector3 target = new Vector3(Random.Range(playerViewportPos.x-0.3f,playerViewportPos.x+0.3f),
+                Random.Range(Mathf.Clamp(0.7f, playerViewportPos.y, 0.85f), 0.9f), 0f);
+            direction = ((Vector2)target - (Vector2)shipViewportPos);
+            currentDirection = direction;
+            return true;
+        }
+        else return false;
+    }
     public override void UpdateBehavior(Ship ship, Ship player, float dt, EnemyManager manager)
     {
         if (player == null) return;
@@ -151,21 +195,18 @@ public class FlagshipArchetype : ShipArchetype
         switch (state)
         {
             case EnemyState.Idle:
-                if (!IsAlignedWithPlayer(ship, player, verticalAlignTolerance))
-                    state = EnemyState.Traveling;
                 //Chance to break idle and move away
-                else if (Random.value < 0.3f)
-                {
-                    state = EnemyState.Retreating;
-                }
+                if (Random.value < 0.3f) ChangeState(EnemyState.Retreating);
+                if (!IsAlignedWithPlayer(ship, player, verticalAlignTolerance))
+                    ChangeState(EnemyState.Traveling);
                 break;
             
             case EnemyState.Traveling:
-                if (IsAlignedWithPlayer(ship, player, verticalAlignTolerance)) state = EnemyState.Idle;
+                if (IsAlignedWithPlayer(ship, player, verticalAlignTolerance)) ChangeState(EnemyState.Idle);
                 break;
 
             case EnemyState.Retreating:
-                state = EnemyState.Traveling;
+                ChangeState(EnemyState.Traveling);
                 break;
         }
     }
@@ -188,27 +229,57 @@ public class FlagshipArchetype : ShipArchetype
         }
     }
 
-    public override bool GetDestination(Vector3 shipViewportPos, Vector3 playerViewportPos, out Vector2 direction)
+    public override Vector2 GetVelocity(InertialBody shipPhysics, Vector3 shipViewportPos, Vector3 playerViewportPos)
     {
-        direction = Vector2.zero;
-        currentDirection = direction;
+        Vector2 normalizedVelocity = currentDirection;
+        float virtualMaxSpeed = 10;
+        UpdateDestination(shipViewportPos, playerViewportPos);
+        //if too close
+        if (Vector3.Distance(shipViewportPos, currentTarget) < 0.05f)
+        {
+            currentDirection = Vector2.zero; return currentDirection;}
+        
+        var maxSpeedCorrection = Mathf.Clamp(Vector2.Distance(shipViewportPos,playerViewportPos),0.1f,0.8f);
+        if (maxSpeedCorrection > 0.5f) maxSpeedCorrection = 1;
+        if (Vector2.Dot(currentDirection, shipPhysics.velocity) < 0) normalizedVelocity = -shipPhysics.velocity.normalized;
+        else if (shipPhysics.speed > virtualMaxSpeed * maxSpeedCorrection) normalizedVelocity = -normalizedVelocity*maxSpeedCorrection;
+        return normalizedVelocity;
+    }
+
+    public override bool UpdateDestination(Vector3 shipViewportPos, Vector3 playerViewportPos)
+    {
         if (state == EnemyState.Traveling)
         {
-            Vector3 target = new Vector3(playerViewportPos.x,
-                Random.Range(Mathf.Clamp(0.7f, playerViewportPos.y, 0.85f), 0.9f), 0f);
-            direction = ((Vector2)target - (Vector2)shipViewportPos);
-            currentDirection = direction;
+            //Direction correction
+            currentDirection = ((Vector2)currentTarget - (Vector2)shipViewportPos).normalized;
+            //Change target if old one is too far
+            if (Mathf.Abs(currentTarget.x - playerViewportPos.x)<0.1f || shipViewportPos.y - playerViewportPos.y<-0.05f) return true;
+            currentTarget = new Vector2(playerViewportPos.x,
+                Random.Range(Mathf.Clamp(0.7f, playerViewportPos.y, 0.85f), 0.9f)) + Random.insideUnitCircle * 0.1f;
+            currentDirection = ((Vector2)currentTarget - (Vector2)shipViewportPos).normalized;
             return true;
         }
         if (state == EnemyState.Retreating)
         {
-            Vector3 target = new Vector3(Random.Range(playerViewportPos.x-0.3f,playerViewportPos.x+0.3f),
-                Random.Range(Mathf.Clamp(0.7f, playerViewportPos.y, 0.85f), 0.9f), 0f);
-            direction = ((Vector2)target - (Vector2)shipViewportPos);
-            currentDirection = direction;
+            if (currentDirection!=Vector2.zero) return false;
+            currentTarget = new Vector2(Random.Range(playerViewportPos.x-0.3f,playerViewportPos.x+0.3f),
+                Random.Range(Mathf.Clamp(0.7f, playerViewportPos.y, 0.85f), 0.9f));
+            currentDirection = ((Vector2)currentTarget - (Vector2)shipViewportPos).normalized;
             return true;
         }
-        else return false;
+        else
+        {
+            currentDirection = Vector2.zero;
+            currentTarget = shipViewportPos;
+            return false;
+        }
+    }
+
+    public override void ChangeState(EnemyState newState)
+    {
+        state = newState;
+        currentTarget = new Vector2(-999, -999);
+        currentDirection = Vector2.zero;
     }
 
     public override void OnOutOfBounds(Ship ship, EnemyManager manager)

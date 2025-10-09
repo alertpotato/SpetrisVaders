@@ -3,11 +3,15 @@ using System.Collections.Generic;
 
 public class InertialBody : MonoBehaviour
 {
+    [Header("BodyProperties")]
     public float mass = 1f;
     public float drag = 0.95f;
     public float maxSpeed = 10f;
     public Vector2 velocity;
-    public List<PolygonCollider2D> colliders = new List<PolygonCollider2D>();
+    [Header("CurrentProperties")]
+    public float acceleration;
+    public float speed;
+    private List<PolygonCollider2D> colliders = new List<PolygonCollider2D>();
     private void OnEnable()
     {
         if (colliders.Count == 0) colliders.Add(GetComponent<PolygonCollider2D>());
@@ -29,14 +33,18 @@ public class InertialBody : MonoBehaviour
     }
 
     public void ApplyForce(Vector2 force, float deltaTime)
-    {   
+    {
         velocity += (force / mass) * deltaTime;
+        
+        acceleration = (force / mass).magnitude;
+        speed = velocity.magnitude;
     }
 
-    public void Tick(float deltaTime,bool isForceApplied = false)
+    public void Tick(float deltaTime,float maxSpeedCorrection=99,bool isForceApplied = false)
     {
-        if (velocity.magnitude > maxSpeed)
-            velocity = velocity.normalized * maxSpeed;
+        var maxSpeedActual = Mathf.Min(maxSpeed, maxSpeedCorrection);
+        if (velocity.magnitude > maxSpeedActual)
+            velocity = velocity.normalized * maxSpeedActual;
 
         transform.position += (Vector3)(velocity * deltaTime);
         if (!isForceApplied) velocity *= drag;

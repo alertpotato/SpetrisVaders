@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -24,15 +25,20 @@ public class Ship : MonoBehaviour
     public float canonFireCooldown = 0.1f;
     public float missileFireCooldown = 0.2f;
     public float lastShot;
+    public event Action<Ship> OnDestroyed;
 
+    private void OnDestroy()
+    {
+        OnDestroyed?.Invoke(this);
+    }
     public void InitializeShip(Faction shipFaction)
     { 
         faction = shipFaction;
     }
-
+    
     private void UpdateStats()
     {
-        maxSpeed = 10f;
+        maxSpeed = 99f;
         thrust = 10f;
         var colliders = new List<PolygonCollider2D>();
         foreach (var module in modules)

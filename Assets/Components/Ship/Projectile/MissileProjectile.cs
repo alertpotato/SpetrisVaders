@@ -125,7 +125,6 @@ public class MissileProjectile : Projectile
 
     private void OnTakeDamage(int damage)
     {
-        Debug.Log(damage);
         health -= damage;
         if (health <= 0)
         {
