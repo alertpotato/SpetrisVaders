@@ -2,12 +2,12 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-// Запускается в сцене; задавай playerShip через инспектор
 public class EnemyManager : MonoBehaviour
 {
     public Ship playerShip;
     public ShipFactory SFactory;
     public float screenBorderPercent = 0.3f;
+    public List<ShipArchetype> archetypes;
     public struct EnemyEntry { public Ship ship; public ShipArchetype archetype; public EnemyEntry(Ship s, ShipArchetype a) { ship = s; archetype = a; } }
     public List<EnemyEntry> enemies = new List<EnemyEntry>();
 
@@ -16,6 +16,7 @@ public class EnemyManager : MonoBehaviour
     void Awake()
     {
         ScreenCamera = Camera.main;
+        archetypes = new List<ShipArchetype>(){new ArchetypeWasp(),new ArchetypeFlagship(), new ArchetypePatrol()};//,new WaspArchetype() new FlagshipArchetype() new PatrolArchetype()
     }
 
     void FixedUpdate()
@@ -38,8 +39,8 @@ public class EnemyManager : MonoBehaviour
         {
             //GameObjects removal
             var entry = enemies[i];
-            Debug.DrawLine(enemies[i].ship.transform.position, ScreenCamera.ViewportToWorldPoint(enemies[i].archetype.currentTarget), Color.green);
-            Debug.DrawLine(enemies[i].ship.transform.position, enemies[i].ship.transform.position + ScreenCamera.ViewportToWorldPoint(enemies[i].archetype.currentDirection), Color.blue);
+            //Debug.DrawLine(enemies[i].ship.transform.position, ScreenCamera.ViewportToWorldPoint(enemies[i].archetype.currentTarget), Color.green);
+            //Debug.DrawLine(enemies[i].ship.transform.position, enemies[i].ship.transform.position + ScreenCamera.ViewportToWorldPoint(enemies[i].archetype.currentDirection), Color.blue);
             if (entry.ship == null)
             {
                 enemies.RemoveAt(i);
@@ -56,7 +57,8 @@ public class EnemyManager : MonoBehaviour
             // OutsideBounds ???
             if (IsOutsideBounds(entry.ship.transform.position))
             {
-                entry.archetype.OnOutOfBounds(entry.ship, this);
+                if (entry.archetype.state==EnemyState.Flee) DestroyImmediate(entry.ship.gameObject);
+                else entry.archetype.OnOutOfBounds(entry.ship, this);
             }
 
             // ship logic tick
@@ -71,12 +73,15 @@ public class EnemyManager : MonoBehaviour
         float randomX = Random.Range(screenMin.x + screenMax.x * 0.15f, screenMax.x - screenMax.x * 0.15f);
         float y = screenMax.y * 1.3f;
         
-        var archetype = new FlagshipArchetype();
-        var newShip = SFactory.GetShip(archetype.moduleWeights,GetModuleCount(archetype.minModules, archetype.maxModules));
+        ShipArchetype baseArchetype = archetypes[Random.Range(0, archetypes.Count)];
+        ShipArchetype newArchetype = (ShipArchetype)System.Activator.CreateInstance(baseArchetype.GetType());
+        var newShip = SFactory.GetShip(newArchetype.moduleWeights,GetModuleCount(newArchetype.minModules, newArchetype.maxModules));
         newShip.transform.SetParent(this.transform);
-        RegisterEnemy(newShip.GetComponent<Ship>(),archetype);
+        newArchetype.controlledShip=newShip.GetComponent<Ship>();
+        newArchetype.targetShip = playerShip;
+        RegisterEnemy(newShip.GetComponent<Ship>(),newArchetype);
         
-        newShip.transform.position = new Vector3(randomX, y, 0);
+        newShip.transform.position = GetTopSpawnPosition(newArchetype.type);
     }
     public void RegisterEnemy(Ship ship, ShipArchetype archetype)
     {
@@ -108,10 +113,18 @@ public class EnemyManager : MonoBehaviour
         return vp.x < -screenBorderPercent || vp.x > 1 + screenBorderPercent ||
                vp.y < -screenBorderPercent || vp.y > 1 + screenBorderPercent;
     }
-    public Vector3 GetTopSpawnPositionFor(Ship ship)
+    public Vector3 GetTopSpawnPosition(ShipArchetypeType shipType)
     {
-        Vector3 topWorld = ScreenCamera.ViewportToWorldPoint(new Vector3(0.5f, 1f, 0f));
-        return new Vector3(ship.transform.position.x, topWorld.y - 0.5f, 0f);
+        Vector3 topWorld = new Vector3(0.5f, 1.05f, 0);
+        if (shipType==ShipArchetypeType.Flagship)
+            topWorld = ScreenCamera.ViewportToWorldPoint(new Vector3(Random.Range(0.2f,0.8f), 1.05f, 0f));
+        else if (shipType == ShipArchetypeType.Patrol || shipType == ShipArchetypeType.Wasp)
+        {
+            var randomX = Random.Range(0.1f, 0.25f);
+            if (Random.Range(0,2)==0) randomX = Random.Range(0.75f, 0.9f);
+            topWorld = ScreenCamera.ViewportToWorldPoint(new Vector3(randomX, 1.05f, 0f));
+        }
+        return new Vector3(topWorld.x, topWorld.y, 0);
     }
     int GetModuleCount(int minModules, int maxModules, float difficulty=1)
     {

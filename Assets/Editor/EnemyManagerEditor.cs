@@ -55,7 +55,7 @@ public class EnemyManagerEditor : Editor
             {
                 case EnemyState.Traveling: stateColor = Color.green; break;
                 case EnemyState.Idle: stateColor = Color.cyan; break;
-                case EnemyState.Retreating: stateColor = Color.red; break;
+                case EnemyState.Regroup: stateColor = Color.red; break;
             }
 
             GUIStyle stateStyle = new GUIStyle(EditorStyles.boldLabel);
@@ -63,8 +63,8 @@ public class EnemyManagerEditor : Editor
             EditorGUILayout.LabelField(archetype.state.ToString(), stateStyle, GUILayout.Width(75));
 
             // Direction
-            EditorGUILayout.LabelField($"Dir: {archetype.currentDirection.x}:{archetype.currentDirection.y}", GUILayout.Width(50));
-            EditorGUILayout.LabelField($"Tar: {archetype.currentTarget.x}:{archetype.currentTarget.y}", GUILayout.Width(50));
+            EditorGUILayout.LabelField($"Dir: {archetype.currentDirection.x}:{archetype.currentDirection.y}", GUILayout.Width(150));
+            EditorGUILayout.LabelField($"Tar: {archetype.currentTarget.x}:{archetype.currentTarget.y}", GUILayout.Width(150));
 
             EditorGUILayout.EndHorizontal();
         }

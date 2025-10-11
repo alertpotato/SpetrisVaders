@@ -127,4 +127,94 @@ public class Ship : MonoBehaviour
         }
         return sum / modules.Count;
     }
+    
+    public float DistanceToObject(Vector2 worldPoint)
+    {
+        float minDist = float.MaxValue;
+        
+        foreach (var module in modules)
+        {
+            if (module == null || module.polyCollider == null) continue;
+
+            var poly = module.polyCollider;
+            var points = poly.points;
+            for (int i = 0; i < points.Length; i++)
+            {
+                Vector2 worldA = poly.transform.TransformPoint(points[i]);
+                Vector2 worldB = poly.transform.TransformPoint(points[(i + 1) % points.Length]);
+
+                float dist = DistancePointToSegment(worldPoint, worldA, worldB);
+                if (dist < minDist) minDist = dist;
+            }
+        }
+
+        return minDist;
+    }
+
+    public float DistanceToShip(Ship other)
+    {
+        float minDist = float.MaxValue;
+
+        foreach (var module in modules)
+        {
+            if (module == null || module.polyCollider == null) continue;
+            var polyA = module.polyCollider;
+
+            foreach (var otherModule in other.modules)
+            {
+                if (otherModule == null || otherModule.polyCollider == null) continue;
+                var polyB = otherModule.polyCollider;
+
+                // Сравниваем все стороны двух полигонов
+                var pointsA = polyA.points.Select(p => polyA.transform.TransformPoint(p)).ToArray();
+                var pointsB = polyB.points.Select(p => polyB.transform.TransformPoint(p)).ToArray();
+
+                for (int i = 0; i < pointsA.Length; i++)
+                {
+                    Vector2 a1 = pointsA[i];
+                    Vector2 a2 = pointsA[(i + 1) % pointsA.Length];
+
+                    for (int j = 0; j < pointsB.Length; j++)
+                    {
+                        Vector2 b1 = pointsB[j];
+                        Vector2 b2 = pointsB[(j + 1) % pointsB.Length];
+
+                        float dist = DistanceSegmentToSegment(a1, a2, b1, b2);
+                        if (dist < minDist) minDist = dist;
+                    }
+                }
+            }
+        }
+
+        return minDist;
+    }
+
+    /// <summary>
+    /// Минимальное расстояние от точки до отрезка.
+    /// </summary>
+    private float DistancePointToSegment(Vector2 p, Vector2 a, Vector2 b)
+    {
+        Vector2 ab = b - a;
+        float t = Vector2.Dot(p - a, ab) / ab.sqrMagnitude;
+        t = Mathf.Clamp01(t);
+        Vector2 projection = a + t * ab;
+        return Vector2.Distance(p, projection);
+    }
+
+    /// <summary>
+    /// Минимальное расстояние между двумя отрезками.
+    /// </summary>
+    private float DistanceSegmentToSegment(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
+    {
+        // Переборный способ — быстрый и точный для 2D
+        float[] dists = new float[]
+        {
+            DistancePointToSegment(a1, b1, b2),
+            DistancePointToSegment(a2, b1, b2),
+            DistancePointToSegment(b1, a1, a2),
+            DistancePointToSegment(b2, a1, a2)
+        };
+
+        return dists.Min();
+    }
 }

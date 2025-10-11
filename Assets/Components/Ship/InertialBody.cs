@@ -34,8 +34,17 @@ public class InertialBody : MonoBehaviour
 
     public void ApplyForce(Vector2 force, float deltaTime)
     {
-        velocity += (force / mass) * deltaTime;
+        if (force == Vector2.zero)
+            return;
         
+        Vector2 velocityDir = velocity.sqrMagnitude > 0.001f ? velocity.normalized : Vector2.zero;
+        Vector2 forceDir = force.normalized;
+        
+        float alignment = Vector2.Dot(velocityDir, forceDir); // 1 = same, -1 = different
+        //multiplier to force
+        float resistanceMultiplier = Mathf.Lerp(2.5f, 1f, Mathf.Max(0, alignment)); 
+        Vector2 adjustedForce = force * resistanceMultiplier;
+        velocity += (adjustedForce / mass) * deltaTime;
         acceleration = (force / mass).magnitude;
         speed = velocity.magnitude;
     }

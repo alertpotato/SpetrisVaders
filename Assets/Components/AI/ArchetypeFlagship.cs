@@ -94,90 +94,11 @@ public class RamArchetype : ShipArchetype
         GameObject.Destroy(ship.gameObject);
     }
 }
-
-public class WaspArchetype : ShipArchetype
-{
-    public float keepDistanceMin = 4f;
-    public float keepDistanceMax = 7f;
-
-    public WaspArchetype()
-    {
-        type = ShipArchetypeType.Wasp;
-        minModules = 2; maxModules = 4;
-        stateDurationMin = 3f; stateDurationMax = 6f;
-        moduleWeights[ModuleType.Canon] = 2;
-        moduleWeights[ModuleType.Speed] = 5;
-        moduleWeights[ModuleType.Missile] = 5;
-        moduleWeights[ModuleType.PointDefense] = 5;
-        moduleWeights[ModuleType.Shield] = 2;
-        InitDefaults();
-    }
-    public override void OnStateTimeout(Ship ship, Ship player)
-    {
-        switch (state)
-        {
-            case EnemyState.Idle:
-                state = EnemyState.Traveling;
-                break;
-            
-            case EnemyState.Traveling:
-                state = EnemyState.Idle;
-                break;
-
-            case EnemyState.Retreating:
-                state = EnemyState.Traveling;
-                break;
-        }
-    }
-    public override bool GetDestination(Vector3 shipViewportPos, Vector3 playerViewportPos, out Vector2 direction)
-    {
-        direction = Vector2.zero;
-        currentDirection = direction;
-        float dist = Vector2.Distance(shipViewportPos, playerViewportPos);
-        if (state == EnemyState.Traveling && dist < keepDistanceMin && dist > keepDistanceMax)
-        {
-            (Vector3)Random.insideUnitCircle
-            Vector3 target = new Vector3(playerViewportPos.x,
-                Random.Range(Mathf.Clamp(0.7f, playerViewportPos.y, 0.85f), 0.9f), 0f);
-            direction = ((Vector2)target - (Vector2)shipViewportPos);
-            currentDirection = direction;
-            return true;
-        }
-        if (state == EnemyState.Retreating)
-        {
-            Vector3 target = new Vector3(Random.Range(playerViewportPos.x-0.3f,playerViewportPos.x+0.3f),
-                Random.Range(Mathf.Clamp(0.7f, playerViewportPos.y, 0.85f), 0.9f), 0f);
-            direction = ((Vector2)target - (Vector2)shipViewportPos);
-            currentDirection = direction;
-            return true;
-        }
-        else return false;
-    }
-    public override void UpdateBehavior(Ship ship, Ship player, float dt, EnemyManager manager)
-    {
-        if (player == null) return;
-        float dist = DistanceToPlayer(ship, player);
-        Vector2 dir = ((Vector2)player.transform.position - (Vector2)ship.transform.position).normalized;
-        if (dist > keepDistanceMax)
-            ship.inertialBody.ApplyForce(dir * ship.thrust, dt);
-        else if (dist < keepDistanceMin)
-            ship.inertialBody.ApplyForce(-dir * ship.thrust, dt);
-        else
-            ship.inertialBody.ApplyForce(Vector2.zero, dt);
-    }
-
-    public override void OnOutOfBounds(Ship ship, EnemyManager manager)
-    {
-        // телепорт на верх экрана (сохраняя X)
-        Vector3 vpTop = manager.GetTopSpawnPositionFor(ship);
-        ship.transform.position = vpTop;
-        ship.inertialBody.velocity = Vector2.zero;
-    }
-}
 */
-public class FlagshipArchetype : ShipArchetype
+
+public class ArchetypeFlagship : ShipArchetype
 {
-    public FlagshipArchetype()
+    public ArchetypeFlagship()
     {
         type = ShipArchetypeType.Flagship;
         minModules = 3; maxModules = 5;
@@ -196,17 +117,18 @@ public class FlagshipArchetype : ShipArchetype
         {
             case EnemyState.Idle:
                 //Chance to break idle and move away
-                if (Random.value < 0.3f) ChangeState(EnemyState.Retreating);
+                if (Random.value < 0.3f) ChangeState(EnemyState.Regroup);
                 if (!IsAlignedWithPlayer(ship, player, verticalAlignTolerance))
                     ChangeState(EnemyState.Traveling);
                 break;
-            
             case EnemyState.Traveling:
                 if (IsAlignedWithPlayer(ship, player, verticalAlignTolerance)) ChangeState(EnemyState.Idle);
                 break;
-
-            case EnemyState.Retreating:
+            case EnemyState.Regroup:
                 ChangeState(EnemyState.Traveling);
+                break;
+            case EnemyState.Flee:
+                ChangeState(EnemyState.Flee);
                 break;
         }
     }
@@ -224,7 +146,7 @@ public class FlagshipArchetype : ShipArchetype
                 if (IsAlignedWithPlayer(ship, player, verticalAlignTolerance / 2)) ship.FireCanons();;
                 break;
 
-            case EnemyState.Retreating:
+            case EnemyState.Regroup:
                 break;
         }
     }
@@ -246,7 +168,7 @@ public class FlagshipArchetype : ShipArchetype
         return normalizedVelocity;
     }
 
-    public override bool UpdateDestination(Vector3 shipViewportPos, Vector3 playerViewportPos)
+    public bool UpdateDestination(Vector3 shipViewportPos, Vector3 playerViewportPos)
     {
         if (state == EnemyState.Traveling)
         {
@@ -259,14 +181,15 @@ public class FlagshipArchetype : ShipArchetype
             currentDirection = ((Vector2)currentTarget - (Vector2)shipViewportPos).normalized;
             return true;
         }
-        if (state == EnemyState.Retreating)
+        else if (state == EnemyState.Regroup)
         {
-            if (currentDirection!=Vector2.zero) return false;
-            currentTarget = new Vector2(Random.Range(playerViewportPos.x-0.3f,playerViewportPos.x+0.3f),
+            if (currentDirection != Vector2.zero) return false;
+            currentTarget = new Vector2(Random.Range(playerViewportPos.x - 0.3f, playerViewportPos.x + 0.3f),
                 Random.Range(Mathf.Clamp(0.7f, playerViewportPos.y, 0.85f), 0.9f));
             currentDirection = ((Vector2)currentTarget - (Vector2)shipViewportPos).normalized;
             return true;
         }
+        else if (state == EnemyState.Flee) {UpdateFleeDestination();return true;}
         else
         {
             currentDirection = Vector2.zero;
@@ -284,8 +207,10 @@ public class FlagshipArchetype : ShipArchetype
 
     public override void OnOutOfBounds(Ship ship, EnemyManager manager)
     {
-        Vector3 vpTop = manager.GetTopSpawnPositionFor(ship);
+        Vector3 vpTop = manager.GetTopSpawnPosition(type);
         ship.transform.position = vpTop;
         ship.inertialBody.velocity = Vector2.zero;
+        ResetStateTimer();
+        ChangeState(EnemyState.Traveling);
     }
 }
