@@ -14,26 +14,28 @@ public class ShipFactory : MonoBehaviour
         shipCount = 0;
     }
 
-    public GameObject GetShip()
+    public GameObject GetShip(int shipAlignment=180)
     {
         shipCount++;
         var offCameraPoint = new Vector3(-999, -999, 0);
         GameObject ship = Instantiate(shipPrefab, offCameraPoint, Quaternion.identity, this.transform);
         var ShipScript = ship.GetComponent<Ship>();
+        ShipScript.shipAlignment = shipAlignment;
         ShipScript.InitializeShip(Faction.Neutral);
-        var cockpit = modules.GetCockpitModule();
+        var cockpit = modules.GetCockpitModule(shipAlignment);
         RandomAttach(ShipScript,out GameObject module,cockpit);
         ship.name = $"Ship_{shipCount}";
         return ship;
     }
-    public GameObject GetShip(Dictionary<ModuleType, int> moduleWeights = null,int numberOfModules = 3)
+    public GameObject GetShip(Dictionary<ModuleType, int> moduleWeights = null,int numberOfModules = 3,GameObject predefinedShipPrefab = null,Faction faction = Faction.EvilFleet,int shipAlignment=180)
     {
         int failStatePreventor =  numberOfModules*50;
         int counter = 0;
-
-        GameObject ship = GetShip();
+        GameObject ship;
+        if (predefinedShipPrefab != null) ship = predefinedShipPrefab;
+            else ship = GetShip(shipAlignment);
         var ShipScript = ship.GetComponent<Ship>();
-        ShipScript.InitializeShip(Faction.EvilFleet);
+        ShipScript.InitializeShip(faction);
         
         while (ShipScript.modules.Count < numberOfModules+1)
         {

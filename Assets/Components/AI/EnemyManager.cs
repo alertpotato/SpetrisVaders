@@ -6,6 +6,7 @@ public class EnemyManager : MonoBehaviour
 {
     public Ship playerShip;
     public ShipFactory SFactory;
+    public TypewriterMessageQueue HUDConsole;
     public float screenBorderPercent = 0.3f;
     public List<ShipArchetype> archetypes;
     public struct EnemyEntry { public Ship ship; public ShipArchetype archetype; public EnemyEntry(Ship s, ShipArchetype a) { ship = s; archetype = a; } }
@@ -82,6 +83,7 @@ public class EnemyManager : MonoBehaviour
         RegisterEnemy(newShip.GetComponent<Ship>(),newArchetype);
         
         newShip.transform.position = GetTopSpawnPosition(newArchetype.type);
+        HUDConsole.EnqueueMessage("> UNKNOWN SIGNAL — CLASS: " + newArchetype.type.ToString().ToUpper());
     }
     public void RegisterEnemy(Ship ship, ShipArchetype archetype)
     {
@@ -97,7 +99,7 @@ public class EnemyManager : MonoBehaviour
     public void RemoveEnemy(Ship ship)
     {
         if (ship == null) return;
-
+        HUDConsole.EnqueueMessage("> HOSTILE SIGNAL LEFT THE SPACE");
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
             if (enemies[i].ship == ship)

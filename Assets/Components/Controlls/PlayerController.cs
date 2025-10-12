@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     {
         Ship = GetComponent<Ship>();
         body = GetComponent<InertialBody>();
+        Docker = GetComponent<DockingVisualizer>();
 
         controls = new Controls();
         
@@ -34,6 +35,10 @@ public class PlayerController : MonoBehaviour
         controls.ShipControls.AttachModule.performed += ctx => AttachModule();
         controls.ShipControls.RotateModule.performed += ctx => RotateModule();
         controls.ShipControls.CycleModuleAnchor.performed += ctx => CycleAnchors();
+    }
+    public void Initialize(EnemyManager enemyManager)
+    {
+        enemies = enemyManager;
     }
 
     private void OnEnable()  => controls.Enable();

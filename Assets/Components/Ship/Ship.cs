@@ -16,6 +16,7 @@ public class Ship : MonoBehaviour
     public List<ShipModule> modules = new List<ShipModule>();
     [SerializeField]private GameObject ModuleParent;
     public ShipModule cockpit;
+    public TypewriterMessageQueue HUDConsole;
     [Header("Ship stats")] 
     public int shipAlignment = 180;
     public float thrust = 10;
@@ -67,10 +68,12 @@ public class Ship : MonoBehaviour
             cockpit = module;
 
         UpdateStats();
+        if (HUDConsole!=null) HUDConsole.EnqueueMessage("> UPGRADE SUCCESSFUL. INSTALLED "+module.name.ToString().ToUpper());
     }
 
     public void OnModuleDestroyed(ShipModule module)
     {
+        if (HUDConsole!=null && module.data.type!=ModuleType.Cockpit) HUDConsole.EnqueueMessage("> DAMAGE REPORT: LOST "+module.name.ToString().ToUpper());
         grid.RemoveModule(module);
         modules.Remove(module);
         var disconnectedModules = grid.GetDisconnectedModules(cockpit);
@@ -85,6 +88,7 @@ public class Ship : MonoBehaviour
         
         if (module == cockpit)
         {
+            if (HUDConsole!=null) HUDConsole.EnqueueMessage("> CRITICAL DA,MAA#AD@ /.|--....");
             Destroy(gameObject);
             return;
         }

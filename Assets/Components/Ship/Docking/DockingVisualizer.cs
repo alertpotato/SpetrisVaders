@@ -33,6 +33,15 @@ public class DockingVisualizer : MonoBehaviour
         line.endWidth = 0.05f;
         line.material = new Material(Shader.Find("Sprites/Default"));
         line.positionCount = 0;
+        shipGrid = GetComponent<ShipGrid>();
+    }
+
+    public void Initialize(GameObject anchorPref, GameObject ghostPref, ModuleSpawner freeM, GameObject anchorParent)
+    {
+        anchorPrefab = anchorPref;
+        ghostPrefab = ghostPref;
+        freeModules = freeM;
+        AnchorParent = anchorParent;
     }
 
     private void Update()

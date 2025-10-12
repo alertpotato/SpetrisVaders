@@ -162,7 +162,10 @@ public class ShipModule : MonoBehaviour
         {
             owner.GetComponent<Ship>()?.OnModuleDestroyed(this);
             Destroy(this.GameObject());
+            return;
         }
+        if (data.type==ModuleType.Cockpit && currentHP<21 && owner.GetComponent<Ship>().HUDConsole != null) 
+            owner.GetComponent<Ship>().HUDConsole.EnqueueMessage("> CRITICAL HIT — CORE TEMPERATURE RISING");
     }
 
     public void UpdateRotation(int newRotation)
