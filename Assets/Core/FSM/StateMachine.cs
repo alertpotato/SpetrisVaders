@@ -22,7 +22,7 @@ public class StateMachine : MonoBehaviour
         if (_currentState != null)
         {
             _currentState.SetMachine(this);
-            _currentState.OnEnter();
+            //_currentState.OnEnter();
         }
     }
 

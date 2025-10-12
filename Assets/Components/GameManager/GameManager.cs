@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public StateMachine GameLoopState;
+    public GameLoopSharedData LoopSharedData;
     public Ship playerShip;
     public ModuleFactory MFactory;
     public ShipFactory SFactory;
@@ -29,7 +30,9 @@ public class GameManager : MonoBehaviour
     {
         EManager.HUDConsole=HUDConsole;
         HUDConsole.EnqueueMessage("> SYSTEMS REBOOT COMPLETE — ALL GREEN");
-        GameLoopState.ChangeState<GameLoopRoundState>();
+        
+        LoopSharedData.HUDConsole = HUDConsole;
+        LoopSharedData.EManager = EManager;
         CreateShipChoise();
     }
 
@@ -37,6 +40,8 @@ public class GameManager : MonoBehaviour
     {
         EManager.enabled=true;
         MSpawner.enabled=true;
+        GameLoopState.enabled = true;
+        GameLoopState.ChangeState<GameLoopEnemyWaveState>();
         // TODO: spawn enemies, handle waves
     }
 
@@ -66,8 +71,8 @@ public class GameManager : MonoBehaviour
         patrol.transform.localScale = new Vector3(25, 25, 25);
         
         flagshipUI.GetComponent<Button>().onClick.AddListener(() => SelectShip(flagship,1));
-        waspUI.GetComponent<Button>().onClick.AddListener(() => SelectShip(patrol,2));
-        patrolUI.GetComponent<Button>().onClick.AddListener(() => SelectShip(wasp,3));
+        waspUI.GetComponent<Button>().onClick.AddListener(() => SelectShip(wasp,2));
+        patrolUI.GetComponent<Button>().onClick.AddListener(() => SelectShip(patrol,3));
     }
 
     public void SelectShip(GameObject ship,int index)

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
@@ -65,6 +65,23 @@ public class EnemyManager : MonoBehaviour
             // ship logic tick
             entry.archetype.Tick(entry.ship, playerShip, dt, this);
         }
+    }
+    public void SpawnShip(ShipArchetypeType baseArchetype,float difficulty)
+    {
+        Vector2 screenMin = ScreenCamera.ViewportToWorldPoint(new Vector3(0, 0, 0));
+        Vector2 screenMax = ScreenCamera.ViewportToWorldPoint(new Vector3(1, 1, 0));
+        
+        float randomX = Random.Range(screenMin.x + screenMax.x * 0.15f, screenMax.x - screenMax.x * 0.15f);
+        float y = screenMax.y * 1.3f;
+        ShipArchetype newArchetype = (ShipArchetype)System.Activator.CreateInstance(archetypes.Where(x=>x.type==baseArchetype).FirstOrDefault().GetType());
+        var newShip = SFactory.GetShip(newArchetype.moduleWeights,GetModuleCount(newArchetype.minModules, newArchetype.maxModules,difficulty));
+        newShip.transform.SetParent(this.transform);
+        newArchetype.controlledShip=newShip.GetComponent<Ship>();
+        newArchetype.targetShip = playerShip;
+        RegisterEnemy(newShip.GetComponent<Ship>(),newArchetype);
+        
+        newShip.transform.position = GetTopSpawnPosition(newArchetype.type);
+        HUDConsole.EnqueueMessage("> UNKNOWN SIGNAL — CLASS: " + newArchetype.type.ToString().ToUpper());
     }
     public void SpawnShip()
     {

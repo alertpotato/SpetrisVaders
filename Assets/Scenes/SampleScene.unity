@@ -169,6 +169,7 @@ GameObject:
   - component: {fileID: 275148196}
   - component: {fileID: 275148195}
   - component: {fileID: 275148194}
+  - component: {fileID: 275148200}
   m_Layer: 0
   m_Name: GameLoop
   m_TagString: Untagged
@@ -190,8 +191,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainCamera: {fileID: 519420031}
   GameLoopState: {fileID: 275148197}
-  Day: 1
-  RoundState: {fileID: 0}
+  EManager: {fileID: 0}
+  HUDConsole: {fileID: 0}
+  CurrentWave: 0
+  enemyWaveState: {fileID: 0}
+  rewardState: {fileID: 0}
 --- !u!114 &275148195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,7 +209,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Config: {fileID: 0}
-  CurrentRound: 1
+  encounterDeployed: 0
+  ENCManager: {fileID: 1308053699}
 --- !u!114 &275148196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,7 +230,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 275148192}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f952477607a88441f9b40ae56665ec89, type: 3}
   m_Name: 
@@ -244,6 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameLoopState: {fileID: 275148197}
+  LoopSharedData: {fileID: 275148194}
   playerShip: {fileID: 0}
   MFactory: {fileID: 932211679}
   SFactory: {fileID: 932211681}
@@ -270,6 +276,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &275148200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 275148192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8048062d1134b5c903b750aa49cf6fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Config: {fileID: 0}
 --- !u!1 &282555087
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,6 +811,7 @@ GameObject:
   - component: {fileID: 1308053697}
   - component: {fileID: 1308053698}
   - component: {fileID: 1308053696}
+  - component: {fileID: 1308053699}
   m_Layer: 0
   m_Name: AI
   m_TagString: Untagged
@@ -878,6 +898,24 @@ MonoBehaviour:
   bullets: {fileID: 8030513530149883191, guid: 80f892f08473d874eb8b9e66a8e06d20, type: 3}
   impactMetal: {fileID: 3045933767149018571, guid: f7b24f27943766643a9ea7e3646f57cc, type: 3}
   activeProjectiles: []
+--- !u!114 &1308053699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308053693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 858c2f8e4f7f4bd39d2db8ea565823bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  encounters:
+  - {fileID: 11400000, guid: 79b4b59bb9ac35a4f8d5d81f59edcacd, type: 2}
+  - {fileID: 11400000, guid: f3f8870bcb7f79848bc6d40e75a1d769, type: 2}
+  - {fileID: 11400000, guid: c460541f1d211674f93982035f249da2, type: 2}
+  - {fileID: 11400000, guid: 9de43656603751a47acbe2b1601a9883, type: 2}
+  - {fileID: 11400000, guid: 8f9eb45c45e86f44f8b499ee9559d8e0, type: 2}
 --- !u!1 &1308589400
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,36 +1,43 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(StateBehaviour))]
-[RequireComponent(typeof(GameLoopRoundState))]
+[RequireComponent(typeof(GameLoopEnemyWaveState))]
+[RequireComponent(typeof(GameLoopRewardState))]
 
 public class GameLoopSharedData : MonoBehaviour
 {
     [Header("Components")]
     public Camera MainCamera;
-    
     public StateMachine GameLoopState;
+    [Header("References")]
+    public EnemyManager EManager;
     
     [Header("Data")]
     
     [Header("Entities")]
     
-    [Header("UI")] 
-    
+    [Header("UI")]
+    public TypewriterMessageQueue HUDConsole;
     [Header("Variables")]
-    public int Day = 1;
+    public int CurrentWave = 0;
     [Header("Prefabs")]
     
     [Header("States")]
-    public GameLoopRoundState RoundState;
+    public GameLoopEnemyWaveState enemyWaveState;
+    public GameLoopRewardState rewardState;
     
     private void Awake()
     {
-        RoundState = transform.GetComponent<GameLoopRoundState>();
-        RoundState.Config = this;
+        MainCamera=Camera.main;
+        enemyWaveState = transform.GetComponent<GameLoopEnemyWaveState>();
+        enemyWaveState.Config = this;
+        rewardState = transform.GetComponent<GameLoopRewardState>();
+        rewardState.Config = this;
     }
 
     private void Start()
     {
-        Day = 0;
+
     }
 }
