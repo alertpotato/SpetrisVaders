@@ -15,7 +15,9 @@ public class ShipGridEditor : Editor
         { ModuleType.PointDefense, new Color(0.2f, 0.9f, 0.2f) },
         { ModuleType.Shield, new Color(0.2f, 0.4f, 0.9f) },
         { ModuleType.Speed,  new Color(0.9f, 0.9f, 0.2f) },
-        { ModuleType.Empty,  Color.gray }
+        { ModuleType.Cockpit,  new Color(0f, 0f, 0f) },
+        { ModuleType.Empty,  new Color(1f, 1f, 1f,0.2f) },
+        { ModuleType.Hull,  Color.gray }
     };
 
     public override void OnInspectorGUI()

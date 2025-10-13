@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Empire Patrol
   type: 0
-  difficultyMultiplier: 1
+  difficultyMultiplier: 0.8
   fleetLeader: 4
-  fleetLeaderDifficultyMultiplier: 1.5
+  fleetLeaderDifficultyMultiplier: 1.3
   guaranteedShips: 01000000010000000400000004000000
   numberOfEnemies: 3
   timeBetweenSpawns: 10

@@ -26,6 +26,8 @@ public abstract class ShipArchetype
     public Vector2 currentDirection = Vector2.zero;
     public Vector2 currentTarget = new Vector2(-999, -999);
     private List<ModuleType> weaponModules;
+    public Dictionary<Vector2Int, float> ShipBuildPriority;
+    
     
     protected void InitDefaults()
     {

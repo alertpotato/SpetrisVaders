@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
-public enum ModuleType { Canon, Missile, PointDefense, Speed, Shield, Cockpit, Empty }
+public enum ModuleType { Canon, Missile, PointDefense, Speed, Shield, Cockpit, Hull, Empty }
 public enum OutfitType { Canon, Missile, PointDefense, Shield, Empty, Cockpit }
 
 [RequireComponent(typeof(PolygonCollider2D))]
@@ -91,6 +91,16 @@ public class ShipModule : MonoBehaviour
         if (Time.time - lastShot < cooldown) return false;
         if (data.type != ModuleType.Missile) return false;
         if (targets.Count == 0) return false;
+        //find closest target
+        Vector2 missileTarget=new Vector2(-999,-999);
+        float distToTarget=999;
+        foreach (var target in targets)
+        {
+            var newDist = Vector3.Distance(target.transform.position, this.transform.position);
+            if (newDist <= maxRange && distToTarget > newDist) {distToTarget = newDist; missileTarget=target.transform.position;}
+        }
+        if (missileTarget==new Vector2(-999,-999)) return false;
+        
         lastShot = Time.time;
         
         Vector3 gridCenter = parent.GetComponent<Ship>().GetGridCenterLocal();
@@ -99,11 +109,11 @@ public class ShipModule : MonoBehaviour
             startDirection = Vector3.right;
         else
             startDirection = Vector3.left;
-        
+        Debug.DrawLine(this.transform.position,missileTarget,Color.red,3f);
         for (int i = 0; i < data.shape.Length; i++)
         {
             if (data.shape[i].type == OutfitType.Missile)
-                ProjectileManager.Instance.SpawnMissile(builder.cells[i].transform.position, targets.First().transform.position,startDirection,damage, parent);
+                ProjectileManager.Instance.SpawnMissile(builder.cells[i].transform.position, missileTarget,startDirection,damage, parent);
         }
         return true;
     }
@@ -165,7 +175,7 @@ public class ShipModule : MonoBehaviour
             return;
         }
         if (data.type==ModuleType.Cockpit && currentHP<21 && owner.GetComponent<Ship>().HUDConsole != null) 
-            owner.GetComponent<Ship>().HUDConsole.EnqueueMessage("> CRITICAL HIT — CORE TEMPERATURE RISING");
+            owner.GetComponent<Ship>().HUDConsole.EnqueueMessage("> CRITICAL HIT — CORE TEMPERATURE RISING",ConsoleMessageType.WARNING);
     }
 
     public void UpdateRotation(int newRotation)

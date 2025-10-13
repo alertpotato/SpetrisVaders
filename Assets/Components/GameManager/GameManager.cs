@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public ShipFactory SFactory;
     public EnemyManager EManager;
     public ModuleSpawner MSpawner;
+    public AsteroidSpawner ASpawner;
     public TypewriterMessageQueue HUDConsole;
     
     //Start of game
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
     {
         EManager.enabled=true;
         MSpawner.enabled=true;
+        ASpawner.enabled=true;
         GameLoopState.enabled = true;
         GameLoopState.ChangeState<GameLoopEnemyWaveState>();
         // TODO: spawn enemies, handle waves
@@ -47,25 +49,23 @@ public class GameManager : MonoBehaviour
 
     public void CreateShipChoise()
     {
-        HUDConsole.EnqueueMessage("> NEW SOFTWARE PATCH DEPLOYED");
-        
-        var flagship = SFactory.GetShip(new ArchetypeFlagship().moduleWeights,5,faction:Faction.Player,shipAlignment:0);
+        var flagship = SFactory.GetShip(new ArchetypeFlagship().moduleWeights,5,faction:Faction.Player,shipAlignment:0,directionChances:new ArchetypeFlagship().ShipBuildPriority);
         var flagshipUI = Instantiate(ShipChoisePrefab, ShipChoiseUI.transform);
-        flagshipUI.GetComponent<ShipChoiceUI>().descriptionText.text = "Flagship design";
+        flagshipUI.GetComponent<ShipChoiceUI>().descriptionText.text = "Flagship";
         flagship.transform.SetParent(flagshipUI.transform);
         flagship.transform.localPosition = Vector3.zero;
         flagship.transform.localScale = new Vector3(30, 30, 30);
         
-        var wasp = SFactory.GetShip(new ArchetypeWasp().moduleWeights,5,faction:Faction.Player,shipAlignment:0);
+        var wasp = SFactory.GetShip(new ArchetypeWasp().moduleWeights,5,faction:Faction.Player,shipAlignment:0,directionChances:new ArchetypeWasp().ShipBuildPriority);
         var waspUI = Instantiate(ShipChoisePrefab, ShipChoiseUI.transform);
-        waspUI.GetComponent<ShipChoiceUI>().descriptionText.text = "Wasp design";
+        waspUI.GetComponent<ShipChoiceUI>().descriptionText.text = "Wasp";
         wasp.transform.SetParent(waspUI.transform);
         wasp.transform.localPosition = Vector3.zero;
         wasp.transform.localScale = new Vector3(30, 30, 30);
         
-        var patrol = SFactory.GetShip(new ArchetypePatrol().moduleWeights,5,faction:Faction.Player,shipAlignment:0);
+        var patrol = SFactory.GetShip(new ArchetypePatrol().moduleWeights,5,faction:Faction.Player,shipAlignment:0,directionChances:new ArchetypePatrol().ShipBuildPriority);
         var patrolUI = Instantiate(ShipChoisePrefab, ShipChoiseUI.transform);
-        patrolUI.GetComponent<ShipChoiceUI>().descriptionText.text = "Scout design";
+        patrolUI.GetComponent<ShipChoiceUI>().descriptionText.text = "Scout";
         patrol.transform.SetParent(patrolUI.transform);
         patrol.transform.localPosition = Vector3.zero;
         patrol.transform.localScale = new Vector3(25, 25, 25);

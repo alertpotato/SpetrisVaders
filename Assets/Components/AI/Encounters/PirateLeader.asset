@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Pirate fleet
   type: 1
-  difficultyMultiplier: 1.1
+  difficultyMultiplier: 0.8
   fleetLeader: 3
-  fleetLeaderDifficultyMultiplier: 3
+  fleetLeaderDifficultyMultiplier: 1
   guaranteedShips: 0100000003000000010000000300000001000000
   numberOfEnemies: 5
   timeBetweenSpawns: 15

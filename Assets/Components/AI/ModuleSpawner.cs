@@ -16,6 +16,8 @@ public class ModuleSpawner : MonoBehaviour
     }
     void Update()
     {
+        CleanupModules();
+        return;
         //Spawn logic
         spawnTimer += Time.deltaTime;
         if (spawnTimer >= spawnInterval)
@@ -24,7 +26,6 @@ public class ModuleSpawner : MonoBehaviour
             spawnInterval = Random.Range(1f, 5f);
             SpawnModule();
         }
-        CleanupModules();
     }
 
     void FixedUpdate()

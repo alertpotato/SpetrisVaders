@@ -74,14 +74,14 @@ public class EnemyManager : MonoBehaviour
         float randomX = Random.Range(screenMin.x + screenMax.x * 0.15f, screenMax.x - screenMax.x * 0.15f);
         float y = screenMax.y * 1.3f;
         ShipArchetype newArchetype = (ShipArchetype)System.Activator.CreateInstance(archetypes.Where(x=>x.type==baseArchetype).FirstOrDefault().GetType());
-        var newShip = SFactory.GetShip(newArchetype.moduleWeights,GetModuleCount(newArchetype.minModules, newArchetype.maxModules,difficulty));
+        var newShip = SFactory.GetShip(newArchetype.moduleWeights,GetModuleCount(newArchetype.minModules, newArchetype.maxModules,difficulty),directionChances:newArchetype.ShipBuildPriority);
         newShip.transform.SetParent(this.transform);
         newArchetype.controlledShip=newShip.GetComponent<Ship>();
         newArchetype.targetShip = playerShip;
         RegisterEnemy(newShip.GetComponent<Ship>(),newArchetype);
         
         newShip.transform.position = GetTopSpawnPosition(newArchetype.type);
-        HUDConsole.EnqueueMessage("> UNKNOWN SIGNAL — CLASS: " + newArchetype.type.ToString().ToUpper());
+        HUDConsole.EnqueueMessage("> UNKNOWN SIGNAL — CLASS: " + newArchetype.type.ToString().ToUpper(),ConsoleMessageType.RADAR);
     }
     public void SpawnShip()
     {
@@ -93,14 +93,14 @@ public class EnemyManager : MonoBehaviour
         
         ShipArchetype baseArchetype = archetypes[Random.Range(0, archetypes.Count)];
         ShipArchetype newArchetype = (ShipArchetype)System.Activator.CreateInstance(baseArchetype.GetType());
-        var newShip = SFactory.GetShip(newArchetype.moduleWeights,GetModuleCount(newArchetype.minModules, newArchetype.maxModules));
+        var newShip = SFactory.GetShip(newArchetype.moduleWeights,GetModuleCount(newArchetype.minModules, newArchetype.maxModules),directionChances:newArchetype.ShipBuildPriority);
         newShip.transform.SetParent(this.transform);
         newArchetype.controlledShip=newShip.GetComponent<Ship>();
         newArchetype.targetShip = playerShip;
         RegisterEnemy(newShip.GetComponent<Ship>(),newArchetype);
         
         newShip.transform.position = GetTopSpawnPosition(newArchetype.type);
-        HUDConsole.EnqueueMessage("> UNKNOWN SIGNAL — CLASS: " + newArchetype.type.ToString().ToUpper());
+        HUDConsole.EnqueueMessage("> UNKNOWN SIGNAL — CLASS: " + newArchetype.type.ToString().ToUpper(),ConsoleMessageType.RADAR);
     }
     public void RegisterEnemy(Ship ship, ShipArchetype archetype)
     {
@@ -116,7 +116,7 @@ public class EnemyManager : MonoBehaviour
     public void RemoveEnemy(Ship ship)
     {
         if (ship == null) return;
-        HUDConsole.EnqueueMessage("> HOSTILE SIGNAL LEFT THE SPACE");
+        HUDConsole.EnqueueMessage("> HOSTILE SIGNAL LEFT THE SPACE",ConsoleMessageType.RADAR);
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
             if (enemies[i].ship == ship)

@@ -39,13 +39,13 @@ public class Ship : MonoBehaviour
     
     private void UpdateStats()
     {
-        maxSpeed = 99f;
-        thrust = 10f;
+        maxSpeed = 10f;
+        thrust = 20f;
         var colliders = new List<PolygonCollider2D>();
         foreach (var module in modules)
         {
-            thrust += module.speedBonus;
-            thrust += 2;
+            maxSpeed += module.speedBonus;
+            thrust += 5;
             colliders.Add(module.polyCollider);
         }
         
@@ -73,7 +73,7 @@ public class Ship : MonoBehaviour
 
     public void OnModuleDestroyed(ShipModule module)
     {
-        if (HUDConsole!=null && module.data.type!=ModuleType.Cockpit) HUDConsole.EnqueueMessage("> DAMAGE REPORT: LOST "+module.name.ToString().ToUpper());
+        if (HUDConsole!=null && module.data.type!=ModuleType.Cockpit) HUDConsole.EnqueueMessage("> DAMAGE REPORT: LOST "+module.name.ToString().ToUpper(),ConsoleMessageType.WARNING);
         grid.RemoveModule(module);
         modules.Remove(module);
         var disconnectedModules = grid.GetDisconnectedModules(cockpit);
@@ -88,7 +88,7 @@ public class Ship : MonoBehaviour
         
         if (module == cockpit)
         {
-            if (HUDConsole!=null) HUDConsole.EnqueueMessage("> CRITICAL DA,MAA#AD@ /.|--....");
+            if (HUDConsole!=null) HUDConsole.EnqueueMessage("> CRITICAL DA,MAA#AD@ /.|--....",ConsoleMessageType.WARNING);
             Destroy(gameObject);
             return;
         }
@@ -220,5 +220,20 @@ public class Ship : MonoBehaviour
         };
 
         return dists.Min();
+    }
+
+    private void UpdateShipForm()
+    {
+        int MaxX = 0;
+        int MaxY = 0;
+        int MinX = 0;
+        int MinY = 0;
+        foreach (var cell in grid.grid.Keys.ToList())
+        {
+            if(cell.x > MaxX) MaxX = cell.x;
+            if (cell.x < MinX) MinX = cell.x;
+            if (cell.y > MaxY) MaxY = cell.y;
+            if (cell.y < MinY) MinY = cell.y;
+        }
     }
 }

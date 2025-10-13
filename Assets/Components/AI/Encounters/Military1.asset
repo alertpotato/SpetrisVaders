@@ -16,7 +16,7 @@ MonoBehaviour:
   type: 0
   difficultyMultiplier: 1.2
   fleetLeader: 1
-  fleetLeaderDifficultyMultiplier: 1.5
+  fleetLeaderDifficultyMultiplier: 1.2
   guaranteedShips: 0400000003000000
   numberOfEnemies: 3
   timeBetweenSpawns: 15

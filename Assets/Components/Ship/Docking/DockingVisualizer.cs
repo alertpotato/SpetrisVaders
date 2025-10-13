@@ -25,6 +25,7 @@ public class DockingVisualizer : MonoBehaviour
     [Header("Variables")]
     private GameObject currentShipModule;
     public int currentRotation = 0;
+    public bool forbidEmptySpaces = false;
     
     void Awake()
     {
@@ -62,7 +63,7 @@ public class DockingVisualizer : MonoBehaviour
             var options = new List<AnchorOption>();
             foreach (var anchor in anchors)
             {
-                if (shipGrid.TryGetAttachPosition(module.GetComponent<ShipModule>(), anchor, out var attachAdjustment, currentRotation))
+                if (shipGrid.TryGetAttachPosition(module.GetComponent<ShipModule>(), anchor, out var attachAdjustment, currentRotation,forbidEmptySpaces))
                 {
                     options.Add(new AnchorOption(anchor, attachAdjustment));
                 }

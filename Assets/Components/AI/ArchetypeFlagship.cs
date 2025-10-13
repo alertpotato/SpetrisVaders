@@ -109,6 +109,12 @@ public class ArchetypeFlagship : ShipArchetype
         moduleWeights[ModuleType.PointDefense] = 4;
         moduleWeights[ModuleType.Shield] = 5;
         InitDefaults();
+        ShipBuildPriority = new Dictionary<Vector2Int, float>() {
+            { Vector2Int.up, 0.34f },
+            { Vector2Int.down, 0.20f },
+            { Vector2Int.left, 0.23f },
+            { Vector2Int.right, 0.23f }
+        };
     }
 
     public override void OnStateTimeout(Ship ship, Ship player)

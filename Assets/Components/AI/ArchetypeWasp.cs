@@ -33,6 +33,12 @@ public class ArchetypeWasp : ShipArchetype
         targetThreshold = 4;
         
         InitDefaults();
+        ShipBuildPriority = new Dictionary<Vector2Int, float>() {
+            { Vector2Int.up, 0.40f },
+            { Vector2Int.down, 0.30f },
+            { Vector2Int.left, 0.15f },
+            { Vector2Int.right, 0.15f }
+        };
     }
 
     public override void OnStateTimeout(Ship ship, Ship player)

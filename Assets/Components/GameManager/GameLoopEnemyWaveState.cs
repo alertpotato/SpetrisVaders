@@ -18,12 +18,13 @@ public class GameLoopEnemyWaveState : StateBehaviour
         if (Config.CurrentWave % 2 == 0) newEncounterType = EncounterType.Boss;
         var newEncounter = ENCManager.GetEncounter(Config.CurrentWave,newEncounterType);
         Config.HUDConsole.EnqueueMessage("> load /levels/level"+Config.CurrentWave+"/"+newEncounter.name);
-        StartCoroutine(RunEncounter(newEncounter, Config.CurrentWave));
+        float waveDifficulty = 1+(Config.CurrentWave-1)*0.5f;
+        StartCoroutine(RunEncounter(newEncounter,waveDifficulty) );
     }
-    public IEnumerator RunEncounter(Encounter encounter, int wave)
+    public IEnumerator RunEncounter(Encounter encounter, float waveDifficulty)
     {
-        int totalEnemies = encounter.numberOfEnemies + wave;
-        float difficulty = wave * encounter.difficultyMultiplier;
+        int totalEnemies = encounter.numberOfEnemies + (int)waveDifficulty;
+        float difficulty = waveDifficulty * encounter.difficultyMultiplier;
         //Leader first
         float bossDifficulty = difficulty * encounter.fleetLeaderDifficultyMultiplier;
         Config.EManager.SpawnShip(encounter.fleetLeader, bossDifficulty);

@@ -28,7 +28,7 @@ MonoBehaviour:
   cooldown: 4
   speedModifier: 0
   damage: 10
-  maxRange: 20
+  maxRange: 50
   mainSprite: {fileID: -1593717761, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
   backSprite: {fileID: -805841376, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
   outfitSprite: {fileID: 1093160358, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}

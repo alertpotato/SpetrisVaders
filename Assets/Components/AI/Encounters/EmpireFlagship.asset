@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Empire Flagship
   type: 1
-  difficultyMultiplier: 1
+  difficultyMultiplier: 0.8
   fleetLeader: 4
-  fleetLeaderDifficultyMultiplier: 5
+  fleetLeaderDifficultyMultiplier: 1.5
   guaranteedShips: 010000000100000001000000010000000100000001000000
   numberOfEnemies: 1
   timeBetweenSpawns: 15
