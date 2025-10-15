@@ -4,23 +4,29 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Game Components")]
     public static GameManager Instance;
     public StateMachine GameLoopState;
     public GameLoopSharedData LoopSharedData;
-    public Ship playerShip;
     public ModuleFactory MFactory;
     public ShipFactory SFactory;
     public EnemyManager EManager;
     public ModuleSpawner MSpawner;
     public AsteroidSpawner ASpawner;
     public TypewriterMessageQueue HUDConsole;
+    public GameObject PlayerControls;
+    [Header("Game Graphic Components")] 
+    public StarfieldController ScreenStars;
     
-    //Start of game
+    [Header("Player staff")]
+    public Ship playerShip;
+    [SerializeField]private GameObject DockerAnchorPrefab;
+    [SerializeField]private GameObject DockerGhostPrefab;
+    [Header("Start event staff")]
     [SerializeField]private GameObject ShipChoisePrefab;
     [SerializeField]private GameObject ShipChoiseUI;
     [SerializeField]private Canvas ShipChoise;
-    [SerializeField]private GameObject DockerAnchorPrefab;
-    [SerializeField]private GameObject DockerGhostPrefab;
+    
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -29,6 +35,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Confined;
         EManager.HUDConsole=HUDConsole;
         HUDConsole.EnqueueMessage("> SYSTEMS REBOOT COMPLETE — ALL GREEN");
         
@@ -44,6 +52,8 @@ public class GameManager : MonoBehaviour
         ASpawner.enabled=true;
         GameLoopState.enabled = true;
         GameLoopState.ChangeState<GameLoopEnemyWaveState>();
+        //Graphic
+        ScreenStars.Initialize(playerShip.GetComponent<InertialBody>());
         // TODO: spawn enemies, handle waves
     }
 
@@ -78,12 +88,13 @@ public class GameManager : MonoBehaviour
     public void SelectShip(GameObject ship,int index)
     {
         ship.transform.SetParent(transform);
+        ship.name = "PlayerShip";
         ship.transform.localPosition = new Vector3(0,-20,0);
         ship.transform.localScale = new Vector3(1,1,1);
-        
+
+        var iBody = ship.GetComponent<InertialBody>();
         ship.AddComponent<DockingVisualizer>();
         var docker = ship.GetComponent<DockingVisualizer>();
-        ship.AddComponent<PlayerController>().Initialize(EManager);
         var anchorParent = new GameObject();
         anchorParent.transform.SetParent(ship.transform);
         anchorParent.transform.localPosition = Vector3.zero;
@@ -96,6 +107,8 @@ public class GameManager : MonoBehaviour
         playerShip.HUDConsole=HUDConsole;
         EManager.playerShip = playerShip;
         EManager.SFactory = SFactory;
+        
+        PlayerControls.GetComponent<PlayerController>().Initialize(playerShip,iBody,docker,EManager);
         
         HUDConsole.EnqueueMessage("> BATTLESHIP "+ship.name.ToString().ToUpper()+" OPERATIONAL...");
         GameStart();

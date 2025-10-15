@@ -23,6 +23,7 @@ public class ShellProjectile : Projectile
         ownerShipFaction = owner !=null? owner.GetComponent<Ship>().faction : Faction.Neutral;
         velocity = direction.normalized * speed;
         GetComponent<DamageAdapter>().owner = owner;
+        transform.right = direction;
         //TODO proper destroy?
         Destroy(this.gameObject, lifetime);
     }

@@ -154,6 +154,24 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""4782ff89-0431-4230-8d40-b7b45eb5334d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RestartGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""3a889822-0d1e-4c0e-8822-192d77dc7b29"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -332,6 +350,28 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""MissileShot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd068ccb-5454-41c9-bf3e-ebf7bff6dc51"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6e7b7076-0ccf-4dff-a7b7-932fc92acbb9"",
+                    ""path"": ""<Keyboard>/f1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RestartGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -347,6 +387,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_ShipControls_RotateModule = m_ShipControls.FindAction("RotateModule", throwIfNotFound: true);
         m_ShipControls_CycleModuleAnchor = m_ShipControls.FindAction("CycleModuleAnchor", throwIfNotFound: true);
         m_ShipControls_CycleModule = m_ShipControls.FindAction("CycleModule", throwIfNotFound: true);
+        m_ShipControls_Fire = m_ShipControls.FindAction("Fire", throwIfNotFound: true);
+        m_ShipControls_RestartGame = m_ShipControls.FindAction("RestartGame", throwIfNotFound: true);
     }
 
     ~@Controls()
@@ -434,6 +476,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_ShipControls_RotateModule;
     private readonly InputAction m_ShipControls_CycleModuleAnchor;
     private readonly InputAction m_ShipControls_CycleModule;
+    private readonly InputAction m_ShipControls_Fire;
+    private readonly InputAction m_ShipControls_RestartGame;
     /// <summary>
     /// Provides access to input actions defined in input action map "ShipControls".
     /// </summary>
@@ -473,6 +517,14 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "ShipControls/CycleModule".
         /// </summary>
         public InputAction @CycleModule => m_Wrapper.m_ShipControls_CycleModule;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/Fire".
+        /// </summary>
+        public InputAction @Fire => m_Wrapper.m_ShipControls_Fire;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/RestartGame".
+        /// </summary>
+        public InputAction @RestartGame => m_Wrapper.m_ShipControls_RestartGame;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -520,6 +572,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @CycleModule.started += instance.OnCycleModule;
             @CycleModule.performed += instance.OnCycleModule;
             @CycleModule.canceled += instance.OnCycleModule;
+            @Fire.started += instance.OnFire;
+            @Fire.performed += instance.OnFire;
+            @Fire.canceled += instance.OnFire;
+            @RestartGame.started += instance.OnRestartGame;
+            @RestartGame.performed += instance.OnRestartGame;
+            @RestartGame.canceled += instance.OnRestartGame;
         }
 
         /// <summary>
@@ -552,6 +610,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @CycleModule.started -= instance.OnCycleModule;
             @CycleModule.performed -= instance.OnCycleModule;
             @CycleModule.canceled -= instance.OnCycleModule;
+            @Fire.started -= instance.OnFire;
+            @Fire.performed -= instance.OnFire;
+            @Fire.canceled -= instance.OnFire;
+            @RestartGame.started -= instance.OnRestartGame;
+            @RestartGame.performed -= instance.OnRestartGame;
+            @RestartGame.canceled -= instance.OnRestartGame;
         }
 
         /// <summary>
@@ -641,5 +705,19 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCycleModule(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Fire" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFire(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "RestartGame" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRestartGame(InputAction.CallbackContext context);
     }
 }

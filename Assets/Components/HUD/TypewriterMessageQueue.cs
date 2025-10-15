@@ -15,6 +15,9 @@ public class TypewriterMessageQueue : MonoBehaviour
     public float charDelay = 0.09f;
     public float messageLifetime = 15f;
     public float timeBetweenMessages = 1f;
+    
+    [Header("Variables")]
+    private bool isShuttingDown = false;
 
     private struct QueuedMessage
     {
@@ -39,6 +42,7 @@ public class TypewriterMessageQueue : MonoBehaviour
 
     public void EnqueueMessage(string text, ConsoleMessageType type = ConsoleMessageType.SYSTEM)
     {
+        if (isShuttingDown) return;
         Color messageColor = defaultColor;
         switch (type)
         {
@@ -94,5 +98,10 @@ public class TypewriterMessageQueue : MonoBehaviour
         yield return new WaitForSeconds(messageLifetime);
         if (obj != null)
             Destroy(obj);
+    }
+    private void OnDestroy()
+    {
+        isShuttingDown = true;
+        StopAllCoroutines();
     }
 }

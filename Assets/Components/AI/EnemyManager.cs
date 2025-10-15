@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
 
+
+public struct EnemyEntry { public Ship ship; public ShipArchetype archetype; public EnemyEntry(Ship s, ShipArchetype a) { ship = s; archetype = a; } }
 public class EnemyManager : MonoBehaviour
 {
     public Ship playerShip;
@@ -9,7 +13,7 @@ public class EnemyManager : MonoBehaviour
     public TypewriterMessageQueue HUDConsole;
     public float screenBorderPercent = 0.3f;
     public List<ShipArchetype> archetypes;
-    public struct EnemyEntry { public Ship ship; public ShipArchetype archetype; public EnemyEntry(Ship s, ShipArchetype a) { ship = s; archetype = a; } }
+    
     public List<EnemyEntry> enemies = new List<EnemyEntry>();
 
     Camera ScreenCamera;
@@ -22,6 +26,8 @@ public class EnemyManager : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (playerShip == null) return;
+        
         var deltaTime = Time.fixedDeltaTime;
         var playerPos = ScreenCamera.WorldToViewportPoint(playerShip.transform.position);
         
@@ -35,6 +41,8 @@ public class EnemyManager : MonoBehaviour
     }
     void Update()
     {
+        if (playerShip == null) return;
+        
         float dt = Time.deltaTime;
         for (int i = enemies.Count - 1; i >= 0; i--)
         {

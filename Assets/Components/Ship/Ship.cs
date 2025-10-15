@@ -17,7 +17,7 @@ public class Ship : MonoBehaviour
     [SerializeField]private GameObject ModuleParent;
     public ShipModule cockpit;
     public TypewriterMessageQueue HUDConsole;
-    [Header("Ship stats")] 
+    [Header("Ship stats")]
     public int shipAlignment = 180;
     public float thrust = 10;
     public float maxSpeed = 10;
@@ -26,6 +26,9 @@ public class Ship : MonoBehaviour
     public float canonFireCooldown = 0.1f;
     public float missileFireCooldown = 0.2f;
     public float lastShot;
+    [Header("Variables")]
+    public Vector2 dimensionsMin = new Vector2(0, 0);
+    public Vector2 dimensionsMax = new Vector2(0, 0);
     public event Action<Ship> OnDestroyed;
 
     private void OnDestroy()
@@ -50,6 +53,7 @@ public class Ship : MonoBehaviour
         }
         
         inertialBody.UpdateBody(modules.Count,maxSpeed,colliders);
+        UpdateShipDimensions();
     }
 
     public void AttachModule(Candidate candidateModule)
@@ -95,6 +99,17 @@ public class Ship : MonoBehaviour
         UpdateStats();
     }
 
+    public bool FireAt(Vector3 position)
+    {
+        if (Time.time - lastShot < canonFireCooldown) return false;
+        lastShot = Time.time;
+        var direction = position - transform.position;
+        foreach (var module in modules.Where(x=>x.data.type==ModuleType.Canon))
+        {
+            if (module.FireCanon(direction,this.GameObject())) return true;
+        }
+        return false;
+    }
 
     public bool FireCanons()
     {
@@ -222,7 +237,7 @@ public class Ship : MonoBehaviour
         return dists.Min();
     }
 
-    private void UpdateShipForm()
+    private void UpdateShipDimensions()
     {
         int MaxX = 0;
         int MaxY = 0;
@@ -235,5 +250,7 @@ public class Ship : MonoBehaviour
             if (cell.y > MaxY) MaxY = cell.y;
             if (cell.y < MinY) MinY = cell.y;
         }
+        dimensionsMin = new Vector2(MinX, MinY);
+        dimensionsMax = new Vector2(MaxX, MaxY);
     }
 }
