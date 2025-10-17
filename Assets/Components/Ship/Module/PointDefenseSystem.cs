@@ -160,12 +160,12 @@ public class PointDefenseSystem : MonoBehaviour
                 hitPos,
                 damage,
                 maxRange,
+                1,
                 module.owner
             );
         }
 
-        ProjectileManager.Instance.SpawnBulletEffect(cell.firePoint.position, cell.target.transform.position,
-            cell.firePoint);
+        ProjectileManager.Instance.SpawnBulletEffect(cell.firePoint.position, cell.target.transform.position,1,maxRange, cell.firePoint);
         return true;
     }
 }

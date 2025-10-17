@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de6c86332a24936a3908babb27d44e4, type: 3}
+  m_Name: GameGraphics
+  m_EditorClassIdentifier: 
+  mainHudColor: {r: 0.13064909, g: 2, b: 0, a: 0}
+  enemyColor: {r: 0, g: 0, b: 0, a: 0}
+  simpleHDRColor: {fileID: 2100000, guid: dbe52968a7fd04743a98cb52f01d593f, type: 2}
+  effects: []

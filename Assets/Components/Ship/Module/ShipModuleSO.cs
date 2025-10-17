@@ -13,6 +13,7 @@ public class ShipModuleData : ScriptableObject
     public float speedModifier;
     public int damage;
     public float maxRange;
+    public float accuracy; //spread radius on max distance
     public Sprite mainSprite;
     public Sprite backSprite;
     public Sprite outfitSprite;
@@ -58,6 +59,7 @@ public class ShipModuleStats
     public float speedModifier;
     public int damage;
     public float maxRange;
+    public float accuracy;
     public Sprite mainSprite;
     public Sprite backSprite;
     public Sprite outfitSprite;
@@ -73,6 +75,7 @@ public class ShipModuleStats
         speedModifier = data.speedModifier;
         damage = data.damage;
         maxRange = data.maxRange;
+        accuracy = data.accuracy;
         mainSprite = data.mainSprite;
         backSprite = data.backSprite;
         outfitSprite = data.outfitSprite;

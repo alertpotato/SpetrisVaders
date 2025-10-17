@@ -172,6 +172,51 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NextFireMode"",
+                    ""type"": ""Value"",
+                    ""id"": ""ecb769f8-3a3f-45b2-b873-608d20edba7e"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""QuickNextFireMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""2df832f6-12d4-49ad-abfa-0421099ae4b1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FireModeCanons"",
+                    ""type"": ""Button"",
+                    ""id"": ""6f81c1be-1d29-44cf-9fee-380b29aa9e51"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FireModeMissiles"",
+                    ""type"": ""Button"",
+                    ""id"": ""3d9a9e2a-dbb6-4b89-ba24-970d12d51de6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FireModePD"",
+                    ""type"": ""Button"",
+                    ""id"": ""e5dfec2f-8a6a-4ef9-aabf-7a213a7c68be"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -372,6 +417,61 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""RestartGame"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6c460ca5-7312-4791-9441-22d49ff66c1b"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NextFireMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""edb18579-b156-43cf-9fbf-9e3bb800cc5b"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickNextFireMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""46857c6d-9eec-4b3d-bbed-f7a8e7eab700"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FireModeCanons"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7788192f-24e1-47d1-b9d9-9b6cd653e1bd"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FireModeMissiles"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5261acc2-eade-42f2-b4b7-320bcb04fdbd"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FireModePD"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -389,6 +489,11 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_ShipControls_CycleModule = m_ShipControls.FindAction("CycleModule", throwIfNotFound: true);
         m_ShipControls_Fire = m_ShipControls.FindAction("Fire", throwIfNotFound: true);
         m_ShipControls_RestartGame = m_ShipControls.FindAction("RestartGame", throwIfNotFound: true);
+        m_ShipControls_NextFireMode = m_ShipControls.FindAction("NextFireMode", throwIfNotFound: true);
+        m_ShipControls_QuickNextFireMode = m_ShipControls.FindAction("QuickNextFireMode", throwIfNotFound: true);
+        m_ShipControls_FireModeCanons = m_ShipControls.FindAction("FireModeCanons", throwIfNotFound: true);
+        m_ShipControls_FireModeMissiles = m_ShipControls.FindAction("FireModeMissiles", throwIfNotFound: true);
+        m_ShipControls_FireModePD = m_ShipControls.FindAction("FireModePD", throwIfNotFound: true);
     }
 
     ~@Controls()
@@ -478,6 +583,11 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_ShipControls_CycleModule;
     private readonly InputAction m_ShipControls_Fire;
     private readonly InputAction m_ShipControls_RestartGame;
+    private readonly InputAction m_ShipControls_NextFireMode;
+    private readonly InputAction m_ShipControls_QuickNextFireMode;
+    private readonly InputAction m_ShipControls_FireModeCanons;
+    private readonly InputAction m_ShipControls_FireModeMissiles;
+    private readonly InputAction m_ShipControls_FireModePD;
     /// <summary>
     /// Provides access to input actions defined in input action map "ShipControls".
     /// </summary>
@@ -525,6 +635,26 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "ShipControls/RestartGame".
         /// </summary>
         public InputAction @RestartGame => m_Wrapper.m_ShipControls_RestartGame;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/NextFireMode".
+        /// </summary>
+        public InputAction @NextFireMode => m_Wrapper.m_ShipControls_NextFireMode;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/QuickNextFireMode".
+        /// </summary>
+        public InputAction @QuickNextFireMode => m_Wrapper.m_ShipControls_QuickNextFireMode;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/FireModeCanons".
+        /// </summary>
+        public InputAction @FireModeCanons => m_Wrapper.m_ShipControls_FireModeCanons;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/FireModeMissiles".
+        /// </summary>
+        public InputAction @FireModeMissiles => m_Wrapper.m_ShipControls_FireModeMissiles;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipControls/FireModePD".
+        /// </summary>
+        public InputAction @FireModePD => m_Wrapper.m_ShipControls_FireModePD;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -578,6 +708,21 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @RestartGame.started += instance.OnRestartGame;
             @RestartGame.performed += instance.OnRestartGame;
             @RestartGame.canceled += instance.OnRestartGame;
+            @NextFireMode.started += instance.OnNextFireMode;
+            @NextFireMode.performed += instance.OnNextFireMode;
+            @NextFireMode.canceled += instance.OnNextFireMode;
+            @QuickNextFireMode.started += instance.OnQuickNextFireMode;
+            @QuickNextFireMode.performed += instance.OnQuickNextFireMode;
+            @QuickNextFireMode.canceled += instance.OnQuickNextFireMode;
+            @FireModeCanons.started += instance.OnFireModeCanons;
+            @FireModeCanons.performed += instance.OnFireModeCanons;
+            @FireModeCanons.canceled += instance.OnFireModeCanons;
+            @FireModeMissiles.started += instance.OnFireModeMissiles;
+            @FireModeMissiles.performed += instance.OnFireModeMissiles;
+            @FireModeMissiles.canceled += instance.OnFireModeMissiles;
+            @FireModePD.started += instance.OnFireModePD;
+            @FireModePD.performed += instance.OnFireModePD;
+            @FireModePD.canceled += instance.OnFireModePD;
         }
 
         /// <summary>
@@ -616,6 +761,21 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @RestartGame.started -= instance.OnRestartGame;
             @RestartGame.performed -= instance.OnRestartGame;
             @RestartGame.canceled -= instance.OnRestartGame;
+            @NextFireMode.started -= instance.OnNextFireMode;
+            @NextFireMode.performed -= instance.OnNextFireMode;
+            @NextFireMode.canceled -= instance.OnNextFireMode;
+            @QuickNextFireMode.started -= instance.OnQuickNextFireMode;
+            @QuickNextFireMode.performed -= instance.OnQuickNextFireMode;
+            @QuickNextFireMode.canceled -= instance.OnQuickNextFireMode;
+            @FireModeCanons.started -= instance.OnFireModeCanons;
+            @FireModeCanons.performed -= instance.OnFireModeCanons;
+            @FireModeCanons.canceled -= instance.OnFireModeCanons;
+            @FireModeMissiles.started -= instance.OnFireModeMissiles;
+            @FireModeMissiles.performed -= instance.OnFireModeMissiles;
+            @FireModeMissiles.canceled -= instance.OnFireModeMissiles;
+            @FireModePD.started -= instance.OnFireModePD;
+            @FireModePD.performed -= instance.OnFireModePD;
+            @FireModePD.canceled -= instance.OnFireModePD;
         }
 
         /// <summary>
@@ -719,5 +879,40 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRestartGame(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "NextFireMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnNextFireMode(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "QuickNextFireMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnQuickNextFireMode(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "FireModeCanons" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFireModeCanons(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "FireModeMissiles" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFireModeMissiles(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "FireModePD" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFireModePD(InputAction.CallbackContext context);
     }
 }

@@ -17,18 +17,22 @@ public class Ship : MonoBehaviour
     [SerializeField]private GameObject ModuleParent;
     public ShipModule cockpit;
     public TypewriterMessageQueue HUDConsole;
+    
     [Header("Ship stats")]
     public int shipAlignment = 180;
     public float thrust = 10;
     public float maxSpeed = 10;
     public Faction faction;
+    
     [Header("Weapon settings")]
     public float canonFireCooldown = 0.1f;
     public float missileFireCooldown = 0.2f;
     public float lastShot;
+    
     [Header("Variables")]
     public Vector2 dimensionsMin = new Vector2(0, 0);
     public Vector2 dimensionsMax = new Vector2(0, 0);
+    public List<ShipModule> controlledModules = new List<ShipModule>();
     public event Action<Ship> OnDestroyed;
 
     private void OnDestroy()
@@ -86,6 +90,7 @@ public class Ship : MonoBehaviour
         foreach (var m in disconnectedModules)
         {
             modules.Remove(m);
+            controlledModules.Remove(m);
             grid.RemoveModule(m);
             m.OnDetachFromShip(shipCenter);
         }
@@ -99,6 +104,27 @@ public class Ship : MonoBehaviour
         UpdateStats();
     }
 
+    public void UpdateModulesControl(Vector2 lookAt)
+    {
+        foreach (var module in controlledModules)
+        {
+            module.LookAt(lookAt);
+        }
+    }
+    public void ControlModulesByType(ModuleType type)
+    {
+        foreach (var module in controlledModules)
+        {
+            module.DisableCells();
+        }
+        controlledModules.Clear();
+        if (type == ModuleType.Empty) return;
+        foreach (var module in modules.Where(x=>x.data.type==type))
+        {
+            controlledModules.Add(module);
+        }
+    }
+
     public bool FireAt(Vector3 position)
     {
         if (Time.time - lastShot < canonFireCooldown) return false;
@@ -107,6 +133,15 @@ public class Ship : MonoBehaviour
         foreach (var module in modules.Where(x=>x.data.type==ModuleType.Canon))
         {
             if (module.FireCanon(direction,this.GameObject())) return true;
+        }
+        return false;
+    }
+    public bool FireAtPD(Vector3 position)
+    {
+        var direction = position - transform.position;
+        foreach (var module in modules.Where(x=>x.data.type==ModuleType.PointDefense))
+        {
+            if (module.FirePD(direction,this.GameObject())) return true;
         }
         return false;
     }

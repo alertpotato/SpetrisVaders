@@ -45,8 +45,9 @@ public class ProjectileManager : MonoBehaviour
         activeProjectiles.Add(shell);
     }
 
-    public void SpawnPointDefenseShot(Vector3 from, Vector3 to, int damage, float range, GameObject owner)
+    public void SpawnPointDefenseShot(Vector3 from, Vector3 to, int damage, float range,float spread, GameObject owner)
     {
+        SpawnBulletEffect(from, to,  spread, range,owner.transform);
         Vector2 dir = (to - from).normalized;
         RaycastHit2D[] hits = Physics2D.RaycastAll(from, dir, range);
         foreach (var hit in hits)
@@ -55,17 +56,22 @@ public class ProjectileManager : MonoBehaviour
             if (adapter != null && adapter.owner != owner)
             {
                 adapter.TakeDamage?.Invoke(damage);
-                //Debug.DrawLine(from, hit.point, Color.blue, 5f);
+                Debug.DrawLine(from, hit.point, Color.blue, 5f);
                 return;
             }
         }
         //Debug.DrawLine(from, from + (Vector3)dir * range, Color.red, 5f);
     }
-    public void SpawnBulletEffect(Vector3 from, Vector3 to,Transform origin)
+    public void SpawnBulletEffect(Vector3 from, Vector3 to,float radiusSpread, float maxRange,Transform origin)
     {
         var direction = to - from;
         float angleZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        ParticleSystem bullet = Instantiate(bullets,from,Quaternion.Euler(0f, 0f, angleZ-8));
+        float arc = Mathf.Rad2Deg * 2f * Mathf.Atan(radiusSpread / maxRange);
+        ParticleSystem bullet = Instantiate(bullets,from,Quaternion.Euler(0f, 0f, angleZ-arc/2));
+        var shape = bullet.shape;
+        shape.arc = arc;
+        var main = bullet.main;
+        main.startLifetime = maxRange / main.startSpeed.constant;
         bullet.transform.SetParent(origin);
     }
 

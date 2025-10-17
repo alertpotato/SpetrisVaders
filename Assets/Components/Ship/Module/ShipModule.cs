@@ -3,28 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.PlayerLoop;
 
 public enum ModuleType { Canon, Missile, PointDefense, Speed, Shield, Cockpit, Hull, Empty }
 public enum OutfitType { Canon, Missile, PointDefense, Shield, Empty, Cockpit }
-
+public class ModuleCell
+{
+    public Transform firePoint;
+    public ModuleCellScript script;
+    public GameObject visualizer;
+    public float lastShotTime;
+}
 [RequireComponent(typeof(PolygonCollider2D))]
 public class ShipModule : MonoBehaviour
 {
-    public ShipModuleStats data;
-    public int currentRotation;            // 0, 90, 180, 270
-    public int currentHP = 40;
-    public float speedBonus = 0f;
-    public float cooldown = 1f;
-    public int damage=0;
-    private float lastShot;
-    private float maxRange;
+    [Header("Components")]
     public PolygonCollider2D polyCollider;
     [SerializeField]private InertialBody inertialBody;
     public ModuleBuilder builder;
     public GameObject owner;
-    private Vector3 projectileAdjustment= Vector3.zero;
+    public ShipModuleStats data;
+    
+    [Header("Module stats")]
+    public int currentRotation;            // 0, 90, 180, 270
+    public int currentHP = 40;
+    public float speedBonus = 0f;
     public Vector2Int gridPosition;
+    
+    [Header("Outfit stats")]
+    public float cooldown = 1f;
+    public int damage=0;
+    private float lastShot;
+    private float maxRange;
+    private float accuracy;
+    private Vector3 projectileAdjustment= Vector3.zero;
+    
+    public List<ModuleCell> outfitCells = new List<ModuleCell>();
     private void Awake()
     {
         inertialBody = GetComponent<InertialBody>();
@@ -41,6 +56,7 @@ public class ShipModule : MonoBehaviour
         speedBonus = data.speedModifier;
         damage = data.damage;
         maxRange = data.maxRange;
+        accuracy = data.accuracy;
         builder.Initialize(data,currentRotation);
         GenerateCollider();
         
@@ -72,7 +88,19 @@ public class ShipModule : MonoBehaviour
             polyCollider.SetPath(i, square);
         }
     }
-
+    public bool FirePD(Vector3 direction,GameObject parent)
+    {
+        if (Time.time - lastShot < cooldown) return false;
+        if (data.type != ModuleType.PointDefense) return false;
+        lastShot = Time.time;
+        var spread = GetSpreadRadius(accuracy,maxRange,maxRange);
+        foreach (var cell in outfitCells)
+        {
+            var to = cell.firePoint.position + direction.normalized * maxRange;
+                     ProjectileManager.Instance.SpawnPointDefenseShot(cell.firePoint.position,to,damage,maxRange,spread,owner);
+        }
+        return true;
+    }
     public bool FireCanon(Vector3 direction,GameObject parent)
     {
         if (Time.time - lastShot < cooldown) return false;
@@ -143,7 +171,9 @@ public class ShipModule : MonoBehaviour
         GenerateCollider();
         var pd = transform.GetComponent<PointDefenseSystem>();
         if (pd != null) {pd.enabled = true; pd.Initialize(); }
-}
+
+        InitializeCells(ship.GetComponent<Ship>().faction);
+    }
     public void OnDetachFromShip(Vector3 shipCenter)
     {
         owner = gameObject;
@@ -162,6 +192,7 @@ public class ShipModule : MonoBehaviour
 
         Vector2 direction = ((Vector2)transform.position - (Vector2)shipCenter).normalized;
         ModuleSpawner.Instance.AddModule(gameObject, direction);
+        DropCells();
     }
 
     public void OnTakeDamage(int damage)
@@ -182,5 +213,88 @@ public class ShipModule : MonoBehaviour
     {
         currentRotation = newRotation;
         builder.UpdateModule(newRotation);
+    }
+    private float GetSpreadRadius(float maxSpread, float distanceToTarget, float maxDistance)
+    {
+        float radius = 0;
+        radius = maxSpread * Mathf.Clamp(distanceToTarget / maxDistance, 0, 1);
+        return radius;
+    }
+    
+    //--------------------CELLS CONTROL
+    private void InitializeCells(Faction faction)
+    {
+        for (int i = 0; i < data.shape.Length; i++)
+        {
+            if (data.shape[i].type == OutfitType.Empty) continue;
+
+            var cell = builder.cells[i];
+            var script = cell.GetComponent<ModuleCellScript>();
+
+            GameObject visual = null;
+            if (faction == Faction.Player)
+            {
+                visual = new GameObject(data.shape[i].type + "_Line_" + i);
+                visual.transform.SetParent(cell.transform);
+                LineRenderer lr = visual.AddComponent<LineRenderer>();
+                lr.material = GameGraphics.Instance.simpleHDRColor;
+                lr.startColor = new Color(1f,1f,1f,0.7f);
+                lr.endColor = new Color(1f,1f,1f,0f);
+                lr.startWidth = 0.1f;
+                lr.endWidth = 0.1f;
+                lr.positionCount = 2;
+                lr.sortingOrder = 60;
+                lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                lr.enabled = false;
+            }
+
+            outfitCells.Add(new ModuleCell
+            {
+                firePoint = cell.transform,
+                script = script,
+                visualizer = visual
+            });
+        }
+    }
+
+    public void LookAt(Vector2 target)
+    {
+        foreach (var cell in outfitCells)
+        {
+            Vector2 pos = (Vector2)cell.firePoint.position;
+            Vector2 dir = (target - pos);
+            Vector2 dirN = dir.normalized;
+            float angle = Mathf.Atan2(dirN.y, dirN.x) * Mathf.Rad2Deg;
+
+            if (cell.script?.outfitSprite != null)
+                cell.script.outfitSprite.transform.rotation = Quaternion.Euler(0, 0, angle - 90f);
+            if (cell.visualizer!=null)
+            {
+                var line = cell.visualizer.GetComponent<LineRenderer>();
+                line.enabled = true;
+                line.SetPosition(0, pos+dirN/2);
+                line.SetPosition(1, pos + dirN * Mathf.Min(dir.magnitude,maxRange/2));
+            }
+        }
+    }
+    public void DisableCells()
+    {
+        foreach (var cell in outfitCells)
+        {
+            if (cell.visualizer != null)
+            {
+                var line = cell.visualizer.GetComponent<LineRenderer>();
+                line.enabled = false;
+            }
+        }
+    }
+
+    private void DropCells()
+    {
+        foreach (var cell in outfitCells)
+        {
+            Destroy(cell.visualizer);
+        }
+        outfitCells.Clear();
     }
 }
