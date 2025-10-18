@@ -6,15 +6,18 @@ using Random = UnityEngine.Random;
 
 public class ModuleFactory : MonoBehaviour
 {
+    public static ModuleFactory Instance;
     private Dictionary<int, int> outfitNumberWeignts;
     private Dictionary<ModuleType, int> defaulModuleWeignts;
     public ShipModuleData[] allModules;
     public ShipModuleData cockpit;
+    public ShipModuleData hull;
     public GameObject modulePrefab;
     public int moduleCount;
-
+    
     void Awake()
     {
+        Instance = this;
         outfitNumberWeignts = new Dictionary<int, int>
         {
             { 1, 1000 },
@@ -41,6 +44,17 @@ public class ModuleFactory : MonoBehaviour
         moduleS.Initialize(actualData,rotation);
         newCockpit.name = $"M_{actualData.moduleName}_{moduleCount}";
         return newCockpit;
+    }
+    public GameObject GetHullModule(Transform parent = null)
+    {
+        moduleCount++;
+        var offCameraPoint = new Vector3(-999, -999, 0);
+        var actualData = new ShipModuleStats(hull);
+        GameObject newHull = Instantiate(modulePrefab, offCameraPoint, Quaternion.identity, parent!=null?parent.transform:this.transform);
+        ShipModule moduleS = newHull.GetComponent<ShipModule>();
+        moduleS.Initialize(actualData);
+        newHull.name = $"Hull_{moduleCount}";
+        return newHull;
     }
 
     public GameObject GetModule(string moduleName = null, Transform parent = null,Dictionary<ModuleType, int> moduleWeights = null)

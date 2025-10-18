@@ -5,6 +5,7 @@ using System.Linq;
 public class ShipGrid : MonoBehaviour
 {
     public Dictionary<Vector2Int, ShipModule> grid = new();
+    public Dictionary<Vector2Int, ShipModule> hullGrid = new();
     public float cellSize = 1f;
 
     public bool TryGetAttachPosition(ShipModule module, Vector2Int anchorPoint, out Vector2Int attachAdjustment,int rotation=-1,bool checkHoles =true)
@@ -65,6 +66,41 @@ public class ShipGrid : MonoBehaviour
         }
         module.gridPosition = anchorPosition;
     }
+
+    public bool AttachHull(ShipModule module, Vector2Int position)
+    {
+        if (hullGrid.ContainsKey(position)) return false;
+        hullGrid[position] = module;
+        return true;
+    }
+
+    public List<Vector2Int> GetMirrorHullPositions(ShipModule moduleToMirror)
+    {
+        List<Vector2Int> mirrorHullPositions = new();
+        var positions = grid.Where(x => x.Value == moduleToMirror).ToList();
+        foreach (var pos in positions)
+        {
+            if ( pos.Key.x==0) continue;
+            var mirrorredPos = new Vector2Int(-pos.Key.x, pos.Key.y);
+            if (!grid.ContainsKey(mirrorredPos)) mirrorHullPositions.Add(mirrorredPos);
+        }
+        return mirrorHullPositions;
+    }
+
+    public List<ShipModule> GetOverlapingHulls(ShipModule moduleToCheckAgainst)
+    {
+        List<ShipModule> overlapingHulls = new();
+        var positions = grid.Where(x => x.Value == moduleToCheckAgainst).Select(x=> x.Key).ToList();
+        foreach (var pos in positions)
+        {
+            if (hullGrid.TryGetValue(pos, out var hull) && hull != null)
+            {
+                overlapingHulls.Add(hull);
+            }
+        }
+        return overlapingHulls;
+    }
+
     public List<ShipModule> GetDisconnectedModules(ShipModule cockpit)
     {
         var result = new List<ShipModule>();
@@ -315,6 +351,21 @@ public class ShipGrid : MonoBehaviour
         foreach (var key in keysToRemove)
         {
             grid.Remove(key);
+        }
+    }
+    public void RemoveHull(ShipModule module)
+    {
+        if (module == null) return;
+
+        var keysToRemove = new List<Vector2Int>();
+        foreach (var kvp in hullGrid)
+        {
+            if (kvp.Value == module)
+                keysToRemove.Add(kvp.Key);
+        }
+        foreach (var key in keysToRemove)
+        {
+            hullGrid.Remove(key);
         }
     }
 }

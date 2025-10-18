@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class EnemyScan : MonoBehaviour
@@ -15,7 +17,7 @@ public class EnemyScan : MonoBehaviour
         Radar.gameObject.SetActive(true);
     }
 
-    public void ActivateScan(Vector3 scannedTargetPos,Vector2 dimensionMin, Vector2 dimensionMax,string shipType)
+    public void ActivateScan(Ship ship,Vector3 scannedTargetPos,Vector2 dimensionMin, Vector2 dimensionMax,string shipType)
     {
         Radar.gameObject.SetActive(true);
         Radar.transform.position = cam.WorldToScreenPoint(scannedTargetPos);
@@ -32,12 +34,37 @@ public class EnemyScan : MonoBehaviour
         
         borderRect.sizeDelta = size;
         
-        text.text = "Type: "+shipType.ToUpper();
-        text.rectTransform.sizeDelta = new Vector2(size.x-10,20);
+        text.text = "T : "+shipType.ToUpper()+"\n"+ShipInformnation(ship);
+        //text.rectTransform.sizeDelta = new Vector2(size.x-10,20);
     }
 
     public void DeactivateScan()
     {
         Radar.gameObject.SetActive(false);
+    }
+
+    public string ShipInformnation(Ship ship)
+    {
+        var countedTypes = new HashSet<ModuleType>
+        {
+            ModuleType.Canon,
+            ModuleType.Missile,
+            ModuleType.PointDefense
+        };
+
+        var countM = ship.modules
+            .Where(m => m != null && countedTypes.Contains(m.data.type))
+            .GroupBy(m => m.data.type)
+            .ToDictionary(g => g.Key, g => g.Count());
+        string info = "";
+        foreach (var i in countM)
+        {
+            if (i.Key==ModuleType.Canon) info+="CN : "+i.Value+"\n";
+            if (i.Key==ModuleType.Missile) info+="MS : "+i.Value+"\n";
+            if (i.Key==ModuleType.PointDefense) info+="PD : "+i.Value+"\n";
+        }
+
+        info +="V : "+ ship.inertialBody.velocity;
+        return info;
     }
 }

@@ -14,10 +14,12 @@ public class Ship : MonoBehaviour
     public InertialBody inertialBody;
     public ShipGrid grid;
     public List<ShipModule> modules = new List<ShipModule>();
+    public List<ShipModule> hullModules = new List<ShipModule>();
     [SerializeField]private GameObject ModuleParent;
     public ShipModule cockpit;
     public TypewriterMessageQueue HUDConsole;
     
+    [Header("Ship stats")]
     [Header("Ship stats")]
     public int shipAlignment = 180;
     public float thrust = 10;
@@ -72,9 +74,28 @@ public class Ship : MonoBehaviour
         module.OnAttachToShip(this.gameObject, inertialBody, shipAlignment);
         modules.Add(module);
         
+        //TODO make it more safe?
         if (cockpit == null)
             cockpit = module;
-
+        
+        //Fill certain spaces with hull-modules
+        foreach (var hullPos in grid.GetMirrorHullPositions(module))
+        {
+            var hull = ModuleFactory.Instance.GetHullModule(transform);
+            var hullS = hull.GetComponent<ShipModule>();
+            if(!grid.AttachHull(hullS, hullPos)) continue;
+            hullS.transform.SetParent(ModuleParent.transform);
+            hullS.transform.localPosition = new Vector3(hullPos.x, hullPos.y, 0);
+            hullS.OnAttachToShip(this.gameObject, inertialBody, shipAlignment);
+            hullModules.Add(hullS);
+        }
+        //delete hulls that are overlapped by new module
+        foreach (var h in grid.GetOverlapingHulls(module))
+        {
+            grid.RemoveHull(h);
+            hullModules.Remove(h);
+            Destroy(h.gameObject);
+        }
         UpdateStats();
         if (HUDConsole!=null) HUDConsole.EnqueueMessage("> UPGRADE SUCCESSFUL. INSTALLED "+module.name.ToString().ToUpper());
     }

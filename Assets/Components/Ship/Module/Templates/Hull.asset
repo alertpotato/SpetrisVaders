@@ -15,7 +15,9 @@ MonoBehaviour:
   moduleName: 
   type: 0
   outfitType: 0
-  shape: []
+  shape:
+  - localPosition: {x: 0, y: 0}
+    type: 4
   baseHealth: 20
   cooldown: 0
   speedModifier: 0

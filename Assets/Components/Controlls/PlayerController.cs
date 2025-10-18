@@ -112,8 +112,13 @@ public class PlayerController : MonoBehaviour
             if (newDist < distanceToCursor)
             { distanceToCursor = newDist; scannedShip = newShip; entry = enemy;}
         }
+
         if (scannedShip != null)
-            Scan.ActivateScan(scannedShip.transform.position, scannedShip.dimensionsMin, scannedShip.dimensionsMax,entry.archetype.type.ToString());
+        {
+            
+            Scan.ActivateScan(scannedShip,scannedShip.transform.position, scannedShip.dimensionsMin, scannedShip.dimensionsMax,
+                entry.archetype.type.ToString());
+        }
         else Scan.DeactivateScan();
         return scannedShip;
     }
