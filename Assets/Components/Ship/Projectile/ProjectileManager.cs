@@ -64,14 +64,22 @@ public class ProjectileManager : MonoBehaviour
     }
     public void SpawnBulletEffect(Vector3 from, Vector3 to,float radiusSpread, float maxRange,Transform origin)
     {
+        //direction and arc based on bullet accuracy
         var direction = to - from;
         float angleZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         float arc = Mathf.Rad2Deg * 2f * Mathf.Atan(radiusSpread / maxRange);
         ParticleSystem bullet = Instantiate(bullets,from,Quaternion.Euler(0f, 0f, angleZ-arc/2));
         var shape = bullet.shape;
         shape.arc = arc;
+        //lifetime based on range and speed
         var main = bullet.main;
         main.startLifetime = maxRange / main.startSpeed.constant;
+        //ignoring its own collision
+        var collision = bullet.collision; 
+        collision.collidesWith = LayerMask.GetMask("PlayerShip", "EnemyShip", "Environment", "Projectile");
+        int ownerLayer = origin.gameObject.layer;
+        collision.collidesWith &= ~(1 << ownerLayer);
+        
         bullet.transform.SetParent(origin);
     }
 

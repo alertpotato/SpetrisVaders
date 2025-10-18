@@ -154,25 +154,28 @@ public class ShipModule : MonoBehaviour
         {
             adapter.owner = ship;
         }
-
+        //Inertial body logic
         if (inertialBody != null)
         {
             inertialBody.enabled = false;
             inertialBody.velocity = Vector2.zero;
             inertialBody = newInertialBody;
         }
-
+        //aligment player vs enemy
         foreach (var cell in builder.cells)
         {
             cell.transform.rotation = Quaternion.Euler(0,0,alignment);
             projectileAdjustment = new Vector3(0f, alignment == 0 ? 0.5f : -0.5f, 0f);
         }
-
+        //regenerate collider just in case
         GenerateCollider();
+        //pd activator
         var pd = transform.GetComponent<PointDefenseSystem>();
         if (pd != null) {pd.enabled = true; pd.Initialize(); }
-
+        //init cells, if player - create some vizual staff for each outfit
         InitializeCells(ship.GetComponent<Ship>().faction);
+        //inherit ship layer
+        gameObject.layer = ship.layer;
     }
     public void OnDetachFromShip(Vector3 shipCenter)
     {

@@ -14,17 +14,20 @@ public class ShipFactory : MonoBehaviour
         shipCount = 0;
     }
 
-    public GameObject GetShip(int shipAlignment=180)
+    public GameObject GetShip(int shipAlignment=180,Faction faction = Faction.Neutral)
     {
         shipCount++;
         var offCameraPoint = new Vector3(-999, -999, 0);
         GameObject ship = Instantiate(shipPrefab, offCameraPoint, Quaternion.identity, this.transform);
         var ShipScript = ship.GetComponent<Ship>();
         ShipScript.shipAlignment = shipAlignment;
-        ShipScript.InitializeShip(Faction.Neutral);
+        ShipScript.InitializeShip(faction);
         var cockpit = modules.GetCockpitModule(shipAlignment);
         RandomAttach(ShipScript,out GameObject module,cockpit);
         ship.name = $"Ship_{shipCount}";
+        if (faction == Faction.Player) ship.layer = LayerMask.NameToLayer(GameLogic.Instance.playerLayer);
+        else ship.layer = LayerMask.NameToLayer(GameLogic.Instance.enemyLayer);
+        cockpit.layer = ship.layer;
         return ship;
     }
     public GameObject GetShip(Dictionary<ModuleType, int> moduleWeights = null,int numberOfModules = 3,GameObject predefinedShipPrefab = null,Faction faction = Faction.EvilFleet,int shipAlignment=180,Dictionary<Vector2Int, float> directionChances=null)
@@ -33,8 +36,9 @@ public class ShipFactory : MonoBehaviour
         int counter = 0;
         GameObject ship;
         if (predefinedShipPrefab != null) ship = predefinedShipPrefab;
-            else ship = GetShip(shipAlignment);
+            else ship = GetShip(shipAlignment,faction);
         var ShipScript = ship.GetComponent<Ship>();
+        if (faction == Faction.Player) ship.layer = LayerMask.NameToLayer(GameLogic.Instance.playerLayer);;
         ShipScript.InitializeShip(faction);
         
         while (ShipScript.modules.Count < numberOfModules+1)

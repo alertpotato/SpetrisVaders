@@ -7,7 +7,7 @@ public class CursorController : MonoBehaviour
     [Header("Circle")]
     [SerializeField] private int segments = 64;
     [SerializeField] private float radius = 1f;
-    [SerializeField] private float pulseScale = 1.4f;
+    [SerializeField] private float pulseScale = 1.7f;
     [SerializeField] private float pulseSpeed = 5f;
     private float currentRadius;
     [Header("Line settings")]

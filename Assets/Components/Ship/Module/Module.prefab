@@ -55,6 +55,11 @@ MonoBehaviour:
     outfitType: 0
     shape: []
     baseHealth: 0
+    cooldown: 0
+    speedModifier: 0
+    damage: 0
+    maxRange: 0
+    accuracy: 0
     mainSprite: {fileID: 0}
     backSprite: {fileID: 0}
     outfitSprite: {fileID: 0}
@@ -72,24 +77,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3139bf5e2b864daba7e4b814ab36a451, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  polyCollider: {fileID: 8544351682604212358}
+  inertialBody: {fileID: 0}
+  builder: {fileID: 8590479126390652615}
+  owner: {fileID: 0}
   data:
     moduleName: 
     type: 2
     outfitType: 0
     shape: []
     baseHealth: 0
+    cooldown: 0
+    speedModifier: 0
+    damage: 0
+    maxRange: 0
+    accuracy: 0
     mainSprite: {fileID: 0}
     backSprite: {fileID: 0}
     outfitSprite: {fileID: 0}
-  gridPosition: {x: 0, y: 0}
   currentRotation: 0
   currentHP: 0
   speedBonus: 0
+  gridPosition: {x: 0, y: 0}
   cooldown: 1
-  polyCollider: {fileID: 8544351682604212358}
-  inertialBody: {fileID: 0}
-  builder: {fileID: 8590479126390652615}
-  owner: {fileID: 0}
+  damage: 0
 --- !u!114 &3893669047978909777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,7 +117,8 @@ MonoBehaviour:
   drag: 1
   maxSpeed: 10
   velocity: {x: 0, y: 0}
-  colliders: []
+  acceleration: 0
+  speed: 0
 --- !u!60 &8544351682604212358
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -136,7 +148,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -171,8 +183,8 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_AngularDrag: 0
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

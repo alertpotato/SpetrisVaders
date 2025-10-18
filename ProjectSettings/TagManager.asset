@@ -12,11 +12,11 @@ TagManager:
   - Water
   - UI
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - PlayerShip
+  - EnemyShip
+  - Projectile
+  - Environment
+  - Particle
   - 
   - 
   - 

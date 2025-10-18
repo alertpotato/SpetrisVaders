@@ -108,6 +108,7 @@ public class Ship : MonoBehaviour
     {
         foreach (var module in controlledModules)
         {
+            if (module==null) continue;
             module.LookAt(lookAt);
         }
     }
@@ -115,6 +116,7 @@ public class Ship : MonoBehaviour
     {
         foreach (var module in controlledModules)
         {
+            if (module==null) continue;
             module.DisableCells();
         }
         controlledModules.Clear();
