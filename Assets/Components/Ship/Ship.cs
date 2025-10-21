@@ -62,11 +62,9 @@ public class Ship : MonoBehaviour
         UpdateShipDimensions();
     }
 
-    public void AttachModule(Candidate candidateModule)
+    public void AttachModule(GameObject moduleG, Vector2Int anchor, Vector2Int adjustment)
     {
-        var module = candidateModule.module.GetComponent<ShipModule>();
-        var anchor = candidateModule.Primary.anchor;
-        var adjustment = candidateModule.Primary.adjustment;
+        var module = moduleG.GetComponent<ShipModule>();
     
         grid.Attach(module, anchor, adjustment);
         module.transform.SetParent(ModuleParent.transform);
@@ -182,14 +180,14 @@ public class Ship : MonoBehaviour
         }
         return false;
     }
-    public bool FireMissle(List<Ship> possibleTargets)
+    public bool FireMissle(Vector3 target)
     {
         if (Time.time - lastShot < missileFireCooldown) return false;
         lastShot = Time.time;
         
         foreach (var module in modules.Where(x=>x.data.type==ModuleType.Missile))
         {
-            if (module.FireMissile( possibleTargets,this.GameObject())) return true;
+            if (module.FireMissile( target,this.GameObject())) return true;
         }
         return false;
     }

@@ -17,7 +17,7 @@ public class ModuleSpawner : MonoBehaviour
     void Update()
     {
         CleanupModules();
-        return;
+        //return;
         //Spawn logic
         spawnTimer += Time.deltaTime;
         if (spawnTimer >= spawnInterval)
@@ -54,7 +54,7 @@ public class ModuleSpawner : MonoBehaviour
         body.maxSpeed = 10f;
 
         body.velocity = Vector2.down * Random.Range(0.3f, 4f);
-
+        module.layer = LayerMask.NameToLayer(GameLogic.Instance.environmentLayer);
         modules.Add(module, body);
     }
 
@@ -94,7 +94,7 @@ public class ModuleSpawner : MonoBehaviour
         body.maxSpeed = 10f;
 
         body.velocity = direction * Random.Range(0.3f, 4f);
-
+        module.layer = LayerMask.NameToLayer(GameLogic.Instance.environmentLayer);
         modules.Add(module, body);
     }
 

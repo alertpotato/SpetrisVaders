@@ -27,6 +27,9 @@ public class CursorController : MonoBehaviour
     [SerializeField] private GameObject PDCursor;
     [SerializeField] private ParticleSystem PDEffectLeft;
     [SerializeField] private ParticleSystem PDEffectRight;
+    [SerializeField] private GameObject MissileCursor;
+    [SerializeField] private Texture MissileCursorTexture;
+    [SerializeField] private GameObject MissileEffect;
     
 
     void Awake()
@@ -43,6 +46,15 @@ public class CursorController : MonoBehaviour
         currentRadius = radius;
     }
 
+    void Start()
+    {
+        Renderer rend = MissileCursor.GetComponent<Renderer>();
+        MaterialPropertyBlock block = new MaterialPropertyBlock();
+        rend.GetPropertyBlock(block);
+        block.SetTexture("_MainTexture", MissileCursorTexture);
+        rend.SetPropertyBlock(block);
+    }
+
     void Update()
     {
         switch (currentMode)
@@ -55,6 +67,8 @@ public class CursorController : MonoBehaviour
                 DrawCircle(currentRadius);
                 break;
             case CursorMode.Triangle:
+                MissileCursor.transform.localPosition = positionAdjastment;
+                MissileCursor.transform.up = currentDirection;
                 break;
             case CursorMode.Square:
                 PDCursor.transform.localPosition = positionAdjastment;
@@ -67,12 +81,17 @@ public class CursorController : MonoBehaviour
     {
         if (mode == CursorMode.Square)
         {
+            DisableAll();
             PDCursor.SetActive(true);
-            line.enabled = false;
+        }
+        else if (mode == CursorMode.Triangle)
+        {
+            DisableAll();
+            MissileCursor.SetActive(true);
         }
         else
         {
-            PDCursor.SetActive(false);
+            DisableAll();
             line.enabled = true;
         }
         currentMode = mode;
@@ -93,6 +112,10 @@ public class CursorController : MonoBehaviour
                 currentRadius = radius * pulseScale;
                 break;
             case CursorMode.Triangle:
+                var newEffect = Instantiate(MissileEffect, MissileCursor.transform.localPosition,
+                    MissileCursor.transform.localRotation);
+                newEffect.transform.SetParent(MissileCursor.transform.parent);
+                Destroy(newEffect, 3f);
                 break;
             case CursorMode.Square:
                 PDEffectLeft.Play();
@@ -117,26 +140,21 @@ public class CursorController : MonoBehaviour
     {
         Vector3[] points = new Vector3[6];
         
-        points[0] = new Vector3(-1 + positionAdjastment.x, positionAdjastment.y, 0);
-        points[1] = new Vector3( 1 + positionAdjastment.x, positionAdjastment.y, 0);
+        points[0] = new Vector3(-0.5f + positionAdjastment.x, positionAdjastment.y, 0);
+        points[1] = new Vector3( 0.5f + positionAdjastment.x, positionAdjastment.y, 0);
         points[2] = new Vector3(positionAdjastment.x, positionAdjastment.y, 0);
-        points[3] = new Vector3(positionAdjastment.x,  1 + positionAdjastment.y, 0);
-        points[4] = new Vector3(positionAdjastment.x, -1 + positionAdjastment.y, 0);
+        points[3] = new Vector3(positionAdjastment.x,  0.5f + positionAdjastment.y, 0);
+        points[4] = new Vector3(positionAdjastment.x, -0.5f + positionAdjastment.y, 0);
         points[5] = new Vector3(positionAdjastment.x, positionAdjastment.y, 0);
         
         line.positionCount = points.Length;
         line.SetPositions(points);
     }
-    private void DrawSquare()
+
+    private void DisableAll()
     {
-        Vector3[] points = new Vector3[4];
-        
-        points[0] = new Vector3(-1 + positionAdjastment.x, 1 + positionAdjastment.y, 0);
-        points[1] = new Vector3( 1 + positionAdjastment.x, 1 + positionAdjastment.y, 0);
-        points[2] = new Vector3( 1 + positionAdjastment.x,-1 + positionAdjastment.y, 0);
-        points[3] = new Vector3(-1 + positionAdjastment.x,-1 + positionAdjastment.y, 0);
-        
-        line.positionCount = points.Length;
-        line.SetPositions(points);
+        PDCursor.SetActive(false);
+        MissileCursor.SetActive(false);
+        line.enabled = false;
     }
 }

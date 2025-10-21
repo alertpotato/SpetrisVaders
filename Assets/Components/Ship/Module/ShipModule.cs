@@ -114,6 +114,27 @@ public class ShipModule : MonoBehaviour
         }
         return true;
     }
+    public bool FireMissile(Vector3 target,GameObject parent)
+    {
+        if (Time.time - lastShot < cooldown) return false;
+        if (data.type != ModuleType.Missile) return false;
+        
+        lastShot = Time.time;
+        
+        Vector3 gridCenter = parent.GetComponent<Ship>().GetGridCenterLocal();
+        Vector3 startDirection = Vector3.zero;
+        if (transform.localPosition.x > gridCenter.x)
+            startDirection = Vector3.right;
+        else
+            startDirection = Vector3.left;
+
+        for (int i = 0; i < data.shape.Length; i++)
+        {
+            if (data.shape[i].type == OutfitType.Missile)
+                ProjectileManager.Instance.SpawnMissile(builder.cells[i].transform.position, target,startDirection,damage, parent);
+        }
+        return true;
+    }
     public bool FireMissile(List<Ship> targets,GameObject parent)
     {
         if (Time.time - lastShot < cooldown) return false;

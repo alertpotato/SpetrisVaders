@@ -16,24 +16,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "CanonShot",
-                    "type": "Button",
-                    "id": "120680bf-43de-4150-aded-68a3bed02294",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MissileShot",
-                    "type": "Button",
-                    "id": "24313271-b043-41a9-9c34-5fedc918716d",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "Press",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "AttachModule",
                     "type": "Button",
                     "id": "d6fd8ad1-20d4-4afe-8c98-01f952d4c9c7",
@@ -70,7 +52,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Fire",
+                    "name": "PrimaryAction",
                     "type": "Button",
                     "id": "4782ff89-0431-4230-8d40-b7b45eb5334d",
                     "expectedControlType": "",
@@ -88,7 +70,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "NextFireMode",
+                    "name": "Scroll",
                     "type": "Value",
                     "id": "ecb769f8-3a3f-45b2-b873-608d20edba7e",
                     "expectedControlType": "Vector2",
@@ -127,6 +109,15 @@
                     "name": "FireModePD",
                     "type": "Button",
                     "id": "e5dfec2f-8a6a-4ef9-aabf-7a213a7c68be",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SecondaryAction",
+                    "type": "Button",
+                    "id": "94114962-fdc1-4b50-8522-c66b02e02364",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -246,17 +237,6 @@
                 },
                 {
                     "name": "",
-                    "id": "ffbf039f-1b38-4cfe-8433-4e9c4c580374",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CanonShot",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "ccda0af1-6921-4d7a-a721-108c03179a1f",
                     "path": "<Keyboard>/f",
                     "interactions": "",
@@ -301,23 +281,12 @@
                 },
                 {
                     "name": "",
-                    "id": "c65b3b3d-16e0-4def-8808-e3223c18f2b9",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MissileShot",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "bd068ccb-5454-41c9-bf3e-ebf7bff6dc51",
                     "path": "<Mouse>/leftButton",
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "Fire",
+                    "action": "PrimaryAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -339,7 +308,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "NextFireMode",
+                    "action": "Scroll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -384,6 +353,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "FireModePD",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2cc7bc0d-3a75-42cc-a7ec-76c4b3dc3889",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SecondaryAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

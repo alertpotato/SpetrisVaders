@@ -10,7 +10,7 @@ public class GameLogic : ScriptableObject
     public string playerLayer;
     public string enemyLayer;
     public string projectileLayer;
-    public string obstacleLayer;
+    public string environmentLayer;
     public string particleLayer;
     
     private void OnEnable()

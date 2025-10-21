@@ -24,6 +24,6 @@ MonoBehaviour:
   damage: 0
   maxRange: 0
   accuracy: 0
-  mainSprite: {fileID: 1491591481, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
+  mainSprite: {fileID: 1031088583, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
   backSprite: {fileID: 0}
   outfitSprite: {fileID: 0}

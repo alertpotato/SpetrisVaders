@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 public class DockingVisualizer : MonoBehaviour
 {
@@ -23,7 +24,9 @@ public class DockingVisualizer : MonoBehaviour
     private LineRenderer line;
     public DockingCandidatesManager candidates = new DockingCandidatesManager();
     [Header("Variables")]
-    private GameObject currentShipModule;
+    public GameObject currentShipModule;
+    public List<AnchorOption> currentOptions = new();
+    public AnchorOption closestOption;
     public int currentRotation = 0;
     public bool forbidEmptySpaces = false;
     
@@ -36,7 +39,6 @@ public class DockingVisualizer : MonoBehaviour
         line.positionCount = 0;
         shipGrid = GetComponent<ShipGrid>();
     }
-
     public void Initialize(GameObject anchorPref, GameObject ghostPref, ModuleSpawner freeM, GameObject anchorParent)
     {
         anchorPrefab = anchorPref;
@@ -44,8 +46,107 @@ public class DockingVisualizer : MonoBehaviour
         freeModules = freeM;
         AnchorParent = anchorParent;
     }
+    public void UpdateDocking(Vector3 modulePosition,GameObject module=null)
+    {
+        ClearVisuals();
+        if (module == null) return;
+        if (currentShipModule != module)
+        {
+            currentRotation = module.GetComponent<ShipModule>().currentRotation;
+            UpdateCandidate(module);
+        }
+        else
+        {
+            UpdateDocking(module.GetComponent<ShipModule>(),  currentRotation,modulePosition);
+        }
+    }
+    public void UpdateDocking(ShipModule floatingModule,int newRotation,Vector3 modulePosition)
+    {
+        if (floatingModule == null) return;
+        
+        closestOption = GetClosestAnchorOption(modulePosition, currentOptions);
+        GameObject closestAnchorG = null;
+        foreach (var candidateAnchor in currentOptions)
+        {
+            var anchor = Instantiate(anchorPrefab, AnchorParent.transform);
+            anchor.GetComponent<SpriteRenderer>().color = anchorColor;
+            anchor.transform.localPosition = new Vector3(candidateAnchor.anchor.x, candidateAnchor.anchor.y, 0);
+            activeAnchors.Add(anchor);
+            if (closestOption.anchor == candidateAnchor.anchor) closestAnchorG = anchor;
+        }
+        closestAnchorG.GetComponent<SpriteRenderer>().color = closestAnchorColor;
+        
+        // ghost
+        ghostInstance = Instantiate(ghostPrefab, transform);
+        ghostInstance.transform.localPosition = new Vector3(closestOption.anchor.x + closestOption.adjustment.x, closestOption.anchor.y + closestOption.adjustment.y, 0);
+        ghostInstance.GetComponent<GhostBuilder>().Initialize(floatingModule.data,newRotation);
+        
+        // line
+        line.positionCount = 2;
+        line.SetPosition(0, floatingModule.transform.position);
+        line.SetPosition(1, closestAnchorG.transform.position);
+    }
+    public List<Vector2Int> TryGetNearestAnchors(
+        Vector3 modulePosition,
+        IReadOnlyList<Vector2Int> allowedCells,
+        float visualizeDistance,
+        int maxCount = 5)
+    {
+        var result = new List<Vector2Int>();
+        if (allowedCells == null || allowedCells.Count == 0)
+            return result;
 
-    private void Update()
+        float limitSqr = visualizeDistance * visualizeDistance;
+
+        var candidates = new List<(float sqr, Vector2Int cell)>();
+
+        for (int i = 0; i < allowedCells.Count; i++)
+        {
+            Vector2 worldPos = shipGrid.GridToWorld(allowedCells[i]);
+            float sqr = ((Vector2)modulePosition - worldPos).sqrMagnitude;
+
+            if (sqr <= limitSqr)
+            {
+                candidates.Add((sqr, allowedCells[i]));
+            }
+        }
+        
+        candidates.Sort((a, b) => a.sqr.CompareTo(b.sqr));
+
+        for (int i = 0; i < Mathf.Min(maxCount, candidates.Count); i++)
+            result.Add(candidates[i].cell);
+
+        return result;
+    }
+
+    private bool UpdateCandidate(GameObject module)
+    {
+        var newSM = module.GetComponent<ShipModule>();
+        currentOptions.Clear();
+        var allowedCells = shipGrid.GetBorderEmptyCells().ToList();
+        if (allowedCells.Count==0) return false;
+        foreach (var anchor in allowedCells)
+        {
+            if (shipGrid.TryGetAttachPosition(newSM, anchor, out var attachAdjustment, currentRotation,forbidEmptySpaces))
+            {
+                currentOptions.Add(new AnchorOption(anchor, attachAdjustment));
+            }
+        }
+
+        if (currentOptions.Count > 0)
+        {
+            currentShipModule = module;
+            return true;
+        }
+        else
+        {
+            currentShipModule = null;
+            return false;
+        }
+    }
+
+    //OLD
+    private void UpdateOld()
     {
         var allowedCells = shipGrid.GetBorderEmptyCells().ToList();
         if (allowedCells == null || allowedCells.Count == 0) 
@@ -155,6 +256,27 @@ public class DockingVisualizer : MonoBehaviour
 
         return result;
     }
+    public AnchorOption GetClosestAnchorOption(Vector2 targetWorldPos, List<AnchorOption> anchors)
+    {
+        if (anchors == null || anchors.Count == 0)
+            return default;
+
+        float minDistance = float.MaxValue;
+        AnchorOption closestAnchor = anchors[0];
+
+        foreach (var anchor in anchors)
+        {
+            Vector2 worldPos = shipGrid.GridToWorld(anchor.anchor);
+            float distance = Vector2.Distance(worldPos, targetWorldPos);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestAnchor = anchor;
+            }
+        }
+        return closestAnchor;
+    }
     public void ClearVisuals()
     {
         foreach (var a in activeAnchors)
@@ -164,8 +286,9 @@ public class DockingVisualizer : MonoBehaviour
         if (ghostInstance) Destroy(ghostInstance);
         line.positionCount = 0;
     }
-    public void RotateModule()
+    public void RotateModule(int delta)
     {
-        currentRotation = (currentRotation + 90) % 360;
+        currentRotation = (currentRotation + delta) % 360;
+        UpdateCandidate(currentShipModule);
     }
 }

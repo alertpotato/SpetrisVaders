@@ -6,10 +6,9 @@ using UnityEngine;
 public class PointDefenseSystem : MonoBehaviour
 {
     [Header("Settings")]
-    public float cooldown = 0.5f;
+    public float cooldown = 0.2f;
     public float maxRange = 10f;
     public float scanRange = 20f;
-    public int burstCount = 5;
     public float burstSpread = 2f;
     public int damage = 1;
 
@@ -152,18 +151,17 @@ public class PointDefenseSystem : MonoBehaviour
     {
         if (cell.target == null) return false;
         if (Vector3.Distance(cell.firePoint.position, cell.target.transform.position) > maxRange) return false;
-        for (int i = 0; i < burstCount; i++)
-        {
-            Vector3 hitPos = cell.target.transform.position + (Vector3)Random.insideUnitCircle * burstSpread;
-            ProjectileManager.Instance.SpawnPointDefenseShot(
-                cell.firePoint.position,
-                hitPos,
-                damage,
-                maxRange,
-                1,
-                module.owner
-            );
-        }
+
+        Vector3 hitPos = cell.target.transform.position + (Vector3)Random.insideUnitCircle * burstSpread;
+        ProjectileManager.Instance.SpawnPointDefenseShot(
+            cell.firePoint.position,
+            hitPos,
+            damage,
+            maxRange,
+            1,
+            module.owner
+        );
+
 
         ProjectileManager.Instance.SpawnBulletEffect(cell.firePoint.position, cell.target.transform.position,1,maxRange, cell.firePoint);
         return true;

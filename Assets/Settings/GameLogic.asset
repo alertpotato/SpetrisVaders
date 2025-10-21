@@ -15,5 +15,5 @@ MonoBehaviour:
   playerLayer: PlayerShip
   enemyLayer: EnemyShip
   projectileLayer: Projectile
-  obstacleLayer: Environment
+  environmentLayer: Environment
   particleLayer: Particle

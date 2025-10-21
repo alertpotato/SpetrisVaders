@@ -67,7 +67,7 @@ public class ArchetypeWasp : ShipArchetype
 
     public override void TryToFire(Ship ship, Ship player)
     {
-       ship.FireMissle(new List<Ship>() { player });
+       ship.FireMissle(player.transform.position);
        if (IsAlignedWithPlayer(ship, player, verticalAlignTolerance)) ship.FireCanons();
     }
 

@@ -103,9 +103,7 @@ public class ShipFactory : MonoBehaviour
             var anchor = candidate.Cell;
             if (ship.grid.TryGetAttachPosition(module, anchor, out var attachAdjustment, module.currentRotation))
             {
-                var anchorList = new List<AnchorOption> { new(anchor, attachAdjustment) };
-                var moduleCandidate = new Candidate(newModule, anchorList);
-                ship.AttachModule(moduleCandidate);
+                ship.AttachModule(newModule,anchor, attachAdjustment);
                 attached = true;
                 break;
             }

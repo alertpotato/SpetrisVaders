@@ -53,11 +53,11 @@ public class ArchetypePatrol : ShipArchetype
         {
             case EnemyState.Idle:
                 ship.FireCanons();
-                ship.FireMissle(new List<Ship>() { player });
+                ship.FireMissle(player.transform.position);
                 break;
             
             case EnemyState.Traveling:
-                ship.FireMissle(new List<Ship>() { player });
+                ship.FireMissle(player.transform.position);
                 if (IsAlignedWithPlayer(ship, player, verticalAlignTolerance / 2)) ship.FireCanons();;
                 break;
             case EnemyState.Regroup:
