@@ -5,6 +5,7 @@ public class ModuleSpawner : MonoBehaviour
 {
     public static ModuleSpawner Instance;
     [Header("Components")]
+    public GameObject ModuleParent;
     public ModuleFactory MFactory;
     public Dictionary<GameObject, InertialBody> modules = new();
     [Header("Variables")]
@@ -17,7 +18,7 @@ public class ModuleSpawner : MonoBehaviour
     void Update()
     {
         CleanupModules();
-        //return;
+        return;
         //Spawn logic
         spawnTimer += Time.deltaTime;
         if (spawnTimer >= spawnInterval)
@@ -86,7 +87,7 @@ public class ModuleSpawner : MonoBehaviour
     }
     public void AddModule(GameObject module,Vector2 direction)
     {
-        module.transform.SetParent(transform);
+        module.transform.SetParent(ModuleParent.transform);
 
         var body = module.GetComponent<InertialBody>();
         body.mass = 1f;

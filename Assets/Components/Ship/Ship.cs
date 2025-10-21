@@ -98,29 +98,44 @@ public class Ship : MonoBehaviour
         if (HUDConsole!=null) HUDConsole.EnqueueMessage("> UPGRADE SUCCESSFUL. INSTALLED "+module.name.ToString().ToUpper());
     }
 
+    public void OnModuleBroken(ShipModule module)
+    {
+        if (HUDConsole!=null && module.data.type!=ModuleType.Cockpit) HUDConsole.EnqueueMessage("> DAMAGE REPORT: BROKEN "+module.name.ToString().ToUpper(),ConsoleMessageType.WARNING);
+        controlledModules.Remove(module);
+        
+        if (module == cockpit)
+        {
+            OnModuleDestroyed(module);
+            return;
+        }
+        UpdateStats();
+    }
     public void OnModuleDestroyed(ShipModule module)
     {
-        if (HUDConsole!=null && module.data.type!=ModuleType.Cockpit) HUDConsole.EnqueueMessage("> DAMAGE REPORT: LOST "+module.name.ToString().ToUpper(),ConsoleMessageType.WARNING);
+        if (HUDConsole!=null) HUDConsole.EnqueueMessage("> CRITICAL DA,MAA#AD@ /.|--....",ConsoleMessageType.WARNING);
         grid.RemoveModule(module);
         modules.Remove(module);
         var disconnectedModules = grid.GetDisconnectedModules(cockpit);
-        Vector3 shipCenter = grid.GridToWorld(GetGridCenterLocal());
         
         foreach (var m in disconnectedModules)
         {
             modules.Remove(m);
             controlledModules.Remove(m);
             grid.RemoveModule(m);
-            m.OnDetachFromShip(shipCenter);
+            m.OnDetachFromShip();
         }
-        
-        if (module == cockpit)
+        GraveyardManager.Instance.DecideOnDestroyedModules(disconnectedModules,this);
+        Vector3 shipCenter = grid.GridToWorld(GetGridCenterLocal());
+        var disconnectedHullModules = new List<ShipModule>();
+        disconnectedHullModules.AddRange(hullModules);
+        foreach (var hull in disconnectedHullModules)
         {
-            if (HUDConsole!=null) HUDConsole.EnqueueMessage("> CRITICAL DA,MAA#AD@ /.|--....",ConsoleMessageType.WARNING);
-            Destroy(gameObject);
-            return;
+            hullModules.Remove(hull);
+            grid.RemoveHull(hull);
+            hull.OnDetachFromShip();
+            Vector2 direction = (Vector2)(hull.transform.position - shipCenter).normalized;
+            GraveyardManager.Instance.AddModule(hull.gameObject,direction);
         }
-        UpdateStats();
     }
 
     public void UpdateModulesControl(Vector2 lookAt)
@@ -140,7 +155,7 @@ public class Ship : MonoBehaviour
         }
         controlledModules.Clear();
         if (type == ModuleType.Empty) return;
-        foreach (var module in modules.Where(x=>x.data.type==type))
+        foreach (var module in modules.Where(x=>x.data.type==type && x.isFunctioning))
         {
             controlledModules.Add(module);
         }
@@ -151,7 +166,7 @@ public class Ship : MonoBehaviour
         if (Time.time - lastShot < canonFireCooldown) return false;
         lastShot = Time.time;
         var direction = position - transform.position;
-        foreach (var module in modules.Where(x=>x.data.type==ModuleType.Canon))
+        foreach (var module in modules.Where(x=>x.data.type==ModuleType.Canon && x.isFunctioning))
         {
             if (module.FireCanon(direction,this.GameObject())) return true;
         }
@@ -160,7 +175,7 @@ public class Ship : MonoBehaviour
     public bool FireAtPD(Vector3 position)
     {
         var direction = position - transform.position;
-        foreach (var module in modules.Where(x=>x.data.type==ModuleType.PointDefense))
+        foreach (var module in modules.Where(x=>x.data.type==ModuleType.PointDefense && x.isFunctioning))
         {
             if (module.FirePD(direction,this.GameObject())) return true;
         }
@@ -174,7 +189,7 @@ public class Ship : MonoBehaviour
         
         var direction = Vector3.up;
         if (shipAlignment != 0) direction = Vector3.down;
-        foreach (var module in modules.Where(x=>x.data.type==ModuleType.Canon))
+        foreach (var module in modules.Where(x=>x.data.type==ModuleType.Canon && x.isFunctioning))
         {
             if (module.FireCanon(direction,this.GameObject())) return true;
         }
@@ -185,7 +200,7 @@ public class Ship : MonoBehaviour
         if (Time.time - lastShot < missileFireCooldown) return false;
         lastShot = Time.time;
         
-        foreach (var module in modules.Where(x=>x.data.type==ModuleType.Missile))
+        foreach (var module in modules.Where(x=>x.data.type==ModuleType.Missile && x.isFunctioning))
         {
             if (module.FireMissile( target,this.GameObject())) return true;
         }

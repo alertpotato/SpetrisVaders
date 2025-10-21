@@ -25,11 +25,12 @@ public class ShipModule : MonoBehaviour
     public GameObject owner;
     public ShipModuleStats data;
     
-    [Header("Module stats")]
+    [Header("Module variables")]
     public int currentRotation;            // 0, 90, 180, 270
     public int currentHP = 40;
     public float speedBonus = 0f;
     public Vector2Int gridPosition;
+    public bool isFunctioning = true;
     
     [Header("Outfit stats")]
     public float cooldown = 1f;
@@ -38,8 +39,10 @@ public class ShipModule : MonoBehaviour
     private float maxRange;
     private float accuracy;
     private Vector3 projectileAdjustment= Vector3.zero;
-    
     public List<ModuleCell> outfitCells = new List<ModuleCell>();
+
+    
+   
     private void Awake()
     {
         inertialBody = GetComponent<InertialBody>();
@@ -198,7 +201,7 @@ public class ShipModule : MonoBehaviour
         //inherit ship layer
         gameObject.layer = ship.layer;
     }
-    public void OnDetachFromShip(Vector3 shipCenter)
+    public void OnDetachFromShip()
     {
         owner = gameObject;
         transform.SetParent(null);
@@ -213,24 +216,29 @@ public class ShipModule : MonoBehaviour
         var pd = GetComponent<PointDefenseSystem>();
         if (pd != null)
             pd.enabled = false;
-
-        Vector2 direction = ((Vector2)transform.position - (Vector2)shipCenter).normalized;
-        ModuleSpawner.Instance.AddModule(gameObject, direction);
+        
         DropCells();
     }
 
     public void OnTakeDamage(int damage)
     {
         if (data.type== ModuleType.Shield && lastShot < cooldown) {lastShot = Time.time;return;}
-        currentHP -= damage;
-        if (currentHP <= 0)
-        {
-            owner.GetComponent<Ship>()?.OnModuleDestroyed(this);
-            Destroy(this.GameObject());
-            return;
-        }
+        currentHP = Mathf.Clamp(currentHP - damage,0,data.baseHealth);
         if (data.type==ModuleType.Cockpit && currentHP<21 && owner.GetComponent<Ship>().HUDConsole != null) 
             owner.GetComponent<Ship>().HUDConsole.EnqueueMessage("> CRITICAL HIT — CORE TEMPERATURE RISING",ConsoleMessageType.WARNING);
+        if (currentHP <= 0)
+        {
+            isFunctioning = false;
+            owner?.GetComponent<Ship>()?.OnModuleBroken(this);
+            foreach (var cell in builder.cells)
+            {
+                cell.GetComponent<ModuleCellScript>().mainSprite.color = new Color(0.5f,0.5f,0.5f,1f);
+            }
+            polyCollider.enabled = false;
+            var pd = transform.GetComponent<PointDefenseSystem>(); if (pd!=null) pd.enabled = false;
+            //Destroy(this.GameObject());
+            return;
+        }
     }
 
     public void UpdateRotation(int newRotation)

@@ -36,9 +36,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private EnemyScan Scan;
     private GameObject dockingCandidate = null;
     //Firing mode logic
-    private bool HasCanons => Ship.modules.Any(m => m.data.type == ModuleType.Canon);
-    private bool HasMissiles => Ship.modules.Any(m => m.data.type == ModuleType.Missile);
-    private bool HasPD => Ship.modules.Any(m => m.data.type == ModuleType.PointDefense);
+    private bool HasCanons => Ship.modules.Any(m => m.data.type == ModuleType.Canon && m.isFunctioning);
+    private bool HasMissiles => Ship.modules.Any(m => m.data.type == ModuleType.Missile && m.isFunctioning);
+    private bool HasPD => Ship.modules.Any(m => m.data.type == ModuleType.PointDefense && m.isFunctioning);
     private void Awake()
     {
         mainCamera = Camera.main;

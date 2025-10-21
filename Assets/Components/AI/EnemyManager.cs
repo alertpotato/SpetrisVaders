@@ -10,6 +10,7 @@ public class EnemyManager : MonoBehaviour
 {
     public Ship playerShip;
     public ShipFactory SFactory;
+    public GameObject ShipParent;
     public TypewriterMessageQueue HUDConsole;
     public float screenBorderPercent = 0.3f;
     public List<ShipArchetype> archetypes;
@@ -115,6 +116,7 @@ public class EnemyManager : MonoBehaviour
         if (ship == null || archetype == null) return;
         ship.OnDestroyed += HandleShipDestroyed;
         enemies.Add(new EnemyEntry(ship, archetype));
+        ship.transform.SetParent(ShipParent.transform);
     }
     private void HandleShipDestroyed(Ship destroyedShip)
     {

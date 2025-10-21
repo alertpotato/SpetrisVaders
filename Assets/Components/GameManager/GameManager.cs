@@ -55,8 +55,8 @@ public class GameManager : MonoBehaviour
         EManager.enabled=true;
         MSpawner.enabled=true;
         ASpawner.enabled=true;
-        //GameLoopState.enabled = true;
-        //GameLoopState.ChangeState<GameLoopEnemyWaveState>();
+        GameLoopState.enabled = true;
+        GameLoopState.ChangeState<GameLoopEnemyWaveState>();
         //Graphic
         ScreenStars.Initialize(playerShip.GetComponent<InertialBody>());
         // TODO: spawn enemies, handle waves
