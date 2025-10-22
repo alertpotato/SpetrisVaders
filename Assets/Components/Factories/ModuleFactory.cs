@@ -29,7 +29,7 @@ public class ModuleFactory : MonoBehaviour
         defaulModuleWeignts = new Dictionary<ModuleType, int>();
         foreach (ModuleType type in Enum.GetValues(typeof(ModuleType)))
         {
-            if(type==ModuleType.Empty || type==ModuleType.Cockpit) continue;
+            if(type==ModuleType.Empty || type==ModuleType.Cockpit || type==ModuleType.Hull) continue;
             defaulModuleWeignts[type] = 1;
         }
     }

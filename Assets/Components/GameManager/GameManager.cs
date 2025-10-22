@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
         ASpawner.enabled=true;
         GameLoopState.enabled = true;
         GameLoopState.ChangeState<GameLoopEnemyWaveState>();
+        LoopSharedData.playerShip = playerShip;
         //Graphic
         ScreenStars.Initialize(playerShip.GetComponent<InertialBody>());
         // TODO: spawn enemies, handle waves
@@ -113,7 +114,7 @@ public class GameManager : MonoBehaviour
         EManager.playerShip = playerShip;
         EManager.SFactory = SFactory;
         
-        PlayerControls.GetComponent<PlayerController>().Initialize(playerShip,iBody,docker,EManager,docker);
+        PlayerControls.GetComponent<PlayerController>().Initialize(playerShip,iBody,docker,EManager, docker);
         
         HUDConsole.EnqueueMessage("> BATTLESHIP "+ship.name.ToString().ToUpper()+" OPERATIONAL...");
         GameStart();

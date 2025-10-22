@@ -35,7 +35,16 @@ public class PointDefenseSystem : MonoBehaviour
     {
         shipFaction = module.owner.GetComponent<Ship>().faction;
     }
-    
+
+    public void DisableVisuals()
+    {
+        foreach (var cell in defenseCells)
+        {
+            cell.target = null;
+            cell.line.enabled = false;
+        }
+    }
+
     private void Awake()
     {
         module = GetComponent<ShipModule>();
@@ -79,9 +88,15 @@ public class PointDefenseSystem : MonoBehaviour
         //target update
         if (Time.time - lastScan >= cooldown)
             {AssignTargets();lastScan = Time.time;}
+        
         // Rotate + DrawLine every frame
         foreach (var cell in defenseCells)
         {
+            if (!module.WeaponsReady())
+            {
+                cell.line.enabled = false;
+                return;
+            }
             if (cell.target != null)
             {
                 Vector2 dir = (cell.target.transform.position - cell.firePoint.position).normalized;
@@ -96,10 +111,7 @@ public class PointDefenseSystem : MonoBehaviour
                     cell.line.SetPosition(1, cell.target.transform.position);
                 }
             }
-            else
-            {
-                cell.line.enabled = false;
-            }
+            else cell.line.enabled = false;
             // Shooting from each cell
             if (Time.time - cell.lastShotTime>= cooldown)
                 if (Fire(cell)) cell.lastShotTime = Time.time;

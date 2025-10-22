@@ -12,6 +12,9 @@ public class GameLogic : ScriptableObject
     public string projectileLayer;
     public string environmentLayer;
     public string particleLayer;
+    public LayerMask normalCollisionMask;
+    public LayerMask nonCollisionMask;
+
     
     private void OnEnable()
     {

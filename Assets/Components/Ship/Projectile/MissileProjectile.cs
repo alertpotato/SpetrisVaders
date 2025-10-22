@@ -33,6 +33,10 @@ public class MissileProjectile : Projectile
             adapter.owner = owner;
             adapter.TakeDamage.AddListener(OnTakeDamage);
         }
+        var col = GetComponent<Collider2D>();
+        col.layerOverridePriority = 1;
+        col.includeLayers = GameLogic.Instance.normalCollisionMask;
+        col.excludeLayers = GameLogic.Instance.nonCollisionMask;
     }
 
     public override void Launch(Vector2 initialDirection, Vector2 targetPos, int projDamage, GameObject ownerShip = null)

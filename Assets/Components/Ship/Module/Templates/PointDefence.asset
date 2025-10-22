@@ -27,9 +27,9 @@ MonoBehaviour:
   baseHealth: 40
   cooldown: 0.2
   speedModifier: 0
-  damage: 1
+  damage: 2
   maxRange: 20
-  accuracy: 2
+  accuracy: 3
   mainSprite: {fileID: 999555717, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
   backSprite: {fileID: -639535446, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}
   outfitSprite: {fileID: 2038103862, guid: 53ec0d1505efcac4486062da5a964d34, type: 3}

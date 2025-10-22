@@ -18,7 +18,7 @@ public class CursorTooltip : MonoBehaviour
     }
     public void UpdateTooltip(string tooltip,float lifeOverride=-1)
     {
-        lastUpdate = lifeOverride!=-1 ? lifeOverride : Time.time;
+        lastUpdate = lifeOverride!=-1 ? Time.time-(tooltipLife-lifeOverride) : Time.time;
         tooltipText.text = tooltip;
     }
 }

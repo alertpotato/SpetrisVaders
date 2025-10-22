@@ -10,6 +10,7 @@ public class GameLoopSharedData : MonoBehaviour
     [Header("Components")]
     public Camera MainCamera;
     public StateMachine GameLoopState;
+    public Ship playerShip;
     [Header("References")]
     public EnemyManager EManager;
     

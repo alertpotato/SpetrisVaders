@@ -83,7 +83,7 @@ public class ArchetypePatrol : ShipArchetype
         float desiredSpeed = Mathf.Lerp(maxSpeed*0.1f,maxSpeed*2, distCoeff);
         if (body.speed > desiredSpeed)
         {
-            currentDirection = -body.velocity.normalized*0.1f;
+            currentDirection = -body.velocity.normalized*0.05f;
         }
         else
         {

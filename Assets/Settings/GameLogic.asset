@@ -17,3 +17,9 @@ MonoBehaviour:
   projectileLayer: Projectile
   environmentLayer: Environment
   particleLayer: Particle
+  normalCollisionMask:
+    serializedVersion: 2
+    m_Bits: 1920
+  nonCollisionMask:
+    serializedVersion: 2
+    m_Bits: 2103

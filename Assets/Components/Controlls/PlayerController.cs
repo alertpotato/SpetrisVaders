@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField] private EnemyManager enemies;
+    [SerializeField] private GraveyardManager deadge;
     [SerializeField] private Ship Ship;
     [SerializeField] private Controls controls;
     [SerializeField] private DockingVisualizer Docker;
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private bool fire;
     Vector3 mouseWorldPosition = Vector3.zero;
+    private int TempCreditLine = 0;
     
     [Header("States")]
     public ControlMode controlMode = ControlMode.Combat;
@@ -70,6 +72,7 @@ public class PlayerController : MonoBehaviour
         controls.ShipControls.FireModePD.performed += ctx => SwitchFiringMode(FiringMode.PD);
 
         controls.ShipControls.SecondaryAction.performed += ctx => StartDocking();
+        controls.ShipControls.SecondaryAction.performed += ctx => Loot();
         controls.ShipControls.AttachModule.performed += ctx => AttachModule();
         controls.ShipControls.RotateModule.performed += ctx => RotateModule(1);
 
@@ -81,6 +84,7 @@ public class PlayerController : MonoBehaviour
         Body = Ibody;
         Docker = Pdocker;
         enemies = enemyManager;
+        deadge = GraveyardManager.Instance;
         dockingVisualizer = newDockingVisualizer;
         ShipControlled = true;
         Scan.Initialize(mainCamera);
@@ -111,7 +115,7 @@ public class PlayerController : MonoBehaviour
         Ship.UpdateModulesControl(mouseWorldPosition);
         HandleShooting();
         HandleDocking();
-        
+        HandleLooting();
     }
 
     private Ship EnemyScan()
@@ -239,7 +243,7 @@ public class PlayerController : MonoBehaviour
         var detected = DetectColliderUnderMouse(LayerMask.GetMask(GameLogic.Instance.environmentLayer));
         var candidateModule = detected ? detected.GetComponent<ShipModule>() : null;
 
-        if (controlMode != ControlMode.Docking && candidateModule != null)
+        if (controlMode != ControlMode.Docking && candidateModule != null && !deadge.modules.ContainsKey(detected.gameObject))
         {
             EnterDockingMode(candidateModule.gameObject);
         }
@@ -249,10 +253,32 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void Loot()
+    {
+        var detected = DetectColliderUnderMouse(LayerMask.GetMask("Default"));
+        var loot = detected?.GetComponent<LootBox>();
+        if (loot !=null)
+        {
+            TempCreditLine += loot.GetReward();
+            Destroy(detected.gameObject);
+            cursorTooltip.UpdateTooltip("Credit balance : <b>"+TempCreditLine);
+        }
+    }
+
+    private void HandleLooting()
+    {
+        var detected = DetectColliderUnderMouse(LayerMask.GetMask("Default"));
+        var loot = detected?.GetComponent<LootBox>();
+        if (loot !=null)
+        {
+            cursorTooltip.UpdateTooltip("RMB to loot",0.5f);
+        }
+    }
+
     private void HandleDocking()
     {
         var detected = DetectColliderUnderMouse(LayerMask.GetMask(GameLogic.Instance.environmentLayer));
-        if (detected!=null && controlMode != ControlMode.Docking)
+        if (detected!=null && controlMode != ControlMode.Docking && !deadge.modules.ContainsKey(detected.gameObject))
         {
             cursorTooltip.UpdateTooltip("RMB to start docking",0.5f);
         }

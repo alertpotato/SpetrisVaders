@@ -40,9 +40,7 @@ public class ShipModule : MonoBehaviour
     private float accuracy;
     private Vector3 projectileAdjustment= Vector3.zero;
     public List<ModuleCell> outfitCells = new List<ModuleCell>();
-
     
-   
     private void Awake()
     {
         inertialBody = GetComponent<InertialBody>();
@@ -91,14 +89,16 @@ public class ShipModule : MonoBehaviour
             polyCollider.SetPath(i, square);
         }
     }
-    public bool FirePD(Vector3 direction,GameObject parent)
+    public bool FirePD(Vector3 target,GameObject parent)
     {
-        if (Time.time - lastShot < cooldown) return false;
+        if (!WeaponsReady()) return false;
         if (data.type != ModuleType.PointDefense) return false;
         lastShot = Time.time;
+        
         var spread = GetSpreadRadius(accuracy,maxRange,maxRange);
         foreach (var cell in outfitCells)
         {
+            var direction = target - cell.firePoint.position;
             var to = cell.firePoint.position + direction.normalized * maxRange;
                      ProjectileManager.Instance.SpawnPointDefenseShot(cell.firePoint.position,to,damage,maxRange,spread,owner);
         }
@@ -106,7 +106,7 @@ public class ShipModule : MonoBehaviour
     }
     public bool FireCanon(Vector3 direction,GameObject parent)
     {
-        if (Time.time - lastShot < cooldown) return false;
+        if (!WeaponsReady()) return false;
         if (data.type != ModuleType.Canon) return false;
         lastShot = Time.time;
         
@@ -119,7 +119,7 @@ public class ShipModule : MonoBehaviour
     }
     public bool FireMissile(Vector3 target,GameObject parent)
     {
-        if (Time.time - lastShot < cooldown) return false;
+        if (!WeaponsReady()) return false;
         if (data.type != ModuleType.Missile) return false;
         
         lastShot = Time.time;
@@ -140,7 +140,7 @@ public class ShipModule : MonoBehaviour
     }
     public bool FireMissile(List<Ship> targets,GameObject parent)
     {
-        if (Time.time - lastShot < cooldown) return false;
+        if (!WeaponsReady()) return false;
         if (data.type != ModuleType.Missile) return false;
         if (targets.Count == 0) return false;
         //find closest target
@@ -188,7 +188,9 @@ public class ShipModule : MonoBehaviour
         //aligment player vs enemy
         foreach (var cell in builder.cells)
         {
-            cell.transform.rotation = Quaternion.Euler(0,0,alignment);
+            //TODO rotation of sprites is junky
+            if (data.type== ModuleType.Cockpit) cell.transform.rotation = Quaternion.Euler(0,0,alignment);
+            else cell.GetComponent<ModuleCellScript>().outfitSprite.transform.rotation = Quaternion.Euler(0,0,alignment);
             projectileAdjustment = new Vector3(0f, alignment == 0 ? 0.5f : -0.5f, 0f);
         }
         //regenerate collider just in case
@@ -235,9 +237,24 @@ public class ShipModule : MonoBehaviour
                 cell.GetComponent<ModuleCellScript>().mainSprite.color = new Color(0.5f,0.5f,0.5f,1f);
             }
             polyCollider.enabled = false;
-            var pd = transform.GetComponent<PointDefenseSystem>(); if (pd!=null) pd.enabled = false;
+            var pd = transform.GetComponent<PointDefenseSystem>();
+            if (pd != null)
+            {
+                pd.DisableVisuals();
+                pd.enabled = false;
+            }
+            DisableCells();
             //Destroy(this.GameObject());
             return;
+        }
+    }
+
+    public void Repair()
+    {
+        currentHP = data.baseHealth;
+        foreach (var cell in builder.cells)
+        {
+            cell.GetComponent<ModuleCellScript>().mainSprite.color = new Color(1,1,1,1f);
         }
     }
 
@@ -252,7 +269,13 @@ public class ShipModule : MonoBehaviour
         radius = maxSpread * Mathf.Clamp(distanceToTarget / maxDistance, 0, 1);
         return radius;
     }
-    
+
+    public bool WeaponsReady()
+    {
+        if (Time.time - lastShot < cooldown) return false;
+        else return true;
+    }
+
     //--------------------CELLS CONTROL
     private void InitializeCells(Faction faction)
     {
@@ -305,7 +328,7 @@ public class ShipModule : MonoBehaviour
                 var line = cell.visualizer.GetComponent<LineRenderer>();
                 line.enabled = true;
                 line.SetPosition(0, pos+dirN/2);
-                line.SetPosition(1, pos + dirN * Mathf.Min(dir.magnitude,maxRange/2));
+                line.SetPosition(1, pos + dirN * Mathf.Min(dir.magnitude/3,maxRange/2));
             }
         }
     }

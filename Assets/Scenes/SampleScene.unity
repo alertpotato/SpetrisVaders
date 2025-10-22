@@ -351,7 +351,7 @@ MonoBehaviour:
   aimColor: {r: 0, g: 1, b: 0, a: 1}
   startWidth: 0.1
   endWidth: 0.1
-  lineMaterial: {fileID: 2100000, guid: dbe52968a7fd04743a98cb52f01d593f, type: 2}
+  lineMaterial: {fileID: -876546973899608171, guid: 60bfff92990542545a3e1d5e569f3f17, type: 3}
   currentMode: 3
   PDCursor: {fileID: 787049142}
   PDEffectLeft: {fileID: 1069257475}
@@ -372,6 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemies: {fileID: 0}
+  freeModules: {fileID: 0}
   Ship: {fileID: 0}
   Docker: {fileID: 0}
   cursorTooltip: {fileID: 0}
@@ -699,6 +700,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Config: {fileID: 0}
+  TraderPrefab: {fileID: 7296176963450821186, guid: e6375575794c902428dd5af1f007b963, type: 3}
+  moveDuration: 3
 --- !u!1 &282555087
 GameObject:
   m_ObjectHideFlags: 0
@@ -930,6 +933,7 @@ GameObject:
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
   - component: {fileID: 519420033}
+  - component: {fileID: 519420034}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1072,6 +1076,22 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 7a1de4c282d54604abadae2a9fe44992, type: 2}
+--- !u!114 &519420034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56666c5a40171f54783dd416a44f42bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!1 &545052657
 GameObject:
   m_ObjectHideFlags: 0
@@ -6847,6 +6867,7 @@ MonoBehaviour:
   ShipParent: {fileID: 2036068069}
   HUDConsole: {fileID: 0}
   screenBorderPercent: 0.3
+  rewardPrefab: {fileID: 8635716287008242408, guid: f4f8a160924bf3345a2e5284b56e91c9, type: 3}
 --- !u!114 &1308053698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6915,6 +6936,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GraveParent: {fileID: 623805674}
   saveModuleChance: 0.05
+  scaleLoss: 0.997
 --- !u!1 &1308589400
 GameObject:
   m_ObjectHideFlags: 0

@@ -75,7 +75,7 @@ public class ProjectileManager : MonoBehaviour
         var main = bullet.main;
         main.startLifetime = maxRange / main.startSpeed.constant;
         //ignoring its own collision
-        var collision = bullet.collision; 
+        var collision = bullet.collision;
         collision.collidesWith = LayerMask.GetMask("PlayerShip", "EnemyShip", "Environment", "Projectile");
         int ownerLayer = origin.gameObject.layer;
         collision.collidesWith &= ~(1 << ownerLayer);

@@ -15,6 +15,10 @@ public class ShellProjectile : Projectile
             adapter.owner = owner;
             adapter.TakeDamage.AddListener(OnTakeDamage);
         }
+        var col = GetComponent<Collider2D>();
+        col.layerOverridePriority = 1;
+        col.includeLayers = GameLogic.Instance.normalCollisionMask;
+        col.excludeLayers = GameLogic.Instance.nonCollisionMask;
     }
     public override void Launch(Vector2 direction, Vector2 targetPos,int projDamage, GameObject ownerShip = null)
     {
@@ -36,7 +40,6 @@ public class ShellProjectile : Projectile
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.GetComponent<DamageAdapter>()?.owner == owner) return;
-        
         collision.gameObject.GetComponent<DamageAdapter>()?.TakeDamage.Invoke(damage);
         ProjectileManager.Instance.SpawnImpactEffect(transform.position,velocity);
         Destroy(gameObject);

@@ -20,7 +20,6 @@ public class Ship : MonoBehaviour
     public TypewriterMessageQueue HUDConsole;
     
     [Header("Ship stats")]
-    [Header("Ship stats")]
     public int shipAlignment = 180;
     public float thrust = 10;
     public float maxSpeed = 10;
@@ -174,10 +173,10 @@ public class Ship : MonoBehaviour
     }
     public bool FireAtPD(Vector3 position)
     {
-        var direction = position - transform.position;
+        //var direction = position - transform.position;
         foreach (var module in modules.Where(x=>x.data.type==ModuleType.PointDefense && x.isFunctioning))
         {
-            if (module.FirePD(direction,this.GameObject())) return true;
+            if (module.FirePD(position,this.GameObject())) return true;
         }
         return false;
     }

@@ -88,7 +88,7 @@ public abstract class ShipArchetype
     {
         bool ready = false;
         int weaponCount = 0;
-        foreach (var module in controlledShip.modules)
+        foreach (var module in controlledShip.modules.Where(x=>x.isFunctioning))
         {
             if (weaponModules.Contains(module.data.type)) ready=true;
         }

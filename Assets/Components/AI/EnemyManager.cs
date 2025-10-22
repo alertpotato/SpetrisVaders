@@ -14,7 +14,7 @@ public class EnemyManager : MonoBehaviour
     public TypewriterMessageQueue HUDConsole;
     public float screenBorderPercent = 0.3f;
     public List<ShipArchetype> archetypes;
-    
+    public GameObject rewardPrefab;
     public List<EnemyEntry> enemies = new List<EnemyEntry>();
 
     Camera ScreenCamera;
@@ -121,6 +121,9 @@ public class EnemyManager : MonoBehaviour
     private void HandleShipDestroyed(Ship destroyedShip)
     {
         RemoveEnemy(destroyedShip);
+        var newReward = Instantiate(rewardPrefab,this.transform);
+        newReward.GetComponent<LootBox>().SetReward(1);
+        newReward.transform.localPosition = destroyedShip.transform.position;
     }
 
     public void RemoveEnemy(Ship ship)

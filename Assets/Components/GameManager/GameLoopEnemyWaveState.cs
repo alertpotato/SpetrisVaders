@@ -13,6 +13,7 @@ public class GameLoopEnemyWaveState : StateBehaviour
     public EncounterManager ENCManager;
     public override void OnEnter()
     {
+        encounterDeployed = false;
         Config.CurrentWave++;
         EncounterType newEncounterType = EncounterType.Wave;
         if (Config.CurrentWave % 2 == 0) newEncounterType = EncounterType.Boss;
@@ -50,8 +51,8 @@ public class GameLoopEnemyWaveState : StateBehaviour
         }
         encounterDeployed=true;
     }
-
-    void Update()
+    
+    public override void OnUpdate()
     {
         if (encounterDeployed == true && Config.EManager.enemies.Count == 0)
         {

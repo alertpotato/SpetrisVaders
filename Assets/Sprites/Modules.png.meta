@@ -672,7 +672,7 @@ TextureImporter:
         width: 12
         height: 12
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -680,6 +680,48 @@ TextureImporter:
       bones: []
       spriteID: 8670e112c30ad5342b93b1b399a1272c
       internalID: 1031088583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CreditBox
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 588
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e868fc0f0d4d8a42b6fa50e8ef4e41d
+      internalID: -1221473483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Trader
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 350
+        width: 36
+        height: 204
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7b9e28ed66e0194dadae7672d854c38
+      internalID: -654177996
       vertices: []
       indices: 
       edges: []
@@ -704,6 +746,7 @@ TextureImporter:
       CP2: -309681839
       CP3: 14276531
       CP4: -1788906601
+      CreditBox: -1221473483
       DMG1: 218915061
       DMG2: -320556769
       DMG3: -1113327542
@@ -723,6 +766,7 @@ TextureImporter:
       SH3: 405819470
       SP1: 167459217
       Shell: -1178426528
+      Trader: -654177996
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
