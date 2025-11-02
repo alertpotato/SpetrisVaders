@@ -252,9 +252,16 @@ public class ShipModule : MonoBehaviour
     public void Repair()
     {
         currentHP = data.baseHealth;
+        isFunctioning = true;
+        polyCollider.enabled = true;
         foreach (var cell in builder.cells)
         {
             cell.GetComponent<ModuleCellScript>().mainSprite.color = new Color(1,1,1,1f);
+        }
+        var pd = transform.GetComponent<PointDefenseSystem>();
+        if (pd != null)
+        {
+            pd.enabled = true;
         }
     }
 
