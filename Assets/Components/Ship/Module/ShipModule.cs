@@ -109,11 +109,16 @@ public class ShipModule : MonoBehaviour
         if (!WeaponsReady()) return false;
         if (data.type != ModuleType.Canon) return false;
         lastShot = Time.time;
-        
+
         for (int i = 0; i < data.shape.Length; i++)
         {
             if (data.shape[i].type == OutfitType.Canon)
-                ProjectileManager.Instance.SpawnShell(builder.cells[i].transform.position+projectileAdjustment, direction,damage,parent);
+            {
+                ProjectileManager.Instance.SpawnShell(builder.cells[i].transform.position + projectileAdjustment,
+                    direction, damage, parent);
+                ProjectileManager.Instance.SpawnECSShell(builder.cells[i].transform.position + projectileAdjustment,
+                -direction, damage, parent);
+            }
         }
         return true;
     }

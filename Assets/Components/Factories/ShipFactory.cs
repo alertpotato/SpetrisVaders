@@ -21,7 +21,7 @@ public class ShipFactory : MonoBehaviour
         GameObject ship = Instantiate(shipPrefab, offCameraPoint, Quaternion.identity, this.transform);
         var ShipScript = ship.GetComponent<Ship>();
         ShipScript.shipAlignment = shipAlignment;
-        ShipScript.InitializeShip(faction);
+        ShipScript.InitializeShip(faction, shipCount);
         var cockpit = modules.GetCockpitModule(shipAlignment);
         RandomAttach(ShipScript,out GameObject module,cockpit);
         ship.name = $"Ship_{shipCount}";
@@ -39,7 +39,7 @@ public class ShipFactory : MonoBehaviour
             else ship = GetShip(shipAlignment,faction);
         var ShipScript = ship.GetComponent<Ship>();
         if (faction == Faction.Player) ship.layer = LayerMask.NameToLayer(GameLogic.Instance.playerLayer);;
-        ShipScript.InitializeShip(faction);
+        ShipScript.InitializeShip(faction, shipCount);
         
         while (ShipScript.modules.Count < numberOfModules+1)
         {

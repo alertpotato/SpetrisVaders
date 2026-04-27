@@ -34,15 +34,18 @@ public class Ship : MonoBehaviour
     public Vector2 dimensionsMin = new Vector2(0, 0);
     public Vector2 dimensionsMax = new Vector2(0, 0);
     public List<ShipModule> controlledModules = new List<ShipModule>();
+    [Header("Identity")]
+    public int shipId;
     public event Action<Ship> OnDestroyed;
 
     private void OnDestroy()
     {
         OnDestroyed?.Invoke(this);
     }
-    public void InitializeShip(Faction shipFaction)
+    public void InitializeShip(Faction shipFaction, int id)
     { 
         faction = shipFaction;
+        shipId = id;
     }
     
     private void UpdateStats()

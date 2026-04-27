@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Transforms;
+using Unity.Rendering;
+using UnityEngine.Rendering;
+
 public class ProjectileManager : MonoBehaviour
 {
     public static ProjectileManager Instance;
@@ -16,10 +22,22 @@ public class ProjectileManager : MonoBehaviour
     [SerializeField]private ParticleSystem impactMetal;
     
     public List<Projectile> activeProjectiles = new List<Projectile>();
-
+    
+    [Header("ECS Projectiles")]
+    private EntityManager entityManager;
+    private Entity ecsShellPrefab;
+    private bool ecsReady;
+    [SerializeField] private float ecsShellSpeed = 20f;
+    [SerializeField] private float ecsShellLifetime = 5f;
+    [SerializeField] private float ecsShellHealth = 1f;
+    [Header("ECS Projectile Graphics")]
+    [SerializeField] private Mesh ecsShellMesh;
+    [SerializeField] private Material ecsShellMaterial;
     void Awake()
     {
         Instance = this;
+        entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        CreateECSShellPrefab();
     }
 
     void Update()
@@ -43,6 +61,46 @@ public class ProjectileManager : MonoBehaviour
         shell.Launch(direction, Vector2.zero,damage, owner);
         shell.transform.SetParent(shellsParent.transform);
         activeProjectiles.Add(shell);
+    }
+    public void SpawnECSShell(Vector3 spawnPos, Vector2 direction, int damage, GameObject owner)
+    {
+        if (!ecsReady || ecsShellPrefab == Entity.Null)
+        {
+            Debug.LogWarning("ECS shell prefab is not ready.");
+            return;
+        }
+
+        Entity shellEntity = entityManager.Instantiate(ecsShellPrefab);
+
+        Vector2 velocity = direction.normalized * ecsShellSpeed;
+        Vector2 dir = direction.normalized;
+        float angle = math.atan2(dir.y, dir.x);
+        quaternion rotation = quaternion.RotateZ(angle - math.PI / 2f);//sprite rotation
+        
+        int ownerId = -1;
+        Ship ownerShip = owner.GetComponent<Ship>();
+        if (ownerShip != null)
+            ownerId = ownerShip.shipId;
+
+        entityManager.SetComponentData(shellEntity, LocalTransform.FromPosition(
+            new float3(spawnPos.x, spawnPos.y, spawnPos.z)
+        ));
+        entityManager.SetComponentData(shellEntity,
+            LocalTransform.FromPositionRotationScale(
+                new float3(spawnPos.x, spawnPos.y, spawnPos.z),
+                rotation,
+                1
+            )
+        );
+
+        entityManager.SetComponentData(shellEntity, new ECSProjectile
+        {
+            Health = ecsShellHealth,
+            Damage = damage,
+            Lifetime = ecsShellLifetime,
+            OwnerId = ownerId,
+            Velocity = new float2(velocity.x, velocity.y)
+        });
     }
 
     public void SpawnPointDefenseShot(Vector3 from, Vector3 to, int damage, float range,float spread, GameObject owner)
@@ -87,5 +145,51 @@ public class ProjectileManager : MonoBehaviour
     {
         float angleZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         ParticleSystem impactM = Instantiate(impactMetal,position,Quaternion.identity);
+    }
+    
+    private void CreateECSShellPrefab()
+    {
+        ecsShellPrefab = entityManager.CreateEntity(
+            typeof(ECSProjectile),
+            typeof(LocalTransform)
+        );
+
+        entityManager.AddComponent<Prefab>(ecsShellPrefab);
+
+        var renderMeshArray = new RenderMeshArray(
+            new Material[] { ecsShellMaterial },
+            new Mesh[] { ecsShellMesh }
+        );
+
+        var renderMeshDescription = new RenderMeshDescription(
+            shadowCastingMode: ShadowCastingMode.Off,
+            receiveShadows: false
+        );
+
+        RenderMeshUtility.AddComponents(
+            ecsShellPrefab,
+            entityManager,
+            renderMeshDescription,
+            renderMeshArray,
+            MaterialMeshInfo.FromRenderMeshArrayIndices(0, 0)
+        );
+
+        entityManager.SetComponentData(ecsShellPrefab, new ECSProjectile
+        {
+            Health = ecsShellHealth,
+            Damage = 1,
+            Lifetime = ecsShellLifetime,
+            OwnerId = -1,
+            Velocity = float2.zero
+        });
+
+        entityManager.SetComponentData(
+            ecsShellPrefab,
+            LocalTransform.FromPosition(float3.zero)
+        );
+
+        ecsReady = true;
+
+        Debug.Log("Runtime ECS shell prefab with graphics created");
     }
 }

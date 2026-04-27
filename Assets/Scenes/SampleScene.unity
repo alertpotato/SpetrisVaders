@@ -372,7 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemies: {fileID: 0}
-  freeModules: {fileID: 0}
+  deadge: {fileID: 0}
   Ship: {fileID: 0}
   Docker: {fileID: 0}
   cursorTooltip: {fileID: 0}
@@ -596,6 +596,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainCamera: {fileID: 519420031}
   GameLoopState: {fileID: 275148197}
+  playerShip: {fileID: 0}
   EManager: {fileID: 0}
   HUDConsole: {fileID: 0}
   CurrentWave: 0
@@ -6888,6 +6889,11 @@ MonoBehaviour:
   bullets: {fileID: 8030513530149883191, guid: 80f892f08473d874eb8b9e66a8e06d20, type: 3}
   impactMetal: {fileID: 3045933767149018571, guid: f7b24f27943766643a9ea7e3646f57cc, type: 3}
   activeProjectiles: []
+  ecsShellSpeed: 20
+  ecsShellLifetime: 5
+  ecsShellHealth: 1
+  ecsShellMesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  ecsShellMaterial: {fileID: 2100000, guid: 4f2086e686579d24da362dddba15faa2, type: 2}
 --- !u!114 &1308053699
 MonoBehaviour:
   m_ObjectHideFlags: 0
