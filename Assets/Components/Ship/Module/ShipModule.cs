@@ -116,8 +116,6 @@ public class ShipModule : MonoBehaviour
             {
                 ProjectileManager.Instance.SpawnShell(builder.cells[i].transform.position + projectileAdjustment,
                     direction, damage, parent);
-                ProjectileManager.Instance.SpawnECSShell(builder.cells[i].transform.position + projectileAdjustment,
-                -direction, damage, parent);
             }
         }
         return true;

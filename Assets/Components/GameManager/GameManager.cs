@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     public GameGraphics gameGraphics;
     public GameLogic gameLogic;
     
+    [Header("Game Logic")]
+    public bool provideShipChoise = true;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -47,7 +49,7 @@ public class GameManager : MonoBehaviour
         
         LoopSharedData.HUDConsole = HUDConsole;
         LoopSharedData.EManager = EManager;
-        CreateShipChoise();
+        if (provideShipChoise) CreateShipChoise();
     }
 
     private void GameStart()

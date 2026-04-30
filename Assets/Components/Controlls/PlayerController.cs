@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 public enum FiringMode {None, Canons, Missiles, PD}
-public enum ControlMode { Combat, Docking }
+public enum ControlMode { Combat, Docking, Menu }
 
 public class PlayerController : MonoBehaviour
 {
@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
     private int TempCreditLine = 0;
     
     [Header("States")]
-    public ControlMode controlMode = ControlMode.Combat;
+    public ControlMode controlMode = ControlMode.Menu;
     public FiringMode currentFiringMode = FiringMode.None;
     public FiringMode lastFiringMode = FiringMode.None;
     private bool ShipControlled = false;
@@ -62,14 +62,26 @@ public class PlayerController : MonoBehaviour
                 int dir = scroll > 0 ? 1 : -1;
                 if (controlMode == ControlMode.Docking)
                     RotateModule(dir);
-                else
+                else if (controlMode == ControlMode.Combat)
                     NextFiringMode(dir);
             }
         };
-        controls.ShipControls.QuickNextFireMode.performed += ctx => NextFiringMode(1);
-        controls.ShipControls.FireModeCanons.performed += ctx => SwitchFiringMode(FiringMode.Canons);
-        controls.ShipControls.FireModeMissiles.performed += ctx => SwitchFiringMode(FiringMode.Missiles);
-        controls.ShipControls.FireModePD.performed += ctx => SwitchFiringMode(FiringMode.PD);
+        controls.ShipControls.QuickNextFireMode.performed += ctx =>
+        {
+            if (controlMode== ControlMode.Combat) NextFiringMode(1);
+        };
+        controls.ShipControls.FireModeCanons.performed += ctx =>
+        {
+            if (controlMode== ControlMode.Combat) SwitchFiringMode(FiringMode.Canons);
+        };
+        controls.ShipControls.FireModeMissiles.performed += ctx =>
+        {
+            if (controlMode== ControlMode.Combat) SwitchFiringMode(FiringMode.Missiles);
+        };
+        controls.ShipControls.FireModePD.performed += ctx =>
+        {
+            if (controlMode== ControlMode.Combat) SwitchFiringMode(FiringMode.PD);
+        };
 
         controls.ShipControls.SecondaryAction.performed += ctx => StartDocking();
         controls.ShipControls.SecondaryAction.performed += ctx => Loot();
@@ -89,6 +101,7 @@ public class PlayerController : MonoBehaviour
         ShipControlled = true;
         Scan.Initialize(mainCamera);
         NextFiringMode(1);
+        controlMode = ControlMode.Combat;
     }
     private void OnEnable()  => controls.Enable();
     private void OnDisable() => controls.Disable();

@@ -28,8 +28,9 @@ public class ProjectileManager : MonoBehaviour
     private Entity ecsShellPrefab;
     private bool ecsReady;
     [SerializeField] private float ecsShellSpeed = 20f;
-    [SerializeField] private float ecsShellLifetime = 5f;
+    [SerializeField] private float ecsShellLifetime = 15f;
     [SerializeField] private float ecsShellHealth = 1f;
+    [SerializeField] private float ecsShellRadius = 0.15f;
     [Header("ECS Projectile Graphics")]
     [SerializeField] private Mesh ecsShellMesh;
     [SerializeField] private Material ecsShellMaterial;
@@ -151,6 +152,7 @@ public class ProjectileManager : MonoBehaviour
     {
         ecsShellPrefab = entityManager.CreateEntity(
             typeof(ECSProjectile),
+            typeof(ECSProjectileCollision),
             typeof(LocalTransform)
         );
 
@@ -165,6 +167,11 @@ public class ProjectileManager : MonoBehaviour
             shadowCastingMode: ShadowCastingMode.Off,
             receiveShadows: false
         );
+        
+        entityManager.SetComponentData(ecsShellPrefab, new ECSProjectileCollision
+        {
+            Radius = ecsShellRadius
+        });
 
         RenderMeshUtility.AddComponents(
             ecsShellPrefab,
